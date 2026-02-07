@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Juliette’s Graph Paper Addition</title>
+  <style>
+    :root{
+      --paper:#f7f8fb;
+      --ink:#1c2a44;
+      --gridA: rgba(40, 86, 170, .12);
+      --gridB: rgba(40, 86, 170, .06);
+      --card:#ffffffcc;
+      --stroke: rgba(28,42,68,.18);
+      --shadow: 0 18px 45px rgba(0,0,0,.12);
+      --good:#18b47b;
+      --bad:#e83e5a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+    body{
+      color:var(--ink);
+      background:
+        linear-gradient(0deg, var(--gridB) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gridB) 1px, transparent 1px),
+        linear-gradient(0deg, var(--gridA) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gridA) 1px, transparent 1px),
+        var(--paper);
+      background-size: 16px 16px, 16px 16px, 80px 80px, 80px 80px, auto;
+      background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+      overflow-x:hidden;
+      touch-action: manipulation;
+    }
+
+    .wrap{
+      min-height:100%;
+      padding: max(12px, env(safe-area-inset-top)) 12px max(14px, env(safe-area-inset-bottom));
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius:14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .title{display:flex; flex-direction:column; gap:2px; line-height:1.1;}
+    .title b{font-size:16px}
+    .title span{font-size:12px; opacity:.72}
+
+    .stats{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; font-size:12px;}
+    .pill{
+      padding:6px 10px;
+      border:1px solid var(--stroke);
+      border-radius:999px;
+      background:#fff;
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      font-weight:800;
+    }
+    .pill small{font-weight:700; opacity:.6}
+    .pill button{ all:unset; cursor:pointer; padding:0 2px; font-weight:900; }
+
+    .board{
+      flex:1;
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      min-height: 430px;
+    }
+
+    .stage{
+      position:absolute; inset:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding: 14px;
+    }
+
+    .problemRow{
+      display:flex; align-items:center; justify-content:center;
+      gap:12px;
+      padding: 6px 0 0;
+      font-weight:900;
+    }
+    .problemRow .big{
+      font-size: 22px;
+      letter-spacing:.2px;
+    }
+    .problemRow .sub{
+      font-size: 12px;
+      opacity:.7;
+      font-weight:700;
+    }
+
+    .notebook{
+      flex:1;
+      border-radius:16px;
+      border:1px dashed rgba(28,42,68,.25);
+      background:
+        radial-gradient(900px 500px at 15% 20%, rgba(255, 214, 102, .25), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(124, 179, 255, .25), transparent 60%),
+        rgba(255,255,255,.9);
+      position:relative;
+      overflow:hidden;
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .rail{
+      flex:1;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    /* Visual: two lines that merge */
+    .mergeZone{
+      width:min(920px, 100%);
+      height: 160px;
+      position:relative;
+    }
+
+    .lineLabel{
+      position:absolute;
+      top: -2px;
+      font-weight:900;
+      font-size:14px;
+      padding: 6px 10px;
+      background:#fff;
+      border:1px solid var(--stroke);
+      border-radius:999px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.06);
+      user-select:none;
+      display:flex; gap:8px; align-items:center;
+    }
+    .lineLabel .dot{
+      width:10px; height:10px; border-radius:50%;
+      border:1px solid rgba(0,0,0,.15);
+      background: var(--c);
+    }
+    .labelL{ left: 10px; }
+    .labelR{ right: 10px; }
+
+    .tracks{
+      position:absolute;
+      left: 12px; right: 12px;
+      top: 40px; bottom: 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+
+    .track{
+      flex:1;
+      height: 86px;
+      position:relative;
+      border-radius: 14px;
+      border:1px solid rgba(28,42,68,.14);
+      background:
+        linear-gradient(0deg, rgba(40,86,170,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(40,86,170,.08) 1px, transparent 1px);
+      background-size: 16px 16px;
+      overflow:hidden;
+    }
+    .divider{
+      width: 54px;
+      height: 86px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size: 30px;
+      opacity:.55;
+      user-select:none;
+    }
+
+    .blocks{
+      position:absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display:flex;
+      gap: 8px;
+      padding: 0 12px;
+      will-change: transform;
+    }
+    .blocks.left{ left: 0; }
+    .blocks.right{ right: 0; flex-direction: row-reverse; }
+
+    .block{
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      border: 2px solid rgba(28,42,68,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.2));
+      box-shadow: 0 10px 16px rgba(0,0,0,.08);
+      position:relative;
+      overflow:hidden;
+    }
+    .block::after{
+      content:"";
+      position:absolute; inset:-30% -30%;
+      background: radial-gradient(120px 90px at 25% 30%, rgba(255,255,255,.8), transparent 55%);
+      transform: rotate(18deg);
+      opacity:.7;
+    }
+
+    .block.l{ background-color: rgba(255, 118, 135, .85); }
+    .block.r{ background-color: rgba(105, 182, 255, .85); }
+    .block.l{ background-image: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.12)); }
+    .block.r{ background-image: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.12)); }
+
+    .resultRibbon{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(.98);
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(28,42,68,.18);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 16px 40px rgba(0,0,0,.12);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      font-weight:900;
+    }
+    .resultRibbon.show{
+      opacity:1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .resultRibbon .miniBlocks{
+      display:flex; gap:6px; align-items:center;
+    }
+    .mini{
+      width: 16px; height: 16px;
+      border-radius: 6px;
+      border:1px solid rgba(28,42,68,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,.15));
+    }
+
+    .answerCard{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.92);
+      border-radius:16px;
+      box-shadow: 0 12px 26px rgba(0,0,0,.10);
+      padding: 12px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .prompt{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-weight:900;
+    }
+    .prompt .hint{font-weight:800; font-size:12px; opacity:.7;}
+
+    .controls{display:flex; gap:10px; align-items:center;}
+    input[type="number"]{
+      width: 120px;
+      font-size: 20px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(28,42,68,.22);
+      background:#fff;
+      color:var(--ink);
+      outline:none;
+    }
+    .btn{
+      flex:1;
+      border:1px solid rgba(28,42,68,.22);
+      border-radius:14px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #ffffff, #f2f4f9);
+      color:var(--ink);
+      font-weight:1000;
+      font-size: 16px;
+      cursor:pointer;
+      box-shadow: 0 12px 22px rgba(0,0,0,.08);
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(180deg, #e9f4ff, #f7fbff);
+    }
+    .btn.secondary{
+      flex:0;
+      padding:12px 12px;
+      font-weight:900;
+      font-size:14px;
+      opacity:.9;
+    }
+
+    .toast{
+      position:absolute;
+      left:50%;
+      top:12px;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(28,42,68,.22);
+      padding: 10px 14px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-weight:1000;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      max-width: 92%;
+      text-align:center;
+    }
+    .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+    .toast.good{ border-color: rgba(24,180,123,.45); }
+    .toast.bad{ border-color: rgba(232,62,90,.45); }
+
+    .footerRow{
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      color: rgba(28,42,68,.75);
+      font-size:12px;
+      padding: 0 2px;
+    }
+    .toggleRow{ display:flex; gap:8px; align-items:center; }
+
+    .switch{
+      width: 46px; height: 28px;
+      border-radius: 999px;
+      border:1px solid rgba(28,42,68,.22);
+      background:#fff;
+      position:relative;
+      cursor:pointer;
+      flex:0 0 auto;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+    }
+    .knob{
+      position:absolute; top:3px; left:3px;
+      width:22px; height:22px;
+      border-radius:50%;
+      background: linear-gradient(180deg,#ffffff,#dbe6ff);
+      transition: transform .18s ease;
+      box-shadow: 0 10px 16px rgba(0,0,0,.12);
+    }
+    .switch.on .knob{ transform: translateX(18px); }
+    .switch.on{ background: linear-gradient(180deg,#e9f4ff,#ffffff); }
+
+    a.tinyLink{ color:#1b4db3; text-decoration:none; font-weight:900; }
+
+    /* Mobile tweaks */
+    @media (max-width: 520px){
+      .mergeZone{ height: 170px; }
+      .block{ width: 34px; height: 34px; border-radius: 11px; }
+      .tracks{ top: 46px; }
+      input[type="number"]{ width: 105px; }
+      .divider{ width: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <b>Juliette’s Graph Paper Addition</b>
+        <span>Two colorful lines of blocks smoosh together ✏️📓</span>
+      </div>
+      <div class="stats">
+        <div class="pill"><small>Score</small> <span id="score">0</span></div>
+        <div class="pill"><small>High</small> <span id="high">0</span></div>
+        <div class="pill" title="Tap to reset high score"><button id="resetHigh" aria-label="Reset high score">↺</button></div>
+      </div>
+    </header>
+
+    <section class="board">
+      <div class="toast" id="toast"></div>
+
+      <div class="stage">
+        <div class="problemRow">
+          <div class="big"><span id="exprText">3 + 5</span></div>
+          <div class="sub">Count each line, then see them join</div>
+        </div>
+
+        <div class="notebook">
+          <div class="rail">
+            <div class="mergeZone" id="mergeZone">
+              <div class="lineLabel labelL" style="--c: rgba(255,118,135,.95)">
+                <span class="dot"></span> Left
+                <span style="opacity:.7;font-weight:900">=</span>
+                <span id="leftNum">3</span>
+              </div>
+              <div class="lineLabel labelR" style="--c: rgba(105,182,255,.95)">
+                <span class="dot"></span> Right
+                <span style="opacity:.7;font-weight:900">=</span>
+                <span id="rightNum">5</span>
+              </div>
+
+              <div class="tracks">
+                <div class="track">
+                  <div class="blocks left" id="leftBlocks" aria-label="Left block line"></div>
+                </div>
+
+                <div class="divider">+</div>
+
+                <div class="track">
+                  <div class="blocks right" id="rightBlocks" aria-label="Right block line"></div>
+                </div>
+              </div>
+
+              <div class="resultRibbon" id="resultRibbon">
+                <span>Result</span>
+                <span id="resultNum">8</span>
+                <span class="miniBlocks" id="miniBlocks"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="answerCard">
+            <div class="prompt">
+              <div>What is <span id="promptExpr">3 + 5</span> ?</div>
+              <div class="hint">Enter the total</div>
+            </div>
+            <div class="controls">
+              <input id="answer" type="number" inputmode="numeric" min="0" max="18" placeholder="?" />
+              <button class="btn primary" id="checkBtn">Check</button>
+              <button class="btn secondary" id="newBtn" title="Skip (no points)">New</button>
+            </div>
+            <div class="footerRow">
+              <div class="toggleRow">
+                <div class="switch" id="soundSwitch" role="switch" aria-checked="false" tabindex="0">
+                  <div class="knob"></div>
+                </div>
+                <div>Square-arp music</div>
+              </div>
+              <div><span id="musicStatus">off</span> · <a class="tinyLink" href="#" id="howto">tap to start sound</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+
+  // Elements
+  const leftNumEl = $("leftNum");
+  const rightNumEl = $("rightNum");
+  const exprText = $("exprText");
+  const promptExpr = $("promptExpr");
+  const leftBlocks = $("leftBlocks");
+  const rightBlocks = $("rightBlocks");
+  const answerEl = $("answer");
+  const checkBtn = $("checkBtn");
+  const newBtn = $("newBtn");
+  const toast = $("toast");
+  const resultRibbon = $("resultRibbon");
+  const resultNum = $("resultNum");
+  const miniBlocks = $("miniBlocks");
+  const mergeZone = $("mergeZone");
+
+  const scoreEl = $("score");
+  const highEl = $("high");
+  const resetHighBtn = $("resetHigh");
+
+  const soundSwitch = $("soundSwitch");
+  const musicStatus = $("musicStatus");
+  const howto = $("howto");
+
+  // State
+  let a = 1, b = 1;
+  let score = 0;
+  let high = Number(localStorage.getItem("juliette_add_high_gp") || "0");
+  let animating = false;
+
+  // Build a straight horizontal line of blocks
+  function buildLine(container, n, cls) {
+    container.innerHTML = "";
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement("div");
+      d.className = `block ${cls}`;
+      d.style.transform = `rotate(${(Math.random()*2-1)*2}deg)`; // tiny notebook wobble
+      container.appendChild(d);
+    }
+  }
+
+  function setScore(newScore) {
+    score = newScore;
+    scoreEl.textContent = String(score);
+    if (score > high) {
+      high = score;
+      localStorage.setItem("juliette_add_high_gp", String(high));
+      highEl.textContent = String(high);
+    }
+  }
+
+  function showToast(msg, kind) {
+    toast.textContent = msg;
+    toast.className = `toast show ${kind || ""}`;
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove("show"), 900);
+  }
+
+  function setSoundUI(on) {
+    soundSwitch.classList.toggle("on", on);
+    soundSwitch.setAttribute("aria-checked", on ? "true" : "false");
+    musicStatus.textContent = on ? "on" : "off";
+  }
+
+  // Round setup
+  function resetPositions() {
+    // Return lines to their default positions
+    leftBlocks.style.transition = "none";
+    rightBlocks.style.transition = "none";
+    leftBlocks.style.transform = "translateX(0px) translateY(-50%)";
+    rightBlocks.style.transform = "translateX(0px) translateY(-50%)";
+
+    // Ensure transforms are applied before enabling transitions
+    requestAnimationFrame(() => {
+      leftBlocks.style.transition = "";
+      rightBlocks.style.transition = "";
+    });
+
+    resultRibbon.classList.remove("show");
+  }
+
+  function setRound(na, nb) {
+    a = na; b = nb;
+    leftNumEl.textContent = String(a);
+    rightNumEl.textContent = String(b);
+    exprText.textContent = `${a} + ${b}`;
+    promptExpr.textContent = `${a} + ${b}`;
+
+    buildLine(leftBlocks, a, "l");
+    buildLine(rightBlocks, b, "r");
+
+    answerEl.value = "";
+    answerEl.disabled = false;
+    checkBtn.disabled = false;
+    newBtn.disabled = false;
+    animating = false;
+
+    resetPositions();
+    music.setTargetChord();
+    answerEl.focus({preventScroll:true});
+  }
+
+  function nextRound() {
+    setRound(randInt(1, 9), randInt(1, 9));
+  }
+
+  // The smoosh animation: move both lines toward the center, then show result
+  async function smooshTogether() {
+    const leftRect = leftBlocks.getBoundingClientRect();
+    const rightRect = rightBlocks.getBoundingClientRect();
+    const zoneRect = mergeZone.getBoundingClientRect();
+
+    // center line between the two tracks
+    const centerX = zoneRect.left + zoneRect.width / 2;
+
+    // how far to move each set so their ends meet in the middle
+    // left line ends at leftRect.right, right line ends at rightRect.left
+    const dxLeft = (centerX - leftRect.right) - 12;   // nudge for padding
+    const dxRight = (centerX - rightRect.left) + 12;
+
+    // slow and satisfying
+    leftBlocks.style.transition = "transform 900ms cubic-bezier(.2,.9,.2,1)";
+    rightBlocks.style.transition = "transform 900ms cubic-bezier(.2,.9,.2,1)";
+
+    // Keep the Y centering translate(-50%) already in CSS; we’re only moving X.
+    leftBlocks.style.transform = `translateX(${dxLeft}px) translateY(-50%)`;
+    rightBlocks.style.transform = `translateX(${dxRight}px) translateY(-50%)`;
+
+    await new Promise(res => setTimeout(res, 940));
+
+    // show result ribbon with mini blocks
+    const total = a + b;
+    resultNum.textContent = String(total);
+    miniBlocks.innerHTML = "";
+    for (let i = 0; i < total; i++) {
+      const m = document.createElement("div");
+      m.className = "mini";
+      // first a are left color-ish, rest right
+      m.style.backgroundColor = (i < a) ? "rgba(255,118,135,.85)" : "rgba(105,182,255,.85)";
+      miniBlocks.appendChild(m);
+    }
+    resultRibbon.classList.add("show");
+
+    await new Promise(res => setTimeout(res, 520));
+  }
+
+  // ---------- Sound: random square-arp music ----------
+  const music = (() => {
+    let ctx = null;
+    let master = null;
+    let running = false;
+    let nextNoteAt = 0;
+    let seqTimer = null;
+
+    const scales = [
+      [0, 3, 5, 7, 10],
+      [0, 2, 3, 5, 7, 10],
+      [0, 2, 4, 7, 9],
+      [0, 1, 3, 5, 7, 8, 10]
+    ];
+
+    let baseMidi = 57;
+    let scale = scales[0];
+
+    function ensure() {
+      if (ctx) return true;
+      try {
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        master = ctx.createGain();
+        master.gain.value = 0.16;
+
+        const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -18;
+        comp.knee.value = 16;
+        comp.ratio.value = 6;
+        comp.attack.value = 0.003;
+        comp.release.value = 0.12;
+
+        master.connect(comp);
+        comp.connect(ctx.destination);
+
+        nextNoteAt = ctx.currentTime + 0.05;
+        return true;
+      } catch { return false; }
+    }
+
+    function midiToHz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+    function blip(time, midi, dur, detune = 0) {
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      osc.type = "square";
+      osc.frequency.value = midiToHz(midi);
+      osc.detune.value = detune;
+
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, time);
+      g.gain.exponentialRampToValueAtTime(0.32, time + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+
+      const f = ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.value = 2600;
+      f.Q.value = 0.7;
+
+      osc.connect(f); f.connect(g); g.connect(master);
+      osc.start(time);
+      osc.stop(time + dur + 0.02);
+    }
+
+    function tick() {
+      if (!ctx || !running) return;
+      const ahead = 0.12;
+      while (nextNoteAt < ctx.currentTime + ahead) {
+        const step = Math.random() < 0.18 ? 0.25 : 0.125;
+        const dur = step * (Math.random() < 0.25 ? 0.9 : 0.7);
+
+        const degree = scale[randInt(0, scale.length - 1)];
+        const octave = randInt(-1, 1);
+        const midi = baseMidi + degree + octave * 12;
+
+        blip(nextNoteAt, midi, dur, (Math.random()*2-1)*6);
+        if (Math.random() < 0.10) blip(nextNoteAt, midi + 7, dur * 0.85, (Math.random()*2-1)*6);
+        nextNoteAt += step;
+      }
+      seqTimer = setTimeout(tick, 35);
+    }
+
+    function start() {
+      if (running) return;
+      if (!ensure()) return;
+      ctx.resume?.();
+      running = true;
+      nextNoteAt = Math.max(nextNoteAt, ctx.currentTime + 0.03);
+      tick();
+    }
+
+    function stop() {
+      running = false;
+      if (seqTimer) clearTimeout(seqTimer);
+      seqTimer = null;
+    }
+
+    function setTargetChord() {
+      baseMidi = [52, 55, 57, 59, 62][randInt(0, 4)];
+      scale = scales[randInt(0, scales.length - 1)];
+    }
+
+    function sfx(kind) {
+      if (!ensure()) return;
+      const t = ctx.currentTime + 0.01;
+      if (kind === "good") {
+        blip(t, baseMidi + 12, 0.14);
+        blip(t + 0.07, baseMidi + 16, 0.14);
+        blip(t + 0.14, baseMidi + 19, 0.18);
+      } else if (kind === "bad") {
+        blip(t, baseMidi + 6, 0.18);
+        blip(t + 0.08, baseMidi + 3, 0.22);
+      } else if (kind === "tap") {
+        blip(t, baseMidi + scale[0] + 24, 0.06);
+      }
+    }
+
+    return { start, stop, setTargetChord, sfx, get running(){return running;} };
+  })();
+
+  function toggleSound(force) {
+    const want = (typeof force === "boolean") ? force : !music.running;
+    if (want) {
+      music.start();
+      setSoundUI(true);
+      localStorage.setItem("juliette_add_sound_gp", "1");
+    } else {
+      music.stop();
+      setSoundUI(false);
+      localStorage.setItem("juliette_add_sound_gp", "0");
+    }
+  }
+
+  async function checkAnswer() {
+    if (animating) return;
+    const val = Number(answerEl.value);
+    if (!Number.isFinite(val)) {
+      showToast("Type a number 😊", "");
+      return;
+    }
+
+    const correct = a + b;
+    if (music.running) music.sfx("tap");
+
+    if (val === correct) {
+      animating = true;
+      answerEl.disabled = true;
+      checkBtn.disabled = true;
+      newBtn.disabled = true;
+
+      if (music.running) music.sfx("good");
+      showToast("Yes! Watch them join ✨", "good");
+      setScore(score + 1);
+
+      await smooshTogether();
+
+      // move on
+      animating = false;
+      nextRound();
+    } else {
+      if (music.running) music.sfx("bad");
+      showToast("Not quite — try again!", "bad");
+      setScore(Math.max(0, score - 1));
+      answerEl.select();
+    }
+  }
+
+  function skip() {
+    if (animating) return;
+    showToast("New one! 🌟", "");
+    nextRound();
+  }
+
+  // Wire up
+  $("checkBtn").addEventListener("click", checkAnswer);
+  $("newBtn").addEventListener("click", skip);
+  answerEl.addEventListener("keydown", (e) => { if (e.key === "Enter") checkAnswer(); });
+
+  resetHighBtn.addEventListener("click", () => {
+    high = 0;
+    localStorage.setItem("juliette_add_high_gp", "0");
+    highEl.textContent = "0";
+    showToast("High score reset", "");
+  });
+
+  function switchToggle(){ toggleSound(); }
+  soundSwitch.addEventListener("click", switchToggle);
+  soundSwitch.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); switchToggle(); }
+  });
+
+  howto.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleSound(true);
+    showToast("Sound on! 🔊", "good");
+  });
+
+  // Init
+  highEl.textContent = String(high);
+  scoreEl.textContent = "0";
+  nextRound();
+
+  const savedSound = localStorage.getItem("juliette_add_sound_gp");
+  setSoundUI(savedSound === "1");
+  // don't auto-start audio; needs a tap on mobile
+})();
+</script>
+</body>
+</html>

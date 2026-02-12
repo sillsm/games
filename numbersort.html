@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Juliette’s Rainbow Number Sort</title>
+<style>
+  :root{
+    --bg1:#0b1020; --bg2:#1a0f2e;
+    --panel: rgba(255,255,255,.10);
+    --panel2: rgba(255,255,255,.14);
+    --border: rgba(255,255,255,.18);
+    --txt:#f7f7ff;
+    --muted: rgba(255,255,255,.75);
+    --bad: #ff3b5c;
+    --shadow: 0 18px 60px rgba(0,0,0,.45);
+    --r: 18px;
+    --tileH: 74px;
+    --gap: 12px;
+    --maxW: 980px;
+  }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    color:var(--txt);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background:
+      radial-gradient(1200px 700px at 20% 15%, rgba(255,70,220,.35), transparent 55%),
+      radial-gradient(900px 600px at 80% 20%, rgba(70,200,255,.30), transparent 55%),
+      radial-gradient(900px 700px at 50% 90%, rgba(120,255,120,.22), transparent 60%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    overflow:hidden;
+    touch-action: none; /* we handle dragging */
+  }
+
+  /* Subtle moving rainbow glow */
+  .glow{
+    position:fixed; inset:-30%;
+    background: conic-gradient(from 0deg, #ff3b3b, #ffb13b, #fff23b, #3bff6f, #3bc7ff, #6a3bff, #ff3bf0, #ff3b3b);
+    opacity:.12;
+    filter: blur(90px);
+    animation: spin 18s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes spin { to{ transform: rotate(360deg); } }
+
+  .wrap{
+    position:relative;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    box-sizing:border-box;
+  }
+  .card{
+    width:min(var(--maxW), 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+    border:1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    padding:16px;
+    box-sizing:border-box;
+    position:relative;
+    overflow:hidden;
+  }
+  .top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:6px 6px 12px;
+  }
+  .title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .badge{
+    width:42px; height:42px; border-radius:14px;
+    background: conic-gradient(from 0deg, #ff3b3b, #ffb13b, #fff23b, #3bff6f, #3bc7ff, #6a3bff, #ff3bf0, #ff3b3b);
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    border:1px solid rgba(255,255,255,.22);
+  }
+  h1{
+    font-size: clamp(18px, 3.2vw, 26px);
+    margin:0;
+    line-height:1.05;
+    letter-spacing:.2px;
+  }
+  .sub{
+    margin:2px 0 0;
+    color:var(--muted);
+    font-size: clamp(12px, 2.5vw, 14px);
+  }
+  .controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  button{
+    font: inherit;
+    border: 1px solid rgba(255,255,255,.22);
+    background: rgba(255,255,255,.10);
+    color: var(--txt);
+    border-radius: 14px;
+    padding: 10px 14px;
+    cursor:pointer;
+    box-shadow: 0 8px 22px rgba(0,0,0,.22);
+    transition: transform .06s ease, background .2s ease;
+  }
+  button:active{ transform: translateY(1px) scale(.99); }
+  .btn-big{
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-weight: 800;
+    letter-spacing:.3px;
+    font-size: 18px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
+  }
+  .btn-done{
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.10)),
+      conic-gradient(from 0deg, rgba(255,0,120,.35), rgba(255,200,0,.35), rgba(0,255,140,.35), rgba(0,170,255,.35), rgba(140,0,255,.35), rgba(255,0,120,.35));
+    border:1px solid rgba(255,255,255,.28);
+  }
+  .btn-secondary{
+    opacity:.95;
+  }
+  .toggle{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.22);
+    background: rgba(0,0,0,.18);
+    user-select:none;
+  }
+  .toggle input{ transform: scale(1.2); }
+
+  .main{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 6px;
+  }
+
+  .instructions{
+    background: rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius: 18px;
+    padding: 12px 14px;
+    color: rgba(255,255,255,.88);
+    font-size: 14px;
+    line-height:1.35;
+  }
+  .instructions b{ color:#fff; }
+  .row2{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .board{
+    background: rgba(0,0,0,.20);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius: 18px;
+    padding: 12px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .tiles{
+    display:flex;
+    flex-direction:column;
+    gap: var(--gap);
+    padding: 6px;
+    min-height: calc(var(--tileH) * 5 + var(--gap) * 4 + 12px);
+  }
+
+  .tile{
+    height: var(--tileH);
+    border-radius: 20px;
+    border:1px solid rgba(255,255,255,.22);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
+    box-shadow: 0 12px 26px rgba(0,0,0,.22);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 0 14px;
+    box-sizing:border-box;
+    user-select:none;
+    touch-action:none;
+    position:relative;
+  }
+  .tile .num{
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing:.5px;
+    text-shadow: 0 2px 0 rgba(0,0,0,.25);
+  }
+  .tile .hint{
+    display:flex; align-items:center; gap:10px;
+    color: rgba(255,255,255,.85);
+    font-weight:700;
+    font-size: 13px;
+  }
+  .grip{
+    width:34px; height:34px;
+    border-radius: 12px;
+    border:1px solid rgba(255,255,255,.22);
+    background: rgba(0,0,0,.16);
+    display:grid;
+    place-items:center;
+  }
+  .grip:before{
+    content:"";
+    width:16px; height:16px;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.9) 2px, transparent 3px),
+      radial-gradient(circle at 70% 30%, rgba(255,255,255,.9) 2px, transparent 3px),
+      radial-gradient(circle at 30% 70%, rgba(255,255,255,.9) 2px, transparent 3px),
+      radial-gradient(circle at 70% 70%, rgba(255,255,255,.9) 2px, transparent 3px);
+    opacity:.9;
+  }
+
+  .tile::after{
+    content:"";
+    position:absolute; inset:-1px;
+    border-radius: 20px;
+    background: conic-gradient(from 0deg, rgba(255,0,100,.35), rgba(255,220,0,.35), rgba(0,255,160,.35), rgba(0,180,255,.35), rgba(160,0,255,.35), rgba(255,0,100,.35));
+    opacity: .30;
+    filter: blur(12px);
+    z-index:-1;
+  }
+
+  /* Placeholder slot while dragging */
+  .slot{
+    height: var(--tileH);
+    border-radius: 20px;
+    border: 2px dashed rgba(255,255,255,.22);
+    background: rgba(255,255,255,.06);
+  }
+
+  /* Dragging visuals */
+  .dragging{
+    position:fixed !important;
+    z-index: 50;
+    width: min(calc(var(--maxW) - 60px), 92vw);
+    max-width: 720px;
+    pointer-events:none;
+    transform: translate3d(0,0,0) scale(1.02);
+    box-shadow: 0 22px 70px rgba(0,0,0,.50);
+  }
+
+  /* Wrong ones */
+  .wrong{
+    border-color: rgba(255, 60, 90, .75) !important;
+    background: linear-gradient(180deg, rgba(255,60,90,.22), rgba(255,60,90,.10)) !important;
+  }
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    15% { transform: translateX(-7px); }
+    30% { transform: translateX(7px); }
+    45% { transform: translateX(-6px); }
+    60% { transform: translateX(6px); }
+    75% { transform: translateX(-4px); }
+    90% { transform: translateX(4px); }
+    100%{ transform: translateX(0); }
+  }
+  .shake{ animation: shake .42s ease-in-out 0s 2; }
+
+  .footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top: 10px;
+    padding: 4px 6px 0;
+  }
+  .status{
+    color: rgba(255,255,255,.86);
+    font-weight:700;
+    font-size: 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.20);
+    font-weight:800;
+  }
+  .dot{
+    width:10px; height:10px; border-radius:50%;
+    background: #3bff6f;
+    box-shadow: 0 0 18px rgba(59,255,111,.7);
+  }
+  .dot.bad{ background:#ff3b5c; box-shadow: 0 0 18px rgba(255,59,92,.7); }
+
+  canvas#fx{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+  }
+
+  /* Mobile-friendly */
+  @media (max-width: 540px){
+    :root{ --tileH: 68px; --gap: 10px; }
+    .tile .num{ font-size: 26px; }
+    .btn-big{ width: 100%; justify-content:center; }
+    .controls{ width:100%; justify-content:space-between; }
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="wrap">
+  <div class="card" id="card">
+    <canvas id="fx"></canvas>
+
+    <div class="top">
+      <div class="title">
+        <div class="badge" aria-hidden="true"></div>
+        <div>
+          <h1>Rainbow Number Sort</h1>
+          <div class="sub">Drag the numbers into order from <b>small → big</b>.</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="toggle" title="Music on/off">
+          <input id="musicToggle" type="checkbox" checked />
+          <span>Music</span>
+        </label>
+        <button class="btn-secondary" id="newRoundBtn">New Round</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="instructions">
+        👉 <b>Pick up a number</b> and drag it up or down.<br/>
+        Then press the big <b>DONE</b> button.
+      </div>
+
+      <div class="row2">
+        <div class="board">
+          <div class="tiles" id="tiles"></div>
+
+          <div class="footer">
+            <div class="status" id="status">
+              <span class="pill"><span class="dot" id="dot"></span><span id="msg">Make it small → big!</span></span>
+              <span class="pill">Score: <span id="score">0</span></span>
+            </div>
+            <button class="btn-big btn-done" id="doneBtn">✅ DONE!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- Helpers ----------
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const shuffle = (arr) => {
+    for (let i=arr.length-1; i>0; i--) {
+      const j = (Math.random() * (i+1)) | 0;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
+  // ---------- State ----------
+  const tilesEl = $("#tiles");
+  const scoreEl = $("#score");
+  const msgEl = $("#msg");
+  const dotEl = $("#dot");
+  const doneBtn = $("#doneBtn");
+  const newRoundBtn = $("#newRoundBtn");
+  const musicToggle = $("#musicToggle");
+  const cardEl = $("#card");
+
+  let score = 0;
+  let nums = [];
+  let dragging = null; // {id, el, startY, pointerId, offsetY, placeholderEl, fromIndex, ghostW}
+
+  // ---------- Audio (cute arpeggio loop) ----------
+  let audio = {
+    ctx: null,
+    master: null,
+    isOn: true,
+    step: 0,
+    timer: null,
+    chordIndex: 0
+  };
+
+  function ensureAudio() {
+    if (audio.ctx) return;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const master = ctx.createGain();
+    master.gain.value = 0.16;
+    master.connect(ctx.destination);
+    audio.ctx = ctx;
+    audio.master = master;
+  }
+
+  function midiToHz(m){ return 440 * Math.pow(2, (m-69)/12); }
+
+  function pluck(freq, dur=0.14) {
+    if (!audio.ctx || !audio.isOn) return;
+    const t = audio.ctx.currentTime;
+
+    const o = audio.ctx.createOscillator();
+    const g = audio.ctx.createGain();
+    const f = audio.ctx.createBiquadFilter();
+
+    o.type = "triangle";
+    o.frequency.setValueAtTime(freq, t);
+
+    f.type = "lowpass";
+    f.frequency.setValueAtTime(freq * 2.2, t);
+    f.Q.setValueAtTime(0.9, t);
+
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.32, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+    o.connect(f);
+    f.connect(g);
+    g.connect(audio.master);
+
+    o.start(t);
+    o.stop(t + dur + 0.02);
+  }
+
+  function startMusic() {
+    ensureAudio();
+    audio.isOn = true;
+
+    // Simple happy progression: C – Am – F – G (in C major), arpeggiated
+    const chords = [
+      [60, 64, 67, 72], // C
+      [57, 60, 64, 69], // Am
+      [53, 57, 60, 65], // F
+      [55, 59, 62, 67], // G
+    ];
+
+    if (audio.timer) clearInterval(audio.timer);
+    audio.step = 0;
+    audio.chordIndex = 0;
+
+    audio.timer = setInterval(() => {
+      if (!audio.ctx || !audio.isOn) return;
+      // If context suspended (mobile), attempt resume silently
+      if (audio.ctx.state === "suspended") audio.ctx.resume().catch(()=>{});
+
+      const chord = chords[audio.chordIndex];
+      const pattern = [0, 1, 2, 1, 3, 2, 1, 2]; // nice looping feel
+      const note = chord[pattern[audio.step % pattern.length]] + (audio.step % 16 === 8 ? 12 : 0);
+      pluck(midiToHz(note), 0.16);
+
+      audio.step++;
+      if (audio.step % 16 === 0) audio.chordIndex = (audio.chordIndex + 1) % chords.length;
+    }, 140);
+  }
+
+  function stopMusic() {
+    audio.isOn = false;
+    if (audio.timer) { clearInterval(audio.timer); audio.timer = null; }
+  }
+
+  function setMusic(on) {
+    audio.isOn = on;
+    if (on) startMusic();
+    else stopMusic();
+  }
+
+  // Start music after first user gesture for mobile autoplay rules
+  function armAudioOnce() {
+    const go = () => {
+      ensureAudio();
+      audio.ctx.resume().catch(()=>{});
+      if (musicToggle.checked) startMusic();
+      window.removeEventListener("pointerdown", go, {capture:true});
+      window.removeEventListener("touchstart", go, {capture:true});
+    };
+    window.addEventListener("pointerdown", go, {capture:true, once:true});
+    window.addEventListener("touchstart", go, {capture:true, once:true});
+  }
+
+  // ---------- Fireworks / confetti ----------
+  const fx = $("#fx");
+  const fxc = fx.getContext("2d");
+  const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  let particles = [];
+  let raf = null;
+
+  function resizeFx() {
+    const r = cardEl.getBoundingClientRect();
+    fx.width = Math.floor(r.width * DPR);
+    fx.height = Math.floor(r.height * DPR);
+  }
+  window.addEventListener("resize", resizeFx, {passive:true});
+
+  function burst(x, y, power=1.0) {
+    // x,y in card coordinates
+    const count = Math.floor(140 * power);
+    for (let i=0; i<count; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const s = (Math.random() * 6 + 5) * power;
+      particles.push({
+        x, y,
+        vx: Math.cos(a)*s,
+        vy: Math.sin(a)*s - 2.2*power,
+        life: 1,
+        decay: 0.012 + Math.random()*0.010,
+        size: 2 + Math.random()*4,
+        hue: Math.random()*360,
+        spin: (Math.random()*0.2 - 0.1)
+      });
+    }
+    // sparkle tones
+    if (audio.isOn) {
+      const base = 72 + ((Math.random()*6)|0);
+      for (let k=0;k<4;k++) pluck(midiToHz(base + k*4), 0.12);
+    }
+    if (!raf) raf = requestAnimationFrame(tickFx);
+  }
+
+  function tickFx() {
+    raf = null;
+    const w = fx.width, h = fx.height;
+    fxc.clearRect(0,0,w,h);
+    fxc.save();
+    fxc.scale(DPR, DPR);
+
+    const g = 0.18;
+    for (let i=particles.length-1; i>=0; i--) {
+      const p = particles[i];
+      p.vy += g;
+      p.vx *= 0.992;
+      p.vy *= 0.992;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay;
+
+      if (p.life <= 0) { particles.splice(i,1); continue; }
+
+      const alpha = clamp(p.life, 0, 1);
+      fxc.globalAlpha = alpha * 0.95;
+
+      // little "rainbow confetti" rectangles
+      fxc.save();
+      fxc.translate(p.x, p.y);
+      fxc.rotate((1-alpha)*p.spin*18);
+      fxc.fillStyle = `hsl(${p.hue} 95% 65%)`;
+      const sz = p.size;
+      fxc.fillRect(-sz, -sz/2, sz*2, sz);
+      fxc.restore();
+    }
+
+    fxc.restore();
+    if (particles.length) raf = requestAnimationFrame(tickFx);
+  }
+
+  // ---------- UI / rounds ----------
+  function setStatus(ok, text) {
+    msgEl.textContent = text;
+    dotEl.classList.toggle("bad", !ok);
+  }
+
+  function newRound() {
+    // 5-9 numbers from 1-100, unique
+    const count = 5 + ((Math.random()*5)|0); // 5..9
+    const set = new Set();
+    while (set.size < count) set.add(1 + ((Math.random()*100)|0));
+    nums = shuffle(Array.from(set));
+    renderTiles();
+    clearWrong();
+    setStatus(true, "Make it small → big!");
+  }
+
+  function renderTiles() {
+    tilesEl.innerHTML = "";
+    nums.forEach((n, idx) => {
+      const el = document.createElement("div");
+      el.className = "tile";
+      el.dataset.id = String(idx); // stable identity per render
+      el.dataset.value = String(n);
+
+      // random pastel tint per tile (just for variety)
+      const hue = (Math.random()*360)|0;
+      el.style.background =
+        `linear-gradient(180deg, hsla(${hue} 95% 70% / .28), rgba(255,255,255,.08))`;
+
+      el.innerHTML = `
+        <div class="num">${n}</div>
+        <div class="hint">
+          <span>Drag</span>
+          <span class="grip" aria-hidden="true"></span>
+        </div>
+      `;
+      tilesEl.appendChild(el);
+    });
+
+    // attach pointer handlers
+    Array.from(tilesEl.children).forEach(el => {
+      el.addEventListener("pointerdown", onTilePointerDown, {passive:false});
+    });
+  }
+
+  function currentValuesInUI() {
+    return Array.from(tilesEl.children)
+      .filter(el => el.classList.contains("tile"))
+      .map(el => Number(el.dataset.value));
+  }
+
+  function isSortedAscending(arr) {
+    for (let i=1;i<arr.length;i++) if (arr[i] < arr[i-1]) return false;
+    return true;
+  }
+
+  function wrongIndices(arr) {
+    // Mark anything that violates ascending order (both sides of each inversion)
+    const bad = new Set();
+    for (let i=1;i<arr.length;i++){
+      if (arr[i] < arr[i-1]) { bad.add(i); bad.add(i-1); }
+    }
+    return Array.from(bad).sort((a,b)=>a-b);
+  }
+
+  function clearWrong() {
+    Array.from(tilesEl.children).forEach(el => {
+      el.classList.remove("wrong","shake");
+    });
+  }
+
+  function checkDone() {
+    if (dragging) return; // don't validate mid-drag
+    clearWrong();
+    const arr = currentValuesInUI();
+    if (isSortedAscending(arr)) {
+      score++;
+      scoreEl.textContent = String(score);
+      setStatus(true, "Perfect! 🌈✨");
+      // big fireworks
+      const r = cardEl.getBoundingClientRect();
+      burst(r.width*0.3, r.height*0.35, 1.0);
+      burst(r.width*0.7, r.height*0.35, 1.0);
+      burst(r.width*0.5, r.height*0.55, 1.25);
+      // next round after a beat
+      setTimeout(() => newRound(), 900);
+    } else {
+      setStatus(false, "Oops! Fix the red ones ❤️");
+      const bad = wrongIndices(arr);
+      const kids = Array.from(tilesEl.children).filter(x => x.classList.contains("tile"));
+      bad.forEach(i => {
+        const el = kids[i];
+        if (!el) return;
+        el.classList.add("wrong","shake");
+      });
+      // gentle "oops" sound
+      if (audio.isOn) {
+        pluck(midiToHz(60), 0.18);
+        setTimeout(()=>pluck(midiToHz(57), 0.18), 120);
+      }
+    }
+  }
+
+  // ---------- Drag & reorder (pointer-based, mobile-friendly) ----------
+  function makePlaceholder() {
+    const ph = document.createElement("div");
+    ph.className = "slot";
+    return ph;
+  }
+
+  function indexFromY(y) {
+    // y is clientY
+    const tiles = Array.from(tilesEl.children);
+    // Find insertion index by comparing to midpoints of each tile/slot
+    let best = tiles.length;
+    for (let i=0; i<tiles.length; i++) {
+      const el = tiles[i];
+      const r = el.getBoundingClientRect();
+      const mid = r.top + r.height/2;
+      if (y < mid) { best = i; break; }
+    }
+    return best;
+  }
+
+  function onTilePointerDown(e) {
+    if (dragging) return;
+    const el = e.currentTarget;
+    e.preventDefault();
+
+    // clear wrong highlighting on interaction
+    el.classList.remove("wrong","shake");
+
+    // If user is starting to drag, ensure audio can start
+    if (!audio.ctx) { ensureAudio(); audio.ctx.resume().catch(()=>{}); }
+
+    const r = el.getBoundingClientRect();
+    const cardR = cardEl.getBoundingClientRect();
+
+    const placeholder = makePlaceholder();
+    placeholder.style.height = r.height + "px";
+
+    // Fix width for ghost
+    const ghostW = clamp(r.width, 240, 720);
+
+    // Insert placeholder where element was
+    const fromIndex = Array.from(tilesEl.children).indexOf(el);
+    tilesEl.insertBefore(placeholder, el);
+    tilesEl.removeChild(el);
+
+    // Make dragged element a floating ghost
+    el.classList.add("dragging");
+    el.style.left = (cardR.left + (cardR.width - ghostW)/2) + "px";
+    el.style.top = (r.top) + "px";
+    el.style.width = ghostW + "px";
+
+    document.body.appendChild(el);
+
+    const offsetY = e.clientY - r.top;
+
+    dragging = {
+      el,
+      pointerId: e.pointerId,
+      offsetY,
+      placeholderEl: placeholder,
+      fromIndex,
+      ghostW,
+    };
+
+    el.setPointerCapture?.(e.pointerId);
+
+    document.addEventListener("pointermove", onPointerMove, {passive:false});
+    document.addEventListener("pointerup", onPointerUp, {passive:false});
+    document.addEventListener("pointercancel", onPointerUp, {passive:false});
+
+    // tiny pickup chirp
+    if (audio.isOn) pluck(midiToHz(72 + ((Math.random()*8)|0)), 0.10);
+  }
+
+  function onPointerMove(e) {
+    if (!dragging || e.pointerId !== dragging.pointerId) return;
+    e.preventDefault();
+
+    const el = dragging.el;
+    const cardR = cardEl.getBoundingClientRect();
+
+    // Move ghost
+    const y = e.clientY - dragging.offsetY;
+    el.style.top = y + "px";
+    el.style.left = (cardR.left + (cardR.width - dragging.ghostW)/2) + "px";
+
+    // Reposition placeholder in list based on pointer Y
+    const idx = indexFromY(e.clientY);
+    const kids = Array.from(tilesEl.children);
+    const ph = dragging.placeholderEl;
+    const curIdx = kids.indexOf(ph);
+
+    if (idx !== curIdx) {
+      // move placeholder
+      if (idx >= kids.length) tilesEl.appendChild(ph);
+      else tilesEl.insertBefore(ph, kids[idx]);
+    }
+  }
+
+  function onPointerUp(e) {
+    if (!dragging || e.pointerId !== dragging.pointerId) return;
+    e.preventDefault();
+
+    document.removeEventListener("pointermove", onPointerMove);
+    document.removeEventListener("pointerup", onPointerUp);
+    document.removeEventListener("pointercancel", onPointerUp);
+
+    const el = dragging.el;
+    const ph = dragging.placeholderEl;
+
+    // Put tile back into list at placeholder position
+    el.classList.remove("dragging");
+    el.style.left = "";
+    el.style.top = "";
+    el.style.width = "";
+
+    // remove from body -> insert into tiles
+    document.body.removeChild(el);
+    tilesEl.insertBefore(el, ph);
+    tilesEl.removeChild(ph);
+
+    dragging = null;
+
+    // soft drop chirp
+    if (audio.isOn) pluck(midiToHz(76 + ((Math.random()*6)|0)), 0.10);
+  }
+
+  // ---------- Wire up ----------
+  doneBtn.addEventListener("click", checkDone);
+  newRoundBtn.addEventListener("click", () => { newRound(); });
+
+  musicToggle.addEventListener("change", () => setMusic(musicToggle.checked));
+
+  // Fit canvas to card
+  resizeFx();
+
+  // start
+  armAudioOnce();
+  newRound();
+
+  // If music is toggled on initially, wait for gesture then start
+  if (musicToggle.checked) {
+    // music will start on first gesture (armAudioOnce)
+  } else {
+    stopMusic();
+  }
+})();
+</script>
+</body>
+</html>

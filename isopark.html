@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Iso Park – Tiny Tycoon Starter</title>
+  <style>
+    html, body { margin:0; height:100%; background:#0b0f14; color:#e8eef7; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    .wrap { display:grid; grid-template-rows:auto 1fr; height:100%; }
+    .topbar {
+      display:flex; gap:10px; align-items:center; padding:10px 12px;
+      background: linear-gradient(#121a24, #0e141d);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      flex-wrap:wrap;
+    }
+    .topbar .pill { padding:6px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px; background:rgba(255,255,255,.04); }
+    .topbar button {
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color:#e8eef7; padding:8px 10px; border-radius:10px;
+      cursor:pointer; transition: transform .05s ease, background .12s ease;
+    }
+    .topbar button:hover { background: rgba(255,255,255,.10); }
+    .topbar button:active { transform: translateY(1px); }
+    .topbar button.selected { outline:2px solid rgba(124, 210, 255, .7); }
+    .topbar .spacer { flex:1; }
+    canvas { width:100%; height:100%; display:block; }
+    .hint { opacity:.8; }
+    kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:rgba(255,255,255,.08); padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.14); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="pill">Iso Park</div>
+    <button id="toolPath">Tool: Path</button>
+    <button id="toolRideA">Tool: Ride A</button>
+    <button id="toolRideB">Tool: Ride B</button>
+    <button id="toolErase">Tool: Erase</button>
+    <div class="spacer"></div>
+    <div class="pill">Guests: <span id="guestCount">0</span></div>
+    <div class="pill">Money: $<span id="money">1000</span></div>
+    <div class="pill hint">
+      LMB place • RMB drag pan • Wheel zoom • <kbd>Space</kbd> spawn • <kbd>T</kbd> thoughts • <kbd>R</kbd> radar
+    </div>
+  </div>
+  <canvas id="c"></canvas>
+</div>
+
+<script>
+(() => {
+  // ============================================================
+  // Iso Park – Starter engine with moving guests + RTC-ish thoughts
+  // ============================================================
+
+  const CFG = {
+    gridW: 24,
+    gridH: 24,
+    tileW: 64,
+    tileH: 32,
+    zoomMin: 0.5,
+    zoomMax: 2.25,
+
+    spawnPerSpace: 6,
+    guestSpeedTilesPerSec: 2.4,
+    guestThinkIntervalMs: 380,
+
+    rideDurationMs: 2400,
+    queueDurationMs: 900,
+
+    moneyStart: 1000,
+    costs: { path: 1, rideA: 25, rideB: 35 },
+
+    // Guests pay ride price when they ENTER QUEUE
+    ridePrice: { rideA: 5, rideB: 7 },
+
+    // rendering toggles (hotkeys T/R)
+    showThoughts: true,
+    showRadar: true,
+  };
+
+  const TileType = { EMPTY:0, PATH:1, RIDE_A:2, RIDE_B:3 };
+
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
+  const guestCountEl = document.getElementById("guestCount");
+  const moneyEl = document.getElementById("money");
+
+  const tools = {
+    PATH: document.getElementById("toolPath"),
+    RIDE_A: document.getElementById("toolRideA"),
+    RIDE_B: document.getElementById("toolRideB"),
+    ERASE: document.getElementById("toolErase"),
+  };
+
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const now = ()=>performance.now();
+
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener("resize", resizeCanvas);
+
+  // Camera
+  const cam = { x:0, y:0, zoom:1 };
+  function resetCamera() {
+    cam.zoom = 1;
+    cam.x = canvas.clientWidth / 2;
+    cam.y = canvas.clientHeight / 3;
+  }
+
+  // World
+  function makeWorld(w,h) {
+    return {
+      w,h,
+      tiles: new Uint8Array(w*h),
+      rides: new Map(),     // "x,y" -> {type,x,y, queue:[guestId], busyUntil}
+      guests: new Map(),    // id -> guest
+      nextGuestId: 1,
+      money: CFG.moneyStart,
+      time: 0,
+      spawn: { entry: { x: Math.floor(w/2), y: Math.floor(h/2) } },
+    };
+  }
+  const world = makeWorld(CFG.gridW, CFG.gridH);
+
+  const idx = (W,x,y)=>y*W.w+x;
+  const inBounds = (W,x,y)=>x>=0 && y>=0 && x<W.w && y<W.h;
+  const getTile = (W,x,y)=> inBounds(W,x,y) ? W.tiles[idx(W,x,y)] : TileType.EMPTY;
+  const setTile = (W,x,y,t)=> { if(inBounds(W,x,y)) W.tiles[idx(W,x,y)] = t; };
+  const keyXY = (x,y)=>`${x},${y}`;
+  const isRide = (t)=> t===TileType.RIDE_A || t===TileType.RIDE_B;
+  const isWalkable = (t)=> t===TileType.PATH;
+
+  function ensureRideRecord(x,y,type) {
+    const k = keyXY(x,y);
+    if(!world.rides.has(k)) world.rides.set(k, { type,x,y, queue:[], busyUntil:0 });
+    else world.rides.get(k).type = type;
+  }
+  function removeRideRecord(x,y){ world.rides.delete(keyXY(x,y)); }
+
+  function neighbors4(W,x,y) {
+    const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+    const out = [];
+    for(const [dx,dy] of dirs){
+      const nx=x+dx, ny=y+dy;
+      if(inBounds(W,nx,ny)) out.push([nx,ny]);
+    }
+    return out;
+  }
+  function hasAdjacentPath(W,x,y) {
+    for (const [nx,ny] of neighbors4(W,x,y)) {
+      if (getTile(W,nx,ny) === TileType.PATH) return true;
+    }
+    return false;
+  }
+
+  // Iso projection
+  function worldToScreen(x,y){
+    const tw = CFG.tileW * cam.zoom;
+    const th = CFG.tileH * cam.zoom;
+    return {
+      sx: (x - y) * (tw/2) + cam.x,
+      sy: (x + y) * (th/2) + cam.y
+    };
+  }
+  function screenToWorld(sx,sy){
+    const tw = CFG.tileW * cam.zoom;
+    const th = CFG.tileH * cam.zoom;
+    const dx = sx - cam.x;
+    const dy = sy - cam.y;
+    const a = dx / (tw/2);
+    const b = dy / (th/2);
+    return { x:(a+b)/2, y:(b-a)/2 };
+  }
+  function tileUnderMouse(mx,my){
+    const p = screenToWorld(mx,my);
+    return { x: Math.floor(p.x), y: Math.floor(p.y) };
+  }
+
+  // UI tool selection
+  let tool = "PATH";
+  function setTool(name){
+    tool=name;
+    for(const [k,btn] of Object.entries(tools)){
+      btn.classList.toggle("selected", k===name);
+    }
+  }
+  tools.PATH.onclick = ()=>setTool("PATH");
+  tools.RIDE_A.onclick = ()=>setTool("RIDE_A");
+  tools.RIDE_B.onclick = ()=>setTool("RIDE_B");
+  tools.ERASE.onclick = ()=>setTool("ERASE");
+  setTool("PATH");
+
+  // Input
+  let mouse={x:0,y:0};
+  let pan={active:false,startX:0,startY:0,camX:0,camY:0};
+
+  canvas.addEventListener("contextmenu", e=>e.preventDefault());
+
+  canvas.addEventListener("pointermove", (e)=>{
+    const rect=canvas.getBoundingClientRect();
+    mouse.x = e.clientX-rect.left;
+    mouse.y = e.clientY-rect.top;
+    if(pan.active){
+      cam.x = pan.camX + (mouse.x - pan.startX);
+      cam.y = pan.camY + (mouse.y - pan.startY);
+    }
+  });
+
+  canvas.addEventListener("pointerdown", (e)=>{
+    canvas.setPointerCapture(e.pointerId);
+    if(e.button===2){
+      pan.active=true;
+      pan.startX=mouse.x; pan.startY=mouse.y;
+      pan.camX=cam.x; pan.camY=cam.y;
+      return;
+    }
+    if(e.button===0){
+      placeAtMouse();
+    }
+  });
+  canvas.addEventListener("pointerup", (e)=>{ if(e.button===2) pan.active=false; });
+
+  canvas.addEventListener("wheel", (e)=>{
+    e.preventDefault();
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+
+    const before = screenToWorld(mx,my);
+    cam.zoom = clamp(cam.zoom * (e.deltaY<0 ? 1.08 : 0.92), CFG.zoomMin, CFG.zoomMax);
+    const after = screenToWorld(mx,my);
+
+    const tw = CFG.tileW * cam.zoom;
+    const th = CFG.tileH * cam.zoom;
+    const dx = after.x - before.x;
+    const dy = after.y - before.y;
+    cam.x += (dx - dy) * (tw/2);
+    cam.y += (dx + dy) * (th/2);
+  }, {passive:false});
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.code==="Space"){
+      for(let i=0;i<CFG.spawnPerSpace;i++) spawnGuest(world);
+    }
+    if(e.key==="1") setTool("PATH");
+    if(e.key==="2") setTool("RIDE_A");
+    if(e.key==="3") setTool("RIDE_B");
+    if(e.key==="4") setTool("ERASE");
+
+    if(e.key.toLowerCase()==="t") { CFG.showThoughts = !CFG.showThoughts; }
+    if(e.key.toLowerCase()==="r") { CFG.showRadar = !CFG.showRadar; }
+  });
+
+  // Money helpers
+  function syncHud(){
+    guestCountEl.textContent = String(world.guests.size);
+    moneyEl.textContent = String(world.money);
+  }
+  function canAfford(c){ return world.money >= c; }
+  function spend(c){ world.money -= c; syncHud(); }
+  function earn(c){ world.money += c; syncHud(); }
+
+  // Placement
+  function placeAtMouse(){
+    const {x,y} = tileUnderMouse(mouse.x, mouse.y);
+    if(!inBounds(world,x,y)) return;
+
+    const cur = getTile(world,x,y);
+
+    if(tool==="PATH"){
+      if(cur===TileType.PATH) return;
+      if(!canAfford(CFG.costs.path)) return;
+      setTile(world,x,y,TileType.PATH);
+      if(isRide(cur)) removeRideRecord(x,y);
+      spend(CFG.costs.path);
+      return;
+    }
+
+    if(tool==="RIDE_A" || tool==="RIDE_B"){
+      const rideType = tool==="RIDE_A" ? TileType.RIDE_A : TileType.RIDE_B;
+      const cost = tool==="RIDE_A" ? CFG.costs.rideA : CFG.costs.rideB;
+
+      if(!canAfford(cost)) return;
+      if(!hasAdjacentPath(world,x,y)) return;
+
+      setTile(world,x,y,rideType);
+      ensureRideRecord(x,y,rideType);
+      spend(cost);
+      return;
+    }
+
+    if(tool==="ERASE"){
+      if(cur===TileType.EMPTY) return;
+      setTile(world,x,y,TileType.EMPTY);
+      if(isRide(cur)) removeRideRecord(x,y);
+      return;
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Agents
+  // ------------------------------------------------------------
+  function spawnGuest(W){
+    const {x,y} = W.spawn.entry;
+    if(getTile(W,x,y)!==TileType.PATH) return;
+
+    const id = W.nextGuestId++;
+    W.guests.set(id, {
+      id,
+      x: x + 0.10*(Math.random()-0.5),
+      y: y + 0.10*(Math.random()-0.5),
+      path: [],
+      state: "WANDER",     // WANDER | WALK | QUEUE | RIDE
+      stateUntil: 0,
+      thinkAt: W.time + Math.random()*CFG.guestThinkIntervalMs,
+      targetRideKey: null,
+      thought: "hello",
+      lastPaidAt: 0,
+      hue: Math.floor(Math.random()*360),
+    });
+    syncHud();
+  }
+
+  function tileCoord(g){ return { x: Math.round(g.x), y: Math.round(g.y) }; }
+
+  // BFS path on PATH tiles from start PATH to goal PATH; returns list excluding start
+  function bfsPath(W,sx,sy,gx,gy){
+    if(getTile(W,sx,sy)!==TileType.PATH) return null;
+    if(getTile(W,gx,gy)!==TileType.PATH) return null;
+
+    const startK = keyXY(sx,sy), goalK=keyXY(gx,gy);
+    const q = [{x:sx,y:sy}];
+    const prev = new Map();
+    prev.set(startK, null);
+
+    while(q.length){
+      const n=q.shift();
+      const nk=keyXY(n.x,n.y);
+      if(nk===goalK) break;
+      for(const [nx,ny] of neighbors4(W,n.x,n.y)){
+        if(getTile(W,nx,ny)!==TileType.PATH) continue;
+        const k=keyXY(nx,ny);
+        if(prev.has(k)) continue;
+        prev.set(k,nk);
+        q.push({x:nx,y:ny});
+      }
+    }
+    if(!prev.has(goalK)) return null;
+
+    const out=[];
+    let cur=goalK;
+    while(cur && cur!==startK){
+      const [x,y]=cur.split(",").map(Number);
+      out.push({x,y});
+      cur=prev.get(cur);
+    }
+    out.reverse();
+    return out;
+  }
+
+  function findBestAdjacentPathToRide(W, rx, ry, sx, sy){
+    const cand = neighbors4(W,rx,ry)
+      .filter(([x,y])=>getTile(W,x,y)===TileType.PATH)
+      .map(([x,y])=>({x,y,score:Math.abs(x-sx)+Math.abs(y-sy)}))
+      .sort((a,b)=>a.score-b.score);
+    return cand[0] || null;
+  }
+
+  function findNearestRideByBFS(W, sx, sy){
+    if(getTile(W,sx,sy)!==TileType.PATH) return null;
+
+    const q=[{x:sx,y:sy}];
+    const seen=new Set([keyXY(sx,sy)]);
+
+    while(q.length){
+      const n=q.shift();
+      // check adjacent ride
+      for(const [ax,ay] of neighbors4(W,n.x,n.y)){
+        const t=getTile(W,ax,ay);
+        if(t===TileType.RIDE_A || t===TileType.RIDE_B){
+          const k=keyXY(ax,ay);
+          const ride=W.rides.get(k);
+          if(ride) return { key:k, ride, via:{x:n.x,y:n.y} };
+        }
+      }
+      for(const [nx,ny] of neighbors4(W,n.x,n.y)){
+        if(getTile(W,nx,ny)!==TileType.PATH) continue;
+        const k=keyXY(nx,ny);
+        if(seen.has(k)) continue;
+        seen.add(k);
+        q.push({x:nx,y:ny});
+      }
+    }
+    return null;
+  }
+
+  function wanderStep(W, g){
+    const start=tileCoord(g);
+    const opts = neighbors4(W,start.x,start.y).filter(([nx,ny])=>getTile(W,nx,ny)===TileType.PATH);
+    if(!opts.length){
+      g.thought = "stuck…";
+      g.state="WANDER";
+      return;
+    }
+    const [nx,ny]=opts[(Math.random()*opts.length)|0];
+    const p=bfsPath(W,start.x,start.y,nx,ny);
+    if(p && p.length){
+      g.path=p;
+      g.state="WALK";
+      g.thought="wandering";
+    }
+  }
+
+  function ensurePathToRide(W,g,ride){
+    const start=tileCoord(g);
+    const goal = findBestAdjacentPathToRide(W, ride.x, ride.y, start.x, start.y);
+    if(!goal){
+      g.targetRideKey=null;
+      g.state="WANDER";
+      g.thought="no entrance";
+      return;
+    }
+    const p=bfsPath(W,start.x,start.y,goal.x,goal.y);
+    if(!p){
+      g.targetRideKey=null;
+      g.state="WANDER";
+      g.thought="can't reach";
+      return;
+    }
+    g.path=p;
+    g.state="WALK";
+    g.thought = ride.type===TileType.RIDE_A ? "going to Ride A" : "going to Ride B";
+  }
+
+  function onArrive(W,g){
+    if(g.targetRideKey && W.rides.has(g.targetRideKey)){
+      const ride = W.rides.get(g.targetRideKey);
+
+      // PAY when entering queue (once per queue entry)
+      if (W.time - g.lastPaidAt > 500) {
+        const price = (ride.type===TileType.RIDE_A) ? CFG.ridePrice.rideA : CFG.ridePrice.rideB;
+        earn(price);
+        g.lastPaidAt = W.time;
+        g.thought = `paid $${price} • queuing`;
+      } else {
+        g.thought = "queuing";
+      }
+
+      g.state="QUEUE";
+      g.stateUntil = W.time + CFG.queueDurationMs;
+      ride.queue.push(g.id);
+      return;
+    }
+    g.state="WANDER";
+    g.thought="hmm";
+  }
+
+  function thinkGuest(W,g){
+    // if no rides, just wander
+    if(W.rides.size===0){
+      g.thought="no rides…";
+      wanderStep(W,g);
+      return;
+    }
+
+    // keep target if still exists
+    if(g.targetRideKey && W.rides.has(g.targetRideKey)){
+      ensurePathToRide(W,g,W.rides.get(g.targetRideKey));
+      return;
+    }
+
+    const start=tileCoord(g);
+    const best=findNearestRideByBFS(W,start.x,start.y);
+    if(!best){
+      g.thought="lost";
+      wanderStep(W,g);
+      return;
+    }
+    g.targetRideKey=best.key;
+    ensurePathToRide(W,g,best.ride);
+  }
+
+  function stepGuests(W, dtMs){
+    const dt = dtMs/1000;
+    for(const g of W.guests.values()){
+      // state timeouts
+      if((g.state==="QUEUE" || g.state==="RIDE") && W.time >= g.stateUntil){
+        if(g.state==="QUEUE"){
+          g.state="RIDE";
+          g.stateUntil = W.time + CFG.rideDurationMs;
+          g.thought="wheeee!";
+        } else {
+          g.state="WANDER";
+          g.targetRideKey=null;
+          g.thought="that was fun";
+        }
+      }
+
+      // think
+      if(W.time >= g.thinkAt && g.state!=="QUEUE" && g.state!=="RIDE"){
+        g.thinkAt = W.time + CFG.guestThinkIntervalMs;
+        thinkGuest(W,g);
+      }
+
+      // move along path
+      if(g.state==="WALK" && g.path.length){
+        const next=g.path[0];
+        const dx=next.x-g.x, dy=next.y-g.y;
+        const dist=Math.hypot(dx,dy);
+        const step = CFG.guestSpeedTilesPerSec * dt;
+
+        if(dist <= step){
+          g.x=next.x; g.y=next.y;
+          g.path.shift();
+          if(!g.path.length) onArrive(W,g);
+        } else {
+          g.x += (dx/dist)*step;
+          g.y += (dy/dist)*step;
+        }
+      }
+
+      // if wander and idle, do a little nudge sometimes
+      if(g.state==="WANDER" && Math.random()<0.02){
+        wanderStep(W,g);
+      }
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Rendering
+  // ------------------------------------------------------------
+  function drawDiamond(sx,sy,w,h){
+    ctx.beginPath();
+    ctx.moveTo(sx, sy-h/2);
+    ctx.lineTo(sx+w/2, sy);
+    ctx.lineTo(sx, sy+h/2);
+    ctx.lineTo(sx-w/2, sy);
+    ctx.closePath();
+  }
+
+  function drawTextBubble(x,y,text){
+    const padX=6, padY=3;
+    ctx.font = `${Math.max(10, 12*cam.zoom)}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+    ctx.textBaseline="middle";
+    ctx.textAlign="left";
+    const w = ctx.measureText(text).width + padX*2;
+    const h = 16*cam.zoom + padY*2;
+    const r = 6*cam.zoom;
+
+    const bx = x - w/2;
+    const by = y - h;
+
+    ctx.beginPath();
+    ctx.moveTo(bx+r, by);
+    ctx.lineTo(bx+w-r, by);
+    ctx.quadraticCurveTo(bx+w, by, bx+w, by+r);
+    ctx.lineTo(bx+w, by+h-r);
+    ctx.quadraticCurveTo(bx+w, by+h, bx+w-r, by+h);
+    ctx.lineTo(bx+r, by+h);
+    ctx.quadraticCurveTo(bx, by+h, bx, by+h-r);
+    ctx.lineTo(bx, by+r);
+    ctx.quadraticCurveTo(bx, by, bx+r, by);
+    ctx.closePath();
+
+    ctx.fillStyle="rgba(10,15,22,0.75)";
+    ctx.fill();
+    ctx.strokeStyle="rgba(255,255,255,0.18)";
+    ctx.stroke();
+
+    ctx.fillStyle="rgba(255,255,255,0.92)";
+    ctx.fillText(text, bx+padX, by+h/2);
+  }
+
+  function render(W){
+    const CW=canvas.clientWidth, CH=canvas.clientHeight;
+    ctx.clearRect(0,0,CW,CH);
+    ctx.fillStyle="#0b0f14";
+    ctx.fillRect(0,0,CW,CH);
+
+    const tw=CFG.tileW*cam.zoom, th=CFG.tileH*cam.zoom;
+
+    // tile draw order
+    const cells=[];
+    for(let y=0;y<W.h;y++){
+      for(let x=0;x<W.w;x++){
+        const t=getTile(W,x,y);
+        cells.push({x,y,t,z:x+y,zx:x});
+      }
+    }
+    cells.sort((a,b)=>(a.z-b.z)||(a.zx-b.zx));
+
+    // ground
+    for(const c of cells){
+      const {sx,sy}=worldToScreen(c.x,c.y);
+      drawDiamond(sx,sy,tw,th);
+      ctx.fillStyle="rgba(255,255,255,0.02)";
+      ctx.fill();
+      ctx.strokeStyle="rgba(255,255,255,0.06)";
+      ctx.lineWidth=1;
+      ctx.stroke();
+    }
+
+    // tiles
+    for(const c of cells){
+      const {sx,sy}=worldToScreen(c.x,c.y);
+
+      if(c.t===TileType.PATH){
+        drawDiamond(sx,sy,tw,th);
+        ctx.fillStyle="rgba(160, 210, 255, 0.18)";
+        ctx.fill();
+        ctx.strokeStyle="rgba(160, 210, 255, 0.25)";
+        ctx.stroke();
+      }
+
+      if(c.t===TileType.RIDE_A || c.t===TileType.RIDE_B){
+        drawDiamond(sx,sy,tw,th);
+        ctx.fillStyle = c.t===TileType.RIDE_A ? "rgba(255, 190, 120, 0.22)" : "rgba(190, 120, 255, 0.22)";
+        ctx.fill();
+        ctx.strokeStyle="rgba(255,255,255,0.18)";
+        ctx.stroke();
+
+        const bw=tw*0.34, bh=th*0.34;
+        ctx.fillStyle = c.t===TileType.RIDE_A ? "rgba(255, 190, 120, 0.55)" : "rgba(190, 120, 255, 0.55)";
+        ctx.fillRect(sx-bw/2, sy-bh-(th*0.12), bw, bh);
+
+        ctx.fillStyle="rgba(255,255,255,0.85)";
+        ctx.font = `${Math.max(10, 12*cam.zoom)}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.fillText(c.t===TileType.RIDE_A ? "A" : "B", sx, sy-bh-(th*0.12)+bh/2);
+      }
+    }
+
+    // hover highlight
+    const {x:hx,y:hy} = tileUnderMouse(mouse.x, mouse.y);
+    if(inBounds(W,hx,hy)){
+      const {sx,sy}=worldToScreen(hx,hy);
+      drawDiamond(sx,sy,tw,th);
+      ctx.strokeStyle="rgba(124, 210, 255, 0.65)";
+      ctx.lineWidth=2;
+      ctx.stroke();
+    }
+
+    // guests (sorted for iso-ish overlap)
+    const guests = Array.from(W.guests.values()).sort((a,b)=>((a.x+a.y)-(b.x+b.y))||(a.x-b.x));
+
+    for(const g of guests){
+      const {sx,sy} = worldToScreen(g.x, g.y);
+      const r = 5.5*cam.zoom;
+
+      // RTC-ish radar ring
+      if(CFG.showRadar){
+        const t = (W.time*0.003) + g.id*0.7;
+        const rr = (14 + 6*Math.sin(t))*cam.zoom;
+        ctx.beginPath();
+        ctx.arc(sx, sy-(th*0.14), rr, 0, Math.PI*2);
+        ctx.strokeStyle = `hsla(${g.hue}, 90%, 70%, 0.18)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // shadow
+      ctx.beginPath();
+      ctx.ellipse(sx, sy+(th*0.10), r*1.1, r*0.55, 0, 0, Math.PI*2);
+      ctx.fillStyle="rgba(0,0,0,0.25)";
+      ctx.fill();
+
+      // body
+      ctx.beginPath();
+      ctx.arc(sx, sy-(th*0.12), r, 0, Math.PI*2);
+      ctx.fillStyle=`hsla(${g.hue}, 85%, 65%, 0.92)`;
+      ctx.fill();
+
+      // state dot
+      ctx.beginPath();
+      ctx.arc(sx + r*0.8, sy-(th*0.12)-r*0.7, r*0.35, 0, Math.PI*2);
+      ctx.fillStyle =
+        g.state==="RIDE" ? "rgba(120,255,180,0.95)" :
+        g.state==="QUEUE" ? "rgba(255,230,120,0.95)" :
+        "rgba(255,255,255,0.6)";
+      ctx.fill();
+
+      if(CFG.showThoughts){
+        const label = `${g.thought} • ${g.state}`;
+        drawTextBubble(sx, sy-(th*0.40), label);
+      }
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Starter park: IMPORTANT FIX – give them a path network to move
+  // ------------------------------------------------------------
+  function initStarterPark(){
+    const {x:cx,y:cy} = world.spawn.entry;
+
+    // Make a small 5x5 "plaza" of PATH with a ring, so guests can roam immediately.
+    // This removes the “frozen” problem caused by a single isolated PATH tile.
+    for(let y=cy-2; y<=cy+2; y++){
+      for(let x=cx-2; x<=cx+2; x++){
+        const edge = (x===cx-2 || x===cx+2 || y===cy-2 || y===cy+2);
+        if(edge) setTile(world,x,y,TileType.PATH);
+      }
+    }
+    // Add cross in the middle for nicer circulation
+    setTile(world,cx,cy,TileType.PATH);
+    setTile(world,cx+1,cy,TileType.PATH);
+    setTile(world,cx-1,cy,TileType.PATH);
+    setTile(world,cx,cy+1,TileType.PATH);
+    setTile(world,cx,cy-1,TileType.PATH);
+
+    // Place two rides adjacent to path
+    setTile(world, cx+2, cy, TileType.RIDE_A);
+    ensureRideRecord(cx+2, cy, TileType.RIDE_A);
+
+    setTile(world, cx, cy+2, TileType.RIDE_B);
+    ensureRideRecord(cx, cy+2, TileType.RIDE_B);
+
+    // Ensure there is PATH adjacent to rides (already true via ring)
+  }
+
+  // ------------------------------------------------------------
+  // Main loop
+  // ------------------------------------------------------------
+  let last = now();
+  function tick(t){
+    const dt = t-last; last=t;
+    world.time = t;
+
+    stepGuests(world, dt);
+    render(world);
+
+    requestAnimationFrame(tick);
+  }
+
+  // Init
+  resizeCanvas();
+  resetCamera();
+  initStarterPark();
+  syncHud();
+
+  // Spawn some guests
+  for(let i=0;i<10;i++) spawnGuest(world);
+
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

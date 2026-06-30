@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>French Pronunciation Face Lab</title>
+<style>
+  :root {
+    --bg: #10131c;
+    --panel: #171c29;
+    --panel-2: #202636;
+    --ink: #f6efe9;
+    --muted: #b9c0d4;
+    --accent: #f6b4b6;
+    --accent-2: #9dd9d2;
+    --warn: #f8d36e;
+    --skin: #f1c6ad;
+    --skin-shadow: #d89b89;
+    --lip: #b84d68;
+    --mouth: #3b1823;
+    --tongue: #e28492;
+    --hair: #2b1822;
+    --line: rgba(255,255,255,.16);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(157,217,210,.17), transparent 32%),
+      radial-gradient(circle at 80% 10%, rgba(246,180,182,.16), transparent 34%),
+      var(--bg);
+    color: var(--ink);
+  }
+  header {
+    padding: 22px 28px 10px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  h1 { margin: 0; font-size: clamp(24px, 4vw, 44px); letter-spacing: -.04em; }
+  .subtitle { color: var(--muted); margin-top: 6px; max-width: 830px; line-height: 1.45; }
+  .app {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) minmax(430px, .9fr);
+    gap: 18px;
+    padding: 18px 28px 28px;
+  }
+  @media (max-width: 980px) { .app { grid-template-columns: 1fr; padding: 14px; } header { padding: 18px 14px 6px; } }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)), var(--panel);
+    border: 1px solid rgba(255,255,255,.11);
+    border-radius: 22px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.25);
+    overflow: hidden;
+  }
+  .face-card { min-height: 660px; display: flex; flex-direction: column; }
+  .face-wrap { flex: 1; padding: 12px; display: grid; place-items: center; }
+  svg { width: 100%; max-width: 820px; height: auto; display: block; }
+  .controls { padding: 18px; display: grid; gap: 16px; }
+  label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 7px; }
+  textarea, select, input[type="text"] {
+    width: 100%;
+    border: 1px solid rgba(255,255,255,.14);
+    background: var(--panel-2);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 12px 13px;
+    font: inherit;
+    outline: none;
+  }
+  textarea { min-height: 130px; line-height: 1.45; resize: vertical; }
+  select { cursor: pointer; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  .buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 16px;
+    background: var(--accent);
+    color: #2b1118;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 9px 22px rgba(246,180,182,.19);
+  }
+  button.secondary { background: #2b3347; color: var(--ink); box-shadow: none; border: 1px solid rgba(255,255,255,.12); }
+  button:active { transform: translateY(1px); }
+  .slider-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .speed-pill { color: #10131c; background: var(--accent-2); padding: 6px 9px; border-radius: 999px; font-weight: 800; font-variant-numeric: tabular-nums; min-width: 58px; text-align: center; }
+  .readout {
+    display: grid;
+    grid-template-columns: minmax(120px, .7fr) 1.3fr;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(0,0,0,.16);
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  @media (max-width: 620px) { .readout { grid-template-columns: 1fr; } }
+  .meter {
+    background: rgba(0,0,0,.2);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 13px;
+  }
+  .meter strong { display: block; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .big-ipa { font-size: 30px; line-height: 1.2; font-weight: 850; margin-top: 6px; }
+  .cue { color: var(--muted); line-height: 1.4; margin-top: 7px; min-height: 38px; }
+  .phoneme-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 154px;
+    overflow: auto;
+    padding-right: 4px;
+  }
+  .token {
+    padding: 7px 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+    color: var(--muted);
+    font-size: 13px;
+    border: 1px solid rgba(255,255,255,.08);
+    transition: .12s ease;
+  }
+  .token.active {
+    background: var(--accent-2);
+    color: #092321;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(157,217,210,.17);
+  }
+  .legend { padding: 18px; border-top: 1px solid rgba(255,255,255,.08); color: var(--muted); line-height: 1.45; }
+  .legend code { color: var(--ink); background: rgba(255,255,255,.07); padding: 2px 6px; border-radius: 8px; }
+  .note { font-size: 13px; color: var(--muted); line-height: 1.45; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mini-pill { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08); padding: 7px 10px; border-radius: 999px; color: var(--muted); font-size: 13px; }
+  .sample-note { min-height: 48px; }
+  .overlay-label { font-size: 15px; fill: rgba(255,255,255,.83); font-weight: 700; }
+  .overlay-line { stroke: rgba(255,255,255,.38); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .breath { animation: breathe 3.6s ease-in-out infinite; transform-origin: 300px 380px; }
+  @keyframes breathe { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+  .blink { animation: blink 4.8s infinite; transform-origin: center; }
+  @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.08); } }
+  .softPulse { animation: softPulse 1.1s ease-in-out infinite; }
+  @keyframes softPulse { 0%,100% { opacity: .18; } 50% { opacity: .45; } }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>French Pronunciation Face Lab</h1>
+      <div class="subtitle">A small practice app that turns French text into an approximate phoneme/viseme sequence, speaks it with a French browser voice when available, and animates lips, teeth, tongue, nasal airflow, and throat position at the selected speed.</div>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="card face-card">
+      <div class="face-wrap">
+        <svg id="faceSvg" viewBox="0 0 620 620" role="img" aria-label="Animated face showing French pronunciation mouth positions">
+          <defs>
+            <linearGradient id="skinGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#f7d2be"/>
+              <stop offset="100%" stop-color="#e5a990"/>
+            </linearGradient>
+            <radialGradient id="cheekGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f5a7a8" stop-opacity=".48"/>
+              <stop offset="100%" stop-color="#f5a7a8" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="13" stdDeviation="16" flood-color="#000" flood-opacity=".22"/>
+            </filter>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="620" height="620" rx="34" fill="#111622"/>
+          <circle cx="492" cy="102" r="86" fill="#9dd9d2" opacity=".08"/>
+          <circle cx="102" cy="118" r="118" fill="#f6b4b6" opacity=".08"/>
+
+          <g id="headGroup" class="breath" filter="url(#shadow)">
+            <path d="M202 565 C215 492 229 462 255 438 L365 438 C392 463 404 493 418 565 Z" fill="url(#skinGrad)"/>
+            <path id="throatTube" d="M294 438 C294 475 295 515 292 565 M329 438 C329 475 330 515 334 565" fill="none" stroke="#7bd8cf" stroke-width="7" stroke-linecap="round" opacity=".16"/>
+            <ellipse id="larynx" cx="313" cy="500" rx="28" ry="15" fill="#9dd9d2" opacity=".10"/>
+
+            <path d="M151 249 C143 132 211 63 312 62 C419 61 484 139 473 252 C466 336 425 417 361 452 C334 467 291 469 260 452 C194 416 158 336 151 249 Z" fill="url(#skinGrad)"/>
+            <path d="M146 269 C101 178 142 69 234 33 C274 17 352 16 395 38 C475 80 513 176 478 268 C472 171 432 111 363 101 C333 96 277 97 245 106 C183 124 154 180 146 269 Z" fill="var(--hair)"/>
+            <path d="M176 135 C192 81 242 45 308 43 C390 40 456 89 475 165 C430 105 370 86 302 94 C239 102 198 113 176 135 Z" fill="#3a2230" opacity=".88"/>
+            <path d="M149 224 C124 260 125 316 150 351 C154 298 154 260 149 224 Z" fill="#27131c"/>
+            <path d="M472 224 C496 260 496 316 471 351 C467 299 468 260 472 224 Z" fill="#27131c"/>
+
+            <ellipse cx="235" cy="304" rx="42" ry="25" fill="url(#cheekGrad)"/>
+            <ellipse cx="385" cy="304" rx="42" ry="25" fill="url(#cheekGrad)"/>
+
+            <g id="eyes">
+              <path d="M221 230 C239 217 263 217 279 232" fill="none" stroke="#482a2f" stroke-width="6" stroke-linecap="round"/>
+              <path d="M342 232 C359 217 384 217 401 230" fill="none" stroke="#482a2f" stroke-width="6" stroke-linecap="round"/>
+              <ellipse class="blink" cx="250" cy="247" rx="18" ry="11" fill="#27131c"/>
+              <ellipse class="blink" cx="371" cy="247" rx="18" ry="11" fill="#27131c"/>
+              <circle cx="256" cy="244" r="3" fill="#fff" opacity=".72"/>
+              <circle cx="377" cy="244" r="3" fill="#fff" opacity=".72"/>
+            </g>
+
+            <path id="nose" d="M312 246 C306 278 293 297 304 310 C313 319 331 314 337 306" fill="none" stroke="#b7786b" stroke-width="5" stroke-linecap="round"/>
+            <ellipse id="nasalGlow" cx="312" cy="303" rx="54" ry="26" fill="#9dd9d2" opacity=".02" filter="url(#glow)"/>
+            <path id="nasalFlow" d="M284 309 C240 294 220 278 202 250 M336 309 C386 295 413 276 428 247" fill="none" stroke="#9dd9d2" stroke-width="4" stroke-linecap="round" opacity=".03" stroke-dasharray="8 9"/>
+
+            <g id="mouthAssembly">
+              <ellipse id="puckerRing" cx="310" cy="352" rx="34" ry="18" fill="none" stroke="#c76076" stroke-width="11" opacity=".0"/>
+              <ellipse id="mouthCavity" cx="310" cy="352" rx="36" ry="9" fill="var(--mouth)"/>
+              <rect id="upperTeeth" x="274" y="340" width="72" height="11" rx="4" fill="#fff4e9" opacity=".05"/>
+              <rect id="lowerTeeth" x="278" y="361" width="64" height="9" rx="4" fill="#fff4e9" opacity=".02"/>
+              <path id="tongue" d="M258 371 C285 356 337 356 363 371 C345 384 279 384 258 371 Z" fill="var(--tongue)" opacity=".82"/>
+              <path id="tongueTip" d="M253 360 C266 354 278 354 289 360" fill="none" stroke="#f0b4bd" stroke-width="5" stroke-linecap="round" opacity=".25"/>
+              <path id="upperLip" d="M260 350 C280 336 338 336 360 350 C338 344 282 344 260 350 Z" fill="var(--lip)"/>
+              <path id="lowerLip" d="M260 354 C282 372 338 372 360 354 C337 361 282 361 260 354 Z" fill="#cf6a80"/>
+              <path id="lipLine" d="M260 352 C286 360 334 360 360 352" fill="none" stroke="#5a1d2b" stroke-width="3" stroke-linecap="round" opacity=".65"/>
+              <path id="labioDental" d="M278 346 C296 352 324 352 343 346" fill="none" stroke="#fff4e9" stroke-width="8" stroke-linecap="round" opacity="0"/>
+            </g>
+
+            <g id="mouthCutaway" opacity=".92">
+              <path id="palate" d="M398 352 C425 333 448 333 466 347" fill="none" stroke="#efc4b0" stroke-width="10" stroke-linecap="round" opacity=".78"/>
+              <path id="uvula" d="M463 349 C470 361 468 374 460 382" fill="none" stroke="#c76e81" stroke-width="8" stroke-linecap="round" opacity=".58"/>
+              <path id="backTongue" d="M385 375 C417 355 446 361 466 386" fill="none" stroke="var(--tongue)" stroke-width="18" stroke-linecap="round" opacity=".12"/>
+              <path id="rGlow" d="M450 354 C470 369 476 396 459 416" fill="none" stroke="#9dd9d2" stroke-width="8" stroke-linecap="round" opacity=".06" filter="url(#glow)"/>
+            </g>
+          </g>
+
+          <g id="labels" opacity=".85">
+            <path class="overlay-line" d="M418 507 L486 535"/>
+            <text class="overlay-label" x="493" y="542">throat / uvular R</text>
+            <path class="overlay-line" d="M398 358 L498 353"/>
+            <text class="overlay-label" x="505" y="358">soft palate</text>
+            <path class="overlay-line" d="M365 388 L486 416"/>
+            <text class="overlay-label" x="493" y="421">tongue body</text>
+            <path class="overlay-line" d="M205 350 L126 374"/>
+            <text class="overlay-label" text-anchor="end" x="120" y="380">lips / teeth</text>
+            <path class="overlay-line" d="M283 306 L118 286"/>
+            <text class="overlay-label" text-anchor="end" x="112" y="291">nasal airflow</text>
+          </g>
+        </svg>
+      </div>
+      <div class="readout">
+        <div class="meter">
+          <strong>Current sound</strong>
+          <div id="ipa" class="big-ipa">—</div>
+          <div id="cue" class="cue">Choose a phrase and press play.</div>
+        </div>
+        <div class="meter">
+          <strong>Phoneme / viseme sequence</strong>
+          <div id="strip" class="phoneme-strip"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="controls">
+        <div>
+          <label for="sampleSelect">Sample French text</label>
+          <select id="sampleSelect"></select>
+        </div>
+        <div class="sample-note note" id="sampleNote"></div>
+        <div>
+          <label for="textInput">Practice text</label>
+          <textarea id="textInput" spellcheck="false"></textarea>
+        </div>
+        <div class="grid2">
+          <div>
+            <label for="speed">Speed</label>
+            <div class="slider-row">
+              <input id="speed" type="range" min="0.35" max="1.5" step="0.05" value="0.75" />
+              <span class="speed-pill" id="speedLabel">0.75×</span>
+            </div>
+          </div>
+          <div>
+            <label for="mode">Timing feel</label>
+            <select id="mode">
+              <option value="study">Study mode: longer vowels</option>
+              <option value="normal">Normal phrase flow</option>
+              <option value="staccato">Staccato phoneme drill</option>
+            </select>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="speakBtn">Speak + animate</button>
+          <button id="animateBtn" class="secondary">Animate silently</button>
+          <button id="stepBtn" class="secondary">Step next sound</button>
+          <button id="stopBtn" class="secondary">Stop</button>
+        </div>
+        <div class="pill-row">
+          <span class="mini-pill">rounded lips: <code>u, ou, on, eu</code></span>
+          <span class="mini-pill">nasal airflow: <code>an, on, in</code></span>
+          <span class="mini-pill">uvular throat: <code>r</code></span>
+          <span class="mini-pill">teeth/tongue: <code>t, d, s, z, l, n</code></span>
+        </div>
+        <div class="note">
+          This is a visual pronunciation trainer, not a full phonetic dictionary. The included examples have hand-tuned French-ish sequences; custom text uses rough spelling rules so you can see the likely mouth gestures. Use a real teacher, native speaker, or recording comparison for final correction.
+        </div>
+      </div>
+      <div class="legend">
+        <strong>What to watch:</strong> French <code>u</code> pulls the tongue forward while the lips round; <code>ou</code> rounds with the tongue farther back; nasal vowels open the nasal airflow; French <code>r</code> is shown as a back-of-throat/uvular gesture; <code>f/v</code> shows the lower lip touching the upper teeth. Slow speed exaggerates the anatomy so the motion is visible.
+      </div>
+    </section>
+  </main>
+
+<script>
+const samples = [
+  {
+    name: "Bonjour + introductions",
+    text: "Bonjour, je m’appelle Amélie. Aujourd’hui, je voudrais pratiquer les sons français.",
+    note: "Good for nasal vowels in bon/français, the soft j sound, French r, and rounded ou.",
+    seq: ["b","ɔ̃","ʒ","u","ʁ","pause","ʒ","ə","m","a","p","ɛ","l","a","m","e","l","i","pause","o","ʒ","u","ʁ","d","ɥ","i","pause","ʒ","ə","v","u","d","ʁ","ɛ","p","ʁ","a","t","i","k","e","l","e","s","ɔ̃","f","ʁ","ɑ̃","s","ɛ"]
+  },
+  {
+    name: "Café order",
+    text: "Je voudrais un café, deux croissants et un verre d’eau, s’il vous plaît.",
+    note: "Watch the difference between un, deux, eau, vous, and the polite ending plaît.",
+    seq: ["ʒ","ə","v","u","d","ʁ","ɛ","œ̃","k","a","f","e","pause","d","ø","k","ʁ","w","a","s","ɑ̃","e","œ̃","v","ɛ","ʁ","d","o","pause","s","i","l","v","u","p","l","ɛ"]
+  },
+  {
+    name: "Paris street sentence",
+    text: "Dans les rues de Paris, les lumières brillent sur la Seine.",
+    note: "A compact drill for nasal an, French r, front vowels, and relaxed final e behavior.",
+    seq: ["d","ɑ̃","l","e","ʁ","y","d","ə","p","a","ʁ","i","pause","l","e","l","y","m","j","ɛ","ʁ","b","ʁ","i","j","s","y","ʁ","l","a","s","ɛn"]
+  },
+  {
+    name: "Minimal pairs: u / ou",
+    text: "Tu dis tu, puis tout. La rue n’est pas la roue.",
+    note: "Compare French u /y/ with ou /u/: both round the lips, but /y/ keeps the tongue forward.",
+    seq: ["t","y","d","i","t","y","pause","p","ɥ","i","t","u","pause","l","a","ʁ","y","n","ɛ","p","a","l","a","ʁ","u"]
+  },
+  {
+    name: "Nasal vowel drill",
+    text: "Un bon vin blanc dans un grand jardin.",
+    note: "Nasal airflow turns on repeatedly: un, bon, vin, blanc, dans, grand, jardin.",
+    seq: ["œ̃","b","ɔ̃","v","ɛ̃","b","l","ɑ̃","d","ɑ̃","z","œ̃","g","ʁ","ɑ̃","ʒ","a","ʁ","d","ɛ̃"]
+  },
+  {
+    name: "Fast liaison phrase",
+    text: "Les amis arrivent avec enthousiasme et ils habitent à Lyon.",
+    note: "Includes liaison-like z, rounded y, nasal enthusiasm, and Lyon /ljɔ̃/.",
+    seq: ["l","e","z","a","m","i","z","a","ʁ","i","v","a","v","ɛ","k","ɑ̃","t","u","z","j","a","z","m","e","i","l","z","a","b","i","t","a","l","j","ɔ̃"]
+  }
+];
+
+const shapes = {
+  "pause": { label:"pause", cue:"Brief reset: jaw relaxes and airflow stops.", jaw:.10, round:.05, spread:.10, pucker:0, teeth:.02, lowerTeeth:0, tongueY:.22, tip:.15, back:.10, nasal:0, throat:.04, labio:0, dur:190 },
+  "a": { label:"a", cue:"Open mouth; tongue low and forward-ish. Like French a in patte.", jaw:.88, round:0, spread:.38, pucker:0, teeth:.35, lowerTeeth:.08, tongueY:.80, tip:.20, back:.12, nasal:0, throat:.05, labio:0, dur:185 },
+  "ɑ̃": { label:"ɑ̃", cue:"Open nasal vowel: jaw open, tongue low/back, nasal airflow on.", jaw:.82, round:.10, spread:.18, pucker:.05, teeth:.28, lowerTeeth:.07, tongueY:.72, tip:.10, back:.48, nasal:1, throat:.12, labio:0, dur:235 },
+  "ɔ̃": { label:"ɔ̃", cue:"Rounded nasal vowel: lips round, back tongue, nasal airflow on.", jaw:.56, round:.82, spread:.02, pucker:.55, teeth:.08, lowerTeeth:.02, tongueY:.47, tip:.07, back:.58, nasal:1, throat:.12, labio:0, dur:235 },
+  "ɛ̃": { label:"ɛ̃", cue:"Front nasal vowel: lips lightly spread, tongue forward, nasal airflow on.", jaw:.46, round:.05, spread:.65, pucker:0, teeth:.25, lowerTeeth:.04, tongueY:.38, tip:.46, back:.08, nasal:1, throat:.09, labio:0, dur:225 },
+  "œ̃": { label:"œ̃", cue:"Rounded front nasal: lips round but tongue stays forward.", jaw:.48, round:.55, spread:.10, pucker:.35, teeth:.10, lowerTeeth:.03, tongueY:.34, tip:.55, back:.10, nasal:1, throat:.10, labio:0, dur:225 },
+  "e": { label:"é / e", cue:"Close front vowel: small jaw opening, slight smile/spread.", jaw:.26, round:.02, spread:.70, pucker:0, teeth:.36, lowerTeeth:.02, tongueY:.22, tip:.55, back:.04, nasal:0, throat:.04, labio:0, dur:160 },
+  "ɛ": { label:"è / ai", cue:"Open-mid front vowel: more jaw than é, tongue still forward.", jaw:.43, round:.02, spread:.62, pucker:0, teeth:.30, lowerTeeth:.05, tongueY:.34, tip:.50, back:.06, nasal:0, throat:.04, labio:0, dur:175 },
+  "ə": { label:"e muet", cue:"Neutral schwa: relaxed central vowel, small jaw opening.", jaw:.27, round:.14, spread:.12, pucker:.06, teeth:.10, lowerTeeth:.02, tongueY:.34, tip:.22, back:.16, nasal:0, throat:.04, labio:0, dur:135 },
+  "i": { label:"i", cue:"High front vowel: lips spread, jaw narrow, tongue high/front.", jaw:.18, round:0, spread:.92, pucker:0, teeth:.43, lowerTeeth:.01, tongueY:.14, tip:.72, back:.03, nasal:0, throat:.03, labio:0, dur:155 },
+  "y": { label:"u /y/", cue:"French u: tongue high/front like i, but lips tightly rounded.", jaw:.20, round:.90, spread:.08, pucker:.70, teeth:.04, lowerTeeth:.01, tongueY:.15, tip:.78, back:.04, nasal:0, throat:.04, labio:0, dur:180 },
+  "u": { label:"ou /u/", cue:"French ou: lips round and protrude; tongue high/back.", jaw:.22, round:.95, spread:0, pucker:.84, teeth:.02, lowerTeeth:0, tongueY:.18, tip:.06, back:.72, nasal:0, throat:.06, labio:0, dur:180 },
+  "o": { label:"o / eau", cue:"Rounded o: lips round, tongue mid/back, jaw modest.", jaw:.35, round:.78, spread:0, pucker:.58, teeth:.06, lowerTeeth:.01, tongueY:.30, tip:.06, back:.55, nasal:0, throat:.05, labio:0, dur:180 },
+  "ø": { label:"eu fermé", cue:"Rounded front vowel: lips round while the tongue sits forward.", jaw:.28, round:.70, spread:.05, pucker:.52, teeth:.08, lowerTeeth:.01, tongueY:.25, tip:.62, back:.05, nasal:0, throat:.04, labio:0, dur:180 },
+  "b": { label:"b", cue:"Bilabial stop: close both lips, then release into the next sound.", jaw:.04, round:.02, spread:.05, pucker:.02, teeth:0, lowerTeeth:0, tongueY:.30, tip:.18, back:.08, nasal:0, throat:.04, labio:0, dur:95 },
+  "p": { label:"p", cue:"Bilabial stop: lips seal firmly; unvoiced release.", jaw:.03, round:.02, spread:.05, pucker:.02, teeth:0, lowerTeeth:0, tongueY:.30, tip:.18, back:.08, nasal:0, throat:.02, labio:0, dur:90 },
+  "m": { label:"m", cue:"Lips closed, voice/nasal resonance. Feel vibration in the face.", jaw:.03, round:.02, spread:.05, pucker:.02, teeth:0, lowerTeeth:0, tongueY:.30, tip:.18, back:.08, nasal:.65, throat:.08, labio:0, dur:130 },
+  "f": { label:"f", cue:"Lower lip touches upper teeth; air passes through the narrow gap.", jaw:.16, round:.02, spread:.33, pucker:0, teeth:.55, lowerTeeth:0, tongueY:.27, tip:.18, back:.05, nasal:0, throat:.02, labio:1, dur:115 },
+  "v": { label:"v", cue:"Lower lip to upper teeth, but voiced; throat vibration turns on.", jaw:.16, round:.02, spread:.33, pucker:0, teeth:.55, lowerTeeth:0, tongueY:.27, tip:.18, back:.05, nasal:0, throat:.16, labio:1, dur:125 },
+  "t": { label:"t", cue:"Tongue tip touches just behind the upper teeth/alveolar ridge.", jaw:.13, round:0, spread:.25, pucker:0, teeth:.30, lowerTeeth:0, tongueY:.18, tip:.90, back:.04, nasal:0, throat:.02, labio:0, dur:90 },
+  "d": { label:"d", cue:"Tongue tip seals near the upper teeth; voiced release.", jaw:.13, round:0, spread:.25, pucker:0, teeth:.30, lowerTeeth:0, tongueY:.18, tip:.90, back:.04, nasal:0, throat:.12, labio:0, dur:95 },
+  "n": { label:"n", cue:"Tongue tip up; nasal resonance on.", jaw:.12, round:0, spread:.20, pucker:0, teeth:.22, lowerTeeth:0, tongueY:.18, tip:.92, back:.05, nasal:.72, throat:.09, labio:0, dur:120 },
+  "l": { label:"l", cue:"Tongue tip up; sides let air pass. Keep it lighter than English dark L.", jaw:.18, round:0, spread:.30, pucker:0, teeth:.25, lowerTeeth:.01, tongueY:.17, tip:.88, back:.08, nasal:0, throat:.09, labio:0, dur:120 },
+  "s": { label:"s", cue:"Narrow groove: teeth close, tongue near the ridge, air hisses.", jaw:.10, round:0, spread:.58, pucker:0, teeth:.46, lowerTeeth:0, tongueY:.16, tip:.72, back:.04, nasal:0, throat:.02, labio:0, dur:115 },
+  "z": { label:"z", cue:"Same narrow shape as s, but voiced: throat vibration on.", jaw:.10, round:0, spread:.58, pucker:0, teeth:.46, lowerTeeth:0, tongueY:.16, tip:.72, back:.04, nasal:0, throat:.16, labio:0, dur:115 },
+  "ʃ": { label:"ch /ʃ/", cue:"Lips slightly rounded; tongue blade raised for the French ch sound.", jaw:.18, round:.32, spread:.20, pucker:.20, teeth:.23, lowerTeeth:0, tongueY:.17, tip:.58, back:.14, nasal:0, throat:.03, labio:0, dur:130 },
+  "ʒ": { label:"j /ʒ/", cue:"Like French j in je: soft, voiced, tongue blade raised.", jaw:.18, round:.28, spread:.19, pucker:.16, teeth:.20, lowerTeeth:0, tongueY:.18, tip:.56, back:.13, nasal:0, throat:.18, labio:0, dur:135 },
+  "k": { label:"k", cue:"Back of the tongue lifts to the soft palate, then releases.", jaw:.16, round:.02, spread:.16, pucker:0, teeth:.18, lowerTeeth:0, tongueY:.24, tip:.12, back:.95, nasal:0, throat:.03, labio:0, dur:95 },
+  "g": { label:"g", cue:"Back tongue contact like k, but voiced.", jaw:.16, round:.02, spread:.16, pucker:0, teeth:.18, lowerTeeth:0, tongueY:.24, tip:.12, back:.95, nasal:0, throat:.14, labio:0, dur:100 },
+  "ʁ": { label:"r /ʁ/", cue:"French r: constriction at the back of the throat/uvula; do not curl the tongue tip.", jaw:.24, round:.06, spread:.12, pucker:.02, teeth:.10, lowerTeeth:0, tongueY:.28, tip:.05, back:.88, nasal:0, throat:.92, labio:0, dur:145 },
+  "j": { label:"y glide /j/", cue:"A quick high-front glide, like y in yes; tongue forward and high.", jaw:.16, round:.03, spread:.76, pucker:0, teeth:.36, lowerTeeth:0, tongueY:.14, tip:.78, back:.03, nasal:0, throat:.06, labio:0, dur:100 },
+  "w": { label:"w /oi glide", cue:"Quick rounded glide: lips round first, then open into the vowel.", jaw:.21, round:.80, spread:0, pucker:.66, teeth:.02, lowerTeeth:0, tongueY:.19, tip:.05, back:.72, nasal:0, throat:.05, labio:0, dur:100 },
+  "ɥ": { label:"ui glide /ɥ/", cue:"French ui glide: lips round while tongue stays high/front.", jaw:.18, round:.82, spread:.06, pucker:.66, teeth:.03, lowerTeeth:0, tongueY:.14, tip:.78, back:.04, nasal:0, throat:.05, labio:0, dur:100 },
+  "default": { label:"?", cue:"Fallback neutral mouth gesture.", jaw:.24, round:.08, spread:.20, pucker:.02, teeth:.12, lowerTeeth:0, tongueY:.32, tip:.20, back:.10, nasal:0, throat:.04, labio:0, dur:120 }
+};
+
+const el = id => document.getElementById(id);
+const sampleSelect = el('sampleSelect');
+const textInput = el('textInput');
+const speed = el('speed');
+const speedLabel = el('speedLabel');
+const mode = el('mode');
+const strip = el('strip');
+const ipa = el('ipa');
+const cue = el('cue');
+const sampleNote = el('sampleNote');
+let currentSeq = [];
+let currentIndex = -1;
+let timers = [];
+let isPlaying = false;
+
+samples.forEach((s, i) => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = s.name;
+  sampleSelect.appendChild(opt);
+});
+
+function modeDurationMultiplier() {
+  if (mode.value === 'study') return 1.35;
+  if (mode.value === 'staccato') return 0.82;
+  return 1.0;
+}
+
+function soundShape(token) { return shapes[token] || shapes.default; }
+
+function durationFor(token) {
+  const shape = soundShape(token);
+  const base = shape.dur || 120;
+  return Math.max(45, (base * modeDurationMultiplier()) / Number(speed.value));
+}
+
+function setPath(id, d) { el(id).setAttribute('d', d); }
+function setNum(id, attr, val) { el(id).setAttribute(attr, Number(val).toFixed(2)); }
+function setStyle(id, prop, val) { el(id).style[prop] = val; }
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(n, a=0, b=1) { return Math.max(a, Math.min(b, n)); }
+
+function updateFace(token) {
+  const s = soundShape(token);
+  const jaw = clamp(s.jaw), round = clamp(s.round), spread = clamp(s.spread), pucker = clamp(s.pucker);
+  const w = 46 + spread * 58 + round * 10 - pucker * 18;
+  const h = 6 + jaw * 46 + round * 10;
+  const cx = 310;
+  const cy = 352 + jaw * 5;
+  const x1 = cx - w;
+  const x2 = cx + w;
+  const topY = cy - h * .38;
+  const botY = cy + h * .42;
+  const midY = cy;
+  const lipBulk = 8 + round * 5 + pucker * 5;
+
+  setNum('mouthCavity', 'cx', cx);
+  setNum('mouthCavity', 'cy', cy);
+  setNum('mouthCavity', 'rx', Math.max(4, w * .78));
+  setNum('mouthCavity', 'ry', Math.max(2, h * .55));
+
+  setNum('puckerRing', 'cx', cx);
+  setNum('puckerRing', 'cy', cy + 1);
+  setNum('puckerRing', 'rx', Math.max(16, 24 + pucker * 33 - spread * 6));
+  setNum('puckerRing', 'ry', Math.max(8, 10 + pucker * 24 + jaw * 8));
+  el('puckerRing').setAttribute('opacity', (pucker * .85).toFixed(2));
+
+  setPath('upperLip', `M ${x1.toFixed(1)} ${midY.toFixed(1)} C ${(cx-w*.45).toFixed(1)} ${(topY-lipBulk).toFixed(1)} ${(cx+w*.45).toFixed(1)} ${(topY-lipBulk).toFixed(1)} ${x2.toFixed(1)} ${midY.toFixed(1)} C ${(cx+w*.35).toFixed(1)} ${(topY+lipBulk*.15).toFixed(1)} ${(cx-w*.35).toFixed(1)} ${(topY+lipBulk*.15).toFixed(1)} ${x1.toFixed(1)} ${midY.toFixed(1)} Z`);
+  setPath('lowerLip', `M ${x1.toFixed(1)} ${(midY+2).toFixed(1)} C ${(cx-w*.48).toFixed(1)} ${(botY+lipBulk).toFixed(1)} ${(cx+w*.48).toFixed(1)} ${(botY+lipBulk).toFixed(1)} ${x2.toFixed(1)} ${(midY+2).toFixed(1)} C ${(cx+w*.30).toFixed(1)} ${(botY-lipBulk*.08).toFixed(1)} ${(cx-w*.30).toFixed(1)} ${(botY-lipBulk*.08).toFixed(1)} ${x1.toFixed(1)} ${(midY+2).toFixed(1)} Z`);
+  setPath('lipLine', `M ${x1.toFixed(1)} ${midY.toFixed(1)} C ${(cx-w*.45).toFixed(1)} ${(midY+h*.25).toFixed(1)} ${(cx+w*.45).toFixed(1)} ${(midY+h*.25).toFixed(1)} ${x2.toFixed(1)} ${midY.toFixed(1)}`);
+
+  const teethW = Math.max(8, w * 1.08);
+  setNum('upperTeeth', 'x', cx - teethW/2);
+  setNum('upperTeeth', 'y', topY + 2);
+  setNum('upperTeeth', 'width', teethW);
+  setNum('upperTeeth', 'height', Math.max(4, 7 + jaw*10));
+  el('upperTeeth').setAttribute('opacity', clamp(s.teeth).toFixed(2));
+  setNum('lowerTeeth', 'x', cx - teethW*.42);
+  setNum('lowerTeeth', 'y', botY - 5);
+  setNum('lowerTeeth', 'width', teethW*.84);
+  setNum('lowerTeeth', 'height', Math.max(3, 5 + jaw*6));
+  el('lowerTeeth').setAttribute('opacity', clamp(s.lowerTeeth || 0).toFixed(2));
+
+  const tongueY = lerp(380, 346, clamp(1 - s.tongueY));
+  const tipLift = clamp(s.tip);
+  const backLift = clamp(s.back);
+  const tLeft = cx - (42 + spread*8);
+  const tRight = cx + (42 + round*3);
+  const tipY = tongueY - tipLift * 29;
+  const midTongueY = tongueY + jaw*8 - tipLift*8;
+  const backY = tongueY - backLift * 42;
+  setPath('tongue', `M ${tLeft.toFixed(1)} ${(midTongueY+8).toFixed(1)} C ${(cx-22).toFixed(1)} ${tipY.toFixed(1)} ${(cx+25).toFixed(1)} ${backY.toFixed(1)} ${tRight.toFixed(1)} ${(midTongueY+7).toFixed(1)} C ${(cx+26).toFixed(1)} ${(midTongueY+22).toFixed(1)} ${(cx-25).toFixed(1)} ${(midTongueY+22).toFixed(1)} ${tLeft.toFixed(1)} ${(midTongueY+8).toFixed(1)} Z`);
+  setPath('tongueTip', `M ${(tLeft-2).toFixed(1)} ${(tipY+8).toFixed(1)} C ${(cx-34).toFixed(1)} ${(tipY-4).toFixed(1)} ${(cx-14).toFixed(1)} ${(tipY-4).toFixed(1)} ${(cx+2).toFixed(1)} ${(tipY+7).toFixed(1)}`);
+  el('tongueTip').setAttribute('opacity', (tipLift * .85).toFixed(2));
+  setPath('backTongue', `M 385 ${(383 - backLift*18).toFixed(1)} C 417 ${(365 - backLift*35).toFixed(1)} 447 ${(368 - backLift*25).toFixed(1)} 466 ${(386 - backLift*12).toFixed(1)}`);
+  el('backTongue').setAttribute('opacity', (.08 + backLift * .48).toFixed(2));
+
+  el('labioDental').setAttribute('opacity', clamp(s.labio).toFixed(2));
+  const labY = topY + 7;
+  setPath('labioDental', `M ${(cx-w*.40).toFixed(1)} ${labY.toFixed(1)} C ${(cx-w*.12).toFixed(1)} ${(labY+7).toFixed(1)} ${(cx+w*.17).toFixed(1)} ${(labY+7).toFixed(1)} ${(cx+w*.43).toFixed(1)} ${labY.toFixed(1)}`);
+
+  const nasal = clamp(s.nasal);
+  el('nasalGlow').setAttribute('opacity', (.02 + nasal*.38).toFixed(2));
+  el('nasalFlow').setAttribute('opacity', (.03 + nasal*.85).toFixed(2));
+  if (nasal > .4) el('nasalFlow').classList.add('softPulse'); else el('nasalFlow').classList.remove('softPulse');
+
+  const throat = clamp(s.throat);
+  el('throatTube').setAttribute('opacity', (.12 + throat*.62).toFixed(2));
+  el('larynx').setAttribute('opacity', (.08 + throat*.48).toFixed(2));
+  el('rGlow').setAttribute('opacity', (.04 + throat*.78).toFixed(2));
+  setNum('larynx', 'ry', 12 + throat*11);
+  setNum('larynx', 'rx', 24 + throat*8);
+
+  ipa.textContent = s.label || token;
+  cue.textContent = s.cue || "";
+}
+
+function tokenizeFrench(text) {
+  const normalized = text
+    .toLowerCase()
+    .replace(/[’']/g, " ")
+    .replace(/[.,;:!?]+/g, " pause ")
+    .replace(/œ/g, "oe")
+    .replace(/æ/g, "ae");
+
+  const out = [];
+  const words = normalized.split(/\s+/).filter(Boolean);
+
+  const dictionary = {
+    "bonjour": ["b","ɔ̃","ʒ","u","ʁ"],
+    "je": ["ʒ","ə"], "me": ["m","ə"], "te": ["t","ə"], "de": ["d","ə"], "le": ["l","ə"],
+    "les": ["l","e"], "des": ["d","e"], "mes": ["m","e"], "ses": ["s","e"],
+    "voudrais": ["v","u","d","ʁ","ɛ"], "vous": ["v","u"], "tu": ["t","y"], "tout": ["t","u"],
+    "rue": ["ʁ","y"], "roue": ["ʁ","u"], "paris": ["p","a","ʁ","i"], "francais": ["f","ʁ","ɑ̃","s","ɛ"], "français": ["f","ʁ","ɑ̃","s","ɛ"],
+    "cafe": ["k","a","f","e"], "café": ["k","a","f","e"], "eau": ["o"], "un": ["œ̃"], "vin": ["v","ɛ̃"], "bon": ["b","ɔ̃"], "dans": ["d","ɑ̃"],
+    "pause": ["pause"]
+  };
+
+  for (const word of words) {
+    if (dictionary[word]) { out.push(...dictionary[word]); continue; }
+    let w = word.normalize('NFC');
+    let i = 0;
+    while (i < w.length) {
+      const rest = w.slice(i);
+      const two = rest.slice(0,2);
+      const three = rest.slice(0,3);
+      const four = rest.slice(0,4);
+
+      if (/^[0-9]+$/.test(w[i])) { i++; continue; }
+      if (four === "eaux") { out.push("o"); i += 4; continue; }
+      if (["tion","sion"].includes(four)) { out.push("s","j","ɔ̃"); i += 4; continue; }
+      if (["ain","ein","aim","eim"].includes(three)) { out.push("ɛ̃"); i += 3; continue; }
+      if (["eau","aux"].includes(three)) { out.push("o"); i += 3; continue; }
+      if (["ill"].includes(three)) { out.push("j"); i += 3; continue; }
+      if (["ien"].includes(three)) { out.push("j","ɛ̃"); i += 3; continue; }
+      if (["an","am","en","em"].includes(two)) { out.push("ɑ̃"); i += 2; continue; }
+      if (["on","om"].includes(two)) { out.push("ɔ̃"); i += 2; continue; }
+      if (["in","im","yn","ym","un","um"].includes(two)) { out.push(two[0] === 'u' ? "œ̃" : "ɛ̃"); i += 2; continue; }
+      if (["ou"].includes(two)) { out.push("u"); i += 2; continue; }
+      if (["oi"].includes(two)) { out.push("w","a"); i += 2; continue; }
+      if (["ui"].includes(two)) { out.push("ɥ","i"); i += 2; continue; }
+      if (["eu","oe"].includes(two)) { out.push("ø"); i += 2; continue; }
+      if (["ai","ei","è","ê"].includes(two) || w[i] === "è" || w[i] === "ê") { out.push("ɛ"); i += (two === "ai" || two === "ei") ? 2 : 1; continue; }
+      if (["é"].includes(w[i])) { out.push("e"); i++; continue; }
+      if (["er","ez"].includes(two) && i + 2 >= w.length) { out.push("e"); i += 2; continue; }
+      if (two === "ch") { out.push("ʃ"); i += 2; continue; }
+      if (two === "gn") { out.push("n","j"); i += 2; continue; }
+      if (two === "qu") { out.push("k"); i += 2; continue; }
+      if (two === "ph") { out.push("f"); i += 2; continue; }
+
+      const c = w[i];
+      if (c === "c") { out.push(/[eéièêy]/.test(w[i+1] || "") ? "s" : "k"); i++; continue; }
+      if (c === "g") { out.push(/[eéièêy]/.test(w[i+1] || "") ? "ʒ" : "g"); i++; continue; }
+      if (c === "j") { out.push("ʒ"); i++; continue; }
+      if (c === "r") { out.push("ʁ"); i++; continue; }
+      if (c === "u") { out.push("y"); i++; continue; }
+      if (c === "y") { out.push("i"); i++; continue; }
+      if (c === "x") { out.push("k","s"); i++; continue; }
+      if ("bpmdtnlfvszkg".includes(c)) { out.push(c); i++; continue; }
+      if (c === "a" || c === "à" || c === "â") { out.push("a"); i++; continue; }
+      if (c === "e") { if (i === w.length - 1) { i++; } else { out.push("ə"); i++; } continue; }
+      if (c === "i" || c === "î" || c === "ï") { out.push("i"); i++; continue; }
+      if (c === "o" || c === "ô") { out.push("o"); i++; continue; }
+      i++;
+    }
+    out.push("pause");
+  }
+  while (out[out.length-1] === "pause") out.pop();
+  return out.length ? out : ["pause"];
+}
+
+function sequenceForCurrentText() {
+  const selected = samples[Number(sampleSelect.value)];
+  if (textInput.value.trim() === selected.text.trim()) return selected.seq.slice();
+  return tokenizeFrench(textInput.value);
+}
+
+function renderStrip(seq) {
+  strip.innerHTML = '';
+  seq.forEach((t, i) => {
+    const span = document.createElement('span');
+    span.className = 'token';
+    span.textContent = soundShape(t).label || t;
+    span.dataset.i = i;
+    strip.appendChild(span);
+  });
+}
+
+function highlight(i) {
+  [...strip.children].forEach(ch => ch.classList.toggle('active', Number(ch.dataset.i) === i));
+  const active = strip.querySelector('.active');
+  if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+}
+
+function stopAll() {
+  timers.forEach(clearTimeout);
+  timers = [];
+  isPlaying = false;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  currentIndex = -1;
+  highlight(-1);
+  updateFace('pause');
+}
+
+function runAnimation(seq) {
+  stopAll();
+  currentSeq = seq;
+  renderStrip(seq);
+  isPlaying = true;
+  let t = 0;
+  seq.forEach((token, i) => {
+    timers.push(setTimeout(() => {
+      currentIndex = i;
+      updateFace(token);
+      highlight(i);
+    }, t));
+    t += durationFor(token);
+  });
+  timers.push(setTimeout(() => {
+    isPlaying = false;
+    currentIndex = -1;
+    updateFace('pause');
+    highlight(-1);
+  }, t + 80));
+}
+
+function speakFrench(text) {
+  if (!('speechSynthesis' in window)) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  const voices = window.speechSynthesis.getVoices();
+  const frenchVoice = voices.find(v => /^fr[-_]/i.test(v.lang)) || voices.find(v => /French|français|francais/i.test(v.name));
+  if (frenchVoice) utter.voice = frenchVoice;
+  utter.lang = frenchVoice ? frenchVoice.lang : 'fr-FR';
+  utter.rate = Math.max(.45, Math.min(1.25, Number(speed.value) * 1.05));
+  utter.pitch = 1.08;
+  utter.volume = 1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+}
+
+function loadSample(i) {
+  const s = samples[Number(i)];
+  textInput.value = s.text;
+  sampleNote.textContent = s.note;
+  currentSeq = s.seq.slice();
+  currentIndex = -1;
+  renderStrip(currentSeq);
+  updateFace('pause');
+}
+
+sampleSelect.addEventListener('change', e => loadSample(e.target.value));
+speed.addEventListener('input', () => { speedLabel.textContent = Number(speed.value).toFixed(2) + '×'; });
+el('animateBtn').addEventListener('click', () => runAnimation(sequenceForCurrentText()));
+el('speakBtn').addEventListener('click', () => {
+  const seq = sequenceForCurrentText();
+  runAnimation(seq);
+  speakFrench(textInput.value);
+});
+el('stopBtn').addEventListener('click', stopAll);
+el('stepBtn').addEventListener('click', () => {
+  if (!currentSeq.length || textInput.value.trim() !== samples[Number(sampleSelect.value)].text.trim()) {
+    currentSeq = sequenceForCurrentText();
+    renderStrip(currentSeq);
+  }
+  currentIndex = (currentIndex + 1) % currentSeq.length;
+  updateFace(currentSeq[currentIndex]);
+  highlight(currentIndex);
+});
+textInput.addEventListener('input', () => {
+  const seq = sequenceForCurrentText();
+  currentSeq = seq;
+  renderStrip(seq);
+});
+
+// Load voices in Chrome/Safari after async voice population.
+if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = () => {};
+loadSample(0);
+speedLabel.textContent = Number(speed.value).toFixed(2) + '×';
+</script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ee">
+<meta name="description" content="A playful times-table garden and animal memory game for Juliette. Original animal drawings, a cheeky kitty opponent, and an evolving synth soundtrack.">
+<title>Juliette’s Kitty Club · Multiplication & Memory</title>
+<style>
+:root{--paper:#f7f4ee;--white:#fffefa;--ink:#393345;--muted:#837b8c;--line:#e7e0ea;--purple:#7961aa;--purple-dark:#644b98;--lavender:#eee7f7;--pink:#f7e5e7;--yellow:#fbe5a7;--mint:#dbeddf;--radius:25px;--shadow:0 7px 0 rgba(88,64,116,.045);font-family:ui-rounded,"SF Pro Rounded","Trebuchet MS",system-ui,sans-serif;color:var(--ink);font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);min-height:100vh}button,input{font:inherit}button{cursor:pointer;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible{outline:3px solid #b599df;outline-offset:4px}button:disabled{cursor:default}button{touch-action:manipulation}button,svg{user-select:none}button svg{pointer-events:none}h1,h2,h3,p{margin:0}button:active:not(:disabled){transform:translateY(1px)}[hidden]{display:none!important}.app{max-width:1192px;padding:23px 32px 24px;margin:0 auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:11px;letter-spacing:1.8px;font-size:12px;font-weight:900}.brand-icon{width:38px;height:38px;border-radius:13px;background:var(--lavender);color:var(--purple);display:grid;place-items:center;transform:rotate(-7deg)}.brand-icon svg{width:25px;height:25px}.top-actions{display:flex;gap:8px}.soft-btn,.icon-btn,.chip-btn{border:1px solid var(--line);background:rgba(255,254,250,.8);border-radius:14px;padding:10px 15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:700;min-height:40px}.soft-btn:hover,.icon-btn:hover{background:var(--lavender);border-color:#cfc1e4}.icon-btn{width:42px;padding:9px}.icon-btn svg{width:19px;height:19px}.music-bars{height:15px;width:17px;display:flex;align-items:center;gap:2px}.music-bars i{display:block;width:3px;height:6px;border-radius:3px;background:var(--purple)}.music-bars i:nth-child(2){height:14px}.music-bars i:nth-child(3){height:10px}.playing .music-bars i{animation:equalize .85s ease-in-out infinite alternate}.playing .music-bars i:nth-child(2){animation-delay:-.35s}.playing .music-bars i:nth-child(3){animation-delay:-.5s}@keyframes equalize{to{height:3px}}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:25px 8px 24px;min-height:185px}.eyebrow{font-size:10px;color:var(--purple);letter-spacing:1.9px;font-weight:900;margin-bottom:10px}h1{font-size:clamp(31px,4.1vw,49px);line-height:1.08;letter-spacing:-2px;font-weight:900}h1 span{color:var(--purple)}.hero-desc{font-size:13px;color:var(--muted);margin-top:12px;line-height:1.5}.hero-friends{display:flex;align-items:center;gap:0;position:relative;margin-right:12px}.mascot-svg{width:164px;height:152px;overflow:visible;flex-shrink:0}.hero .mascot-svg{transform:rotate(5deg)}.speech{max-width:164px;background:var(--white);border:1px solid var(--line);border-radius:19px 19px 3px 19px;padding:13px 17px;font-size:13px;line-height:1.55;transform:rotate(-4deg);box-shadow:var(--shadow)}.speech em{font-style:normal;color:var(--purple);font-weight:900}.sparkle{position:absolute;color:#d6ba70;font-size:23px;top:3px;right:-4px}.sparkle.small{font-size:15px;top:auto;bottom:14px;right:151px}
+.modebar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:22px;gap:16px}.tabs{display:flex;gap:5px;background:#ebe6e9;padding:5px;border-radius:17px}.tab{border:0;background:none;color:var(--muted);font-weight:800;font-size:13px;border-radius:12px;padding:11px 16px;min-height:40px;display:flex;align-items:center;gap:8px}.tab[aria-selected="true"]{background:var(--white);color:var(--ink);box-shadow:0 2px 5px #51465e0a}.tab .tab-num{font-size:10px;color:var(--purple);opacity:.75}.primary{border:0;background:var(--purple);color:white;font-size:13px;font-weight:800;border-radius:14px;min-height:44px;padding:12px 20px;box-shadow:0 3px 0 #503b7d33;display:inline-flex;align-items:center;justify-content:center;gap:12px}.primary:hover{background:var(--purple-dark)}.primary .arrow{font-size:19px;line-height:1}.new-round{white-space:nowrap}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 3px 16px}h2{font-size:21px;font-weight:900;letter-spacing:-.55px}.subcopy{font-size:12px;line-height:1.6;color:var(--muted);margin-top:5px}.badge{display:inline-flex;align-items:center;gap:6px;border-radius:100px;padding:7px 11px;font-size:10px;font-weight:800;white-space:nowrap;background:var(--mint);color:#5e7c65}.badge.purple{background:var(--lavender);color:var(--purple)}
+.garden-layout{display:grid;grid-template-columns:minmax(0,1fr) 294px;gap:20px}.table-card{padding:19px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.times-table{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:5px;width:100%}.table-corner,.table-head,.fact-cell{aspect-ratio:1.13;display:flex;justify-content:center;align-items:center;border-radius:10px;font-size:15px}.table-head{font-weight:900;color:var(--purple);background:#f2edf6;transition:background .15s}.table-head.axis{background:#dcccEE;color:#5b427f}.table-corner{color:var(--purple);font-weight:900;font-size:24px}.fact-cell{border:0;background:#f8f5f6;position:relative;transition:background .15s,box-shadow .15s;color:#6e6678}.fact-cell:nth-child(2n){background:#f7f4f3}.fact-cell:hover{background:var(--lavender);box-shadow:inset 0 0 0 1px #c4afd9}.fact-cell.cross{background:#efe7f6}.fact-cell.selected{background:var(--purple);color:white;font-weight:900;box-shadow:0 2px 0 #56417324}.table-caption{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:15px 3px 0;color:var(--muted);font-size:10px}.table-caption b{font-weight:800;color:var(--purple)}.tiny-dot{width:6px;height:6px;border-radius:50%;background:#bda7d4;display:inline-block;margin-right:5px}.fact-detail{background:var(--lavender);border:1px solid #ded3ed;border-radius:var(--radius);padding:22px;text-align:center;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}.detail-kicker{font-size:9px;letter-spacing:1.7px;color:var(--purple);font-weight:900}.friend-frame{height:132px;width:142px;display:flex;align-items:center;justify-content:center;position:relative;margin-top:8px}.friend-frame:before{content:"";position:absolute;width:109px;height:109px;border-radius:50%;background:#faf5fd}.friend-frame .animal-svg{position:relative;width:124px;height:120px;z-index:1}.friend-name{font-size:10px;color:var(--purple);margin:0 0 12px}.fact-equation{font-size:31px;font-weight:900;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;white-space:nowrap}.fact-equation strong{color:var(--purple)}.fact-words{font-size:12px;color:#80718f;line-height:1.6;min-height:19px}.array-wrap{background:rgba(255,255,255,.56);border:1px solid rgba(255,255,255,.7);border-radius:16px;padding:15px;margin-top:16px;width:100%;min-height:121px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px}.dot-array{display:grid;gap:4px;grid-template-columns:repeat(var(--cols),1fr);width:fit-content}.count-dot{width:clamp(9px,1.1vw,13px);height:clamp(9px,1.1vw,13px);border-radius:4px;background:#b7a2d5}.count-dot.even-row{background:#d1c1e8}.count-dot.last-row{background:#d8b972}.array-label{font-size:10px;color:#8c7d9b;line-height:1.6}.listen-fact{margin-top:15px;border:0;background:transparent;color:var(--purple);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;padding:8px;border-radius:10px}.listen-fact:hover{background:#e0d5ef}.listen-fact svg{width:16px;height:16px}.garden-bottom{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:19px;padding:16px 20px;border:1px dashed #d9cedf;border-radius:19px}.garden-bottom p{font-size:12px;line-height:1.5}.garden-bottom p span{color:var(--muted);font-size:11px}.garden-bottom .primary{min-height:39px;font-size:12px;padding:10px 17px;white-space:nowrap}
+.game-heading{margin-bottom:13px}.game-options{display:flex;gap:8px;align-items:center}.game-options .soft-btn{padding:7px 12px;min-height:34px;font-size:11px}.score-strip{display:grid;grid-template-columns:1fr minmax(200px,1.4fr) 1fr;gap:14px;margin-bottom:15px}.score-card{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:18px;padding:12px 15px;background:var(--white);transition:box-shadow .2s,border-color .2s}.score-card.active{border-color:#b4c8b6;box-shadow:0 0 0 3px #dbeddf77}.score-card.kitty.active{border-color:#c5b1df;box-shadow:0 0 0 3px #eee7f788}.avatar{width:36px;height:36px;border-radius:12px;background:var(--mint);display:grid;place-items:center;font-size:17px;color:#64836b;font-weight:900}.avatar.kitty-avatar{background:var(--lavender);color:var(--purple)}.avatar svg{width:25px;height:25px}.score-name{font-size:12px;font-weight:900}.score-label{font-size:9px;margin-top:3px;color:var(--muted)}.score-number{margin-left:auto;font-size:26px;font-weight:900;color:#73967e}.kitty .score-number{color:var(--purple)}.turn-card{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:6px;padding:7px 10px}.turn-title{font-size:13px;font-weight:900}.turn-title span{display:inline-block;width:6px;height:6px;background:#85a48e;border-radius:50%;margin-right:6px}.turn-title.kitty-turn span{background:var(--purple);animation:equalize .8s infinite alternate}.turn-hint{font-size:10px;color:var(--muted);line-height:1.4}.progress-track{margin-top:3px;width:100%;max-width:180px;height:4px;border-radius:4px;background:#e6e0e8;overflow:hidden}.progress-fill{height:100%;background:#b49ccc;width:0%;transition:width .4s}
+.board-wrap{position:relative;border:1px solid var(--line);border-radius:23px;background:var(--white);padding:15px;box-shadow:var(--shadow)}.memory-board{display:grid;grid-template-columns:repeat(var(--board-cols,10),minmax(0,1fr));gap:9px}.memory-card{border:0;background:none;padding:0;aspect-ratio:.84;perspective:800px;position:relative;isolation:isolate;border-radius:12px;outline-offset:2px!important;min-width:0;transition:opacity .2s}.card-inner{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .38s cubic-bezier(.2,.7,.3,1);border-radius:12px}.memory-card.up .card-inner{transform:rotateY(180deg)}.card-back,.card-front{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;overflow:hidden}.card-back{border:1.5px solid #d2c3e2;background-color:#ece4f4;background-image:radial-gradient(#fff9 1.4px,transparent 1.4px);background-size:13px 13px;box-shadow:inset 0 0 0 4px #f5effa,0 3px 0 #b7a2ce30;color:#b19acb}.back-clue{width:calc(100% - 12px);min-height:62%;padding:10px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;background:#fbf8fd;border:1px solid #dfd1ed;border-radius:8px}.back-value{font-size:clamp(16px,2.1vw,26px);font-weight:900;letter-spacing:-.8px;line-height:1.12;white-space:nowrap;color:var(--purple-dark);font-variant-numeric:tabular-nums}.card-back.answer .back-value{font-size:clamp(25px,3vw,36px);color:var(--ink)}.back-kind{font-size:7px;font-weight:900;letter-spacing:1px;line-height:1;color:#8b759f}.card-corner-star{position:absolute;font-size:9px;top:10px;left:10px;color:#c4aedc}.card-corner-star.last{top:auto;left:auto;bottom:10px;right:10px}.memory-card:not(.up):not(.found):hover .card-back{background-color:#e2d5ee;border-color:#b99ece}.card-front{transform:rotateY(180deg);border:1.5px solid #d4c2e2;background:#fffcf7;gap:0;padding:4px 3px 6px;box-shadow:0 3px 0 #b7a2ce20}.card-front:before{content:"";position:absolute;width:57%;aspect-ratio:1;border-radius:50%;background:var(--animal-color);opacity:.24;top:12%;z-index:-1}.card-front .animal-svg{width:75%;height:64%;max-height:85px;flex-shrink:1}.card-value{font-size:clamp(15px,2.05vw,24px);font-weight:900;letter-spacing:-.8px;line-height:1.1;margin-top:0;white-space:nowrap}.card-value.question{color:var(--purple)}.card-kind{font-size:6px;letter-spacing:.6px;font-weight:800;color:#a397aa;margin-top:5px}.owner-tag{position:absolute;top:4px;right:4px;width:15px;height:15px;border-radius:50%;display:grid;place-items:center;font-size:8px;font-weight:900;color:white;background:#81a38d;opacity:0}.owner-tag svg{width:10px;height:10px}.memory-card.found .owner-tag{opacity:1}.memory-card.found .card-front{border-color:#a9c2b0;background:#f0f7ef}.memory-card.found.kitty-owned .card-front{border-color:#c8b5df;background:#f1eaf7}.memory-card.found.kitty-owned .owner-tag{background:#a68bc5}.memory-card.found{opacity:.64}.memory-card.just-matched{animation:pairpop .5s ease;opacity:1}.memory-card.focus-ping .card-front{box-shadow:0 0 0 3px #f5d994}@keyframes pairpop{50%{transform:translateY(-5px) scale(1.025)}}
+.pause-overlay{position:absolute;inset:0;background:#fbf8f3ed;backdrop-filter:blur(7px);border-radius:23px;z-index:3;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;padding:30px;text-align:center}.pause-overlay .mascot-svg{height:120px;width:132px}.pause-overlay h3{font-size:24px}.pause-overlay p{font-size:12px;color:var(--muted)}.game-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px 3px;font-size:10px;color:var(--muted)}.kitty-says{display:flex;align-items:center;gap:8px;min-width:0;line-height:1.5}.kitty-says strong{color:var(--purple);font-weight:800}.mini-paw{width:21px;height:21px;flex-shrink:0;color:#b39acb}.mini-paw svg{width:100%;height:100%}.footer-tip{white-space:nowrap}.footer-tip b{color:var(--purple);font-weight:800}.toast{position:fixed;bottom:max(27px,env(safe-area-inset-bottom));left:50%;transform:translate(-50%,20px);background:#463953;color:#fff8ed;padding:14px 22px;border-radius:16px;font-size:13px;font-weight:700;box-shadow:0 8px 30px #49355722;opacity:0;transition:opacity .22s,transform .22s;z-index:20;pointer-events:none;text-align:center;max-width:calc(100vw - 30px);width:max-content;line-height:1.5}.toast.visible{opacity:1;transform:translate(-50%,0)}
+.site-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:16px;margin-top:22px;color:#a39aa9;font-size:9px;letter-spacing:.15px}.site-footer button{padding:3px 0;border:0;background:none;color:var(--muted);font-size:10px;text-decoration:underline;text-underline-offset:4px}.music-caption{display:flex;align-items:center;gap:7px}.music-caption i{width:5px;height:5px;border-radius:50%;background:#b6a4c9}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+dialog{border:1px solid #d7cbe2;padding:0;border-radius:25px;max-width:min(460px,calc(100vw - 30px));width:460px;background:var(--white);color:var(--ink);box-shadow:0 20px 90px #45354f30;max-height:calc(100dvh - 40px);overflow:auto}dialog::backdrop{background:#41354f66;backdrop-filter:blur(4px)}.dialog-inner{padding:28px}.dialog-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}.dialog-top h2{font-size:24px}.close-btn{border:1px solid var(--line);border-radius:50%;width:31px;height:31px;background:transparent;font-size:19px;line-height:1}.settings-label{font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:space-between}.setting-note{font-size:11px;line-height:1.7;color:var(--muted);margin-top:8px}.pair-count{font-size:24px;color:var(--purple)}input[type=range]{accent-color:var(--purple);width:100%;height:27px;margin:12px 0 7px;cursor:pointer}.range-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}.presets{display:flex;gap:8px;margin:13px 0 23px}.presets button{flex:1;background:var(--lavender);border:0;color:var(--purple);padding:9px 5px;border-radius:10px;font-size:10px;font-weight:800}.settings-divider{border:0;border-top:1px solid var(--line);margin:21px 0}.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:17px 0;font-size:12px}.toggle-row label{font-weight:800;display:block}.toggle-row small{display:block;font-size:10px;color:var(--muted);margin-top:4px;font-weight:normal}.switch{appearance:none;-webkit-appearance:none;width:38px;height:22px;background:#ded6e5;border-radius:100px;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}.switch:after{content:"";position:absolute;width:16px;height:16px;top:3px;left:3px;background:white;border-radius:50%;box-shadow:0 1px 3px #40314522;transition:transform .2s}.switch:checked{background:var(--purple)}.switch:checked:after{transform:translateX(16px)}.dialog-bottom{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}.dialog-bottom .primary{flex:1}.help-example{display:flex;justify-content:center;gap:16px;margin:19px 0}.example-card{border:1px solid #d6c6e5;border-radius:14px;background:#faf6ff;width:100px;text-align:center;padding:5px 8px 12px;font-size:22px;font-weight:900;color:var(--purple)}.example-card .animal-svg{display:block;width:75px;height:73px;margin:0 auto}.help-step{display:flex;gap:13px;margin:17px 0;font-size:12px;line-height:1.8}.help-step b:first-child{border-radius:50%;width:25px;height:25px;background:var(--lavender);color:var(--purple);display:grid;place-items:center;flex-shrink:0}.help-step p{color:var(--muted)}.help-step strong{color:var(--ink)}.result-inner{text-align:center}.result-art{display:flex;justify-content:center;margin-top:-6px}.result-art .mascot-svg{width:143px;height:132px}.result-title{font-size:30px;letter-spacing:-1px;margin-bottom:10px}.result-copy{font-size:12px;color:var(--muted);line-height:1.7}.result-scores{display:flex;gap:12px;margin:22px 0}.result-score{flex:1;padding:17px;background:var(--mint);border-radius:16px;font-size:12px}.result-score:last-child{background:var(--lavender)}.result-score b{display:block;font-size:32px;margin:6px 0}.review-label{font-size:10px;color:var(--muted);margin-bottom:10px}.review-facts{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.review-facts button{border:1px solid var(--line);border-radius:9px;background:white;padding:7px 9px;font-size:10px;color:var(--purple);font-weight:800}.confetti{position:fixed;top:-25px;width:9px;height:14px;z-index:100;pointer-events:none;border-radius:3px;animation:confetti-fall var(--duration) ease-in forwards}@keyframes confetti-fall{to{transform:translate(var(--drift),110vh) rotate(var(--spin));opacity:.3}}
+@media(min-width:1000px) and (max-height:900px){.hero{min-height:153px;padding-top:15px;padding-bottom:16px}.hero .mascot-svg{width:142px;height:130px}h1{font-size:43px}.app{padding-top:18px}.modebar{margin-bottom:17px;padding-bottom:13px}.table-card{padding:15px}.table-head,.fact-cell,.table-corner{aspect-ratio:1.35}.friend-frame{height:115px}.friend-frame .animal-svg{height:110px}.memory-card{aspect-ratio:.96}.card-front .animal-svg{height:60%}.score-strip{margin-bottom:12px}.board-wrap{padding:12px}.memory-board{gap:8px}}
+@media(max-width:850px){.app{padding:20px 22px}.garden-layout{grid-template-columns:minmax(0,1fr) 235px;gap:14px}.fact-detail{padding:18px 14px}.table-card{padding:12px}.times-table{gap:4px}.table-head,.fact-cell,.table-corner{font-size:12px;border-radius:7px;aspect-ratio:.95}.fact-equation{font-size:26px}.hero-friends{margin-right:0}.hero .mascot-svg{width:132px;height:122px}.speech{font-size:11px;max-width:134px;padding:11px 13px}.score-strip{grid-template-columns:1fr 1.15fr 1fr;gap:9px}.score-card{padding:10px;gap:7px}.avatar{width:30px;height:30px}.memory-board{grid-template-columns:repeat(var(--tablet-cols,8),minmax(0,1fr));gap:7px}.memory-card{aspect-ratio:.85}.card-value{font-size:19px}.card-kind{font-size:5px}.board-wrap{padding:11px}.footer-tip{font-size:9px}.hero{min-height:174px}.game-options .badge{display:none}}
+@media(max-width:640px){.app{padding:16px 14px 22px}.topbar{gap:8px}.brand{font-size:10px;letter-spacing:1.3px;gap:8px}.brand-icon{width:31px;height:31px;border-radius:10px}.brand-icon svg{width:21px}.top-actions{gap:6px}.soft-btn{padding:8px 10px;font-size:10px;border-radius:12px;min-height:35px}.icon-btn{width:35px;min-height:35px;padding:8px;border-radius:11px}.icon-btn svg{width:17px}.hero{padding:20px 3px 21px;gap:5px;min-height:154px}.eyebrow{font-size:7px;letter-spacing:1.1px;margin-bottom:8px}h1{font-size:35px;letter-spacing:-1.8px;max-width:240px;line-height:1.08}h1 span{display:block}.hero-desc{font-size:10px;max-width:200px;margin-top:8px}.hero .mascot-svg{width:117px;height:110px}.speech{display:none}.sparkle{font-size:19px;right:0;top:0}.sparkle.small{right:96px;bottom:6px}.modebar{gap:8px;padding-bottom:14px;margin-bottom:17px}.tabs{padding:4px;gap:2px;border-radius:14px;flex:1}.tab{font-size:11px;padding:10px 11px;min-height:36px;justify-content:center;flex:1;gap:4px}.tab .tab-num{font-size:8px}.new-round{font-size:11px;padding:10px 12px;min-height:43px;gap:7px;border-radius:13px}.new-round .card-count-label{display:none}.tab .long-title{display:none}.section-heading{margin-bottom:12px;gap:8px}h2{font-size:19px}.subcopy{font-size:10px;margin-top:4px}.badge{font-size:8px;padding:6px 8px}.garden-layout{grid-template-columns:1fr}.table-card{padding:10px;border-radius:19px}.times-table{gap:3px}.table-head,.fact-cell,.table-corner{font-size:12px;border-radius:7px;aspect-ratio:1}.table-corner{font-size:20px}.table-caption{font-size:8px;margin:12px 2px 3px}.fact-detail{display:grid;grid-template-columns:96px 1fr;grid-template-rows:auto auto auto;align-items:center;column-gap:10px;padding:14px 17px;text-align:left;border-radius:19px}.detail-kicker{grid-column:2;grid-row:1;align-self:end;font-size:8px;margin-top:3px}.friend-frame{grid-column:1;grid-row:1/4;width:94px;height:99px;margin:0}.friend-frame:before{width:84px;height:84px}.friend-frame .animal-svg{width:97px;height:94px}.friend-name{display:none}.fact-equation{grid-column:2;grid-row:2;margin:5px 0;font-size:29px}.fact-words{grid-column:2;grid-row:3;font-size:10px;align-self:start}.array-wrap{grid-column:1/3;margin-top:14px;min-height:0;padding:12px;display:grid;grid-template-columns:auto 1fr;gap:15px;text-align:center}.count-dot{width:10px;height:10px;border-radius:3px}.dot-array{gap:3px}.array-label{font-size:10px}.listen-fact{grid-column:1/3;margin-top:5px;font-size:10px;padding:6px}.garden-bottom{margin-top:15px;padding:13px;gap:8px;border-radius:15px}.garden-bottom p{font-size:10px}.garden-bottom p span{font-size:9px}.garden-bottom .primary{font-size:10px;padding:10px 11px;min-height:36px}.score-strip{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}.score-card{padding:10px 12px;border-radius:15px;gap:9px}.score-card.kitty{grid-column:2;grid-row:1}.score-number{font-size:23px}.score-name{font-size:11px}.score-label{font-size:8px}.turn-card{grid-row:2;grid-column:1/3;gap:5px;padding:4px 10px 0}.turn-title{font-size:12px}.turn-hint{font-size:10px}.progress-track{max-width:170px;height:3px}.memory-board{grid-template-columns:repeat(var(--mobile-cols,5),minmax(0,1fr));gap:6px}.board-wrap{padding:9px;border-radius:18px}.memory-card{aspect-ratio:.77;border-radius:9px}.card-inner,.card-front,.card-back{border-radius:9px}.card-back{background-size:10px 10px;box-shadow:inset 0 0 0 3px #f5effa,0 2px 0 #b7a2ce30}.card-front{padding:4px 1px 6px}.card-front .animal-svg{width:91%;height:61%;max-height:75px}.card-value{font-size:clamp(13px,4.1vw,19px);letter-spacing:-.6px}.card-kind{font-size:4px;letter-spacing:.35px;margin-top:4px}.owner-tag{top:3px;right:3px;width:12px;height:12px;font-size:7px}.owner-tag svg{width:9px;height:9px}.card-corner-star{font-size:7px;top:7px;left:7px}.card-corner-star.last{bottom:7px;right:7px}.game-footer{font-size:9px;align-items:flex-start;padding:12px 2px;gap:7px}.footer-tip{font-size:8px}.mini-paw{width:16px;height:16px}.game-heading .subcopy{max-width:200px}.game-options .soft-btn{font-size:9px;padding:6px 9px;min-height:30px}.site-footer{font-size:8px;margin-top:18px;gap:12px;line-height:1.6}.site-footer button{font-size:9px;white-space:nowrap}.toast{font-size:11px;padding:12px 17px;bottom:20px}.dialog-inner{padding:23px}.dialog-top h2{font-size:22px}}
+@media(min-width:641px) and (max-width:850px){.back-value{font-size:clamp(16px,2.35vw,20px)}.card-back.answer .back-value{font-size:29px}.back-clue{width:calc(100% - 10px);padding:8px 1px;gap:6px}.back-kind{font-size:6px;letter-spacing:.7px}}
+@media(max-width:640px){.back-clue{width:calc(100% - 8px);min-height:62%;padding:8px 0;border-radius:6px;gap:6px}.back-value{font-size:clamp(12px,3.7vw,22px);letter-spacing:-.6px}.card-back.answer .back-value{font-size:clamp(23px,7.2vw,37px);letter-spacing:-.6px}.back-kind{font-size:5px;letter-spacing:.5px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="topbar"><div class="brand"><span class="brand-icon" data-paw></span><span>JULIETTE’S KITTY CLUB</span></div><div class="top-actions"><button class="soft-btn" id="music-button" aria-label="Start the music" aria-pressed="false"><span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">Music</span></button><button class="icon-btn" id="settings-button" aria-label="Game and sound settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2.5" fill="#fffefa"/><circle cx="16" cy="12" r="2.5" fill="#fffefa"/><circle cx="8" cy="18" r="2.5" fill="#fffefa"/></svg></button></div></header>
+<section class="hero" aria-label="Welcome to Juliette’s Kitty Club"><div><div class="eyebrow">A LITTLE PRACTICE. A LOT OF PLAY.</div><h1>Big brains. <span>Little paws.</span></h1><p class="hero-desc">Multiplication, memory & one very cheeky kitty.</p></div><div class="hero-friends"><div class="speech">“I’m only a <em>little bit</em> naughty. Hee hee!”</div><div id="hero-kitty"></div><span class="sparkle" aria-hidden="true">✧</span><span class="sparkle small" aria-hidden="true">✦</span></div></section>
+<nav class="modebar" aria-label="Choose a game mode"><div class="tabs" role="tablist" aria-label="Game modes"><button class="tab" id="garden-tab" role="tab" aria-selected="true" aria-controls="garden" tabindex="0"><span class="tab-num">01</span> Times tables<span class="long-title"> garden</span></button><button class="tab" id="memory-tab" role="tab" aria-selected="false" aria-controls="memory" tabindex="-1"><span class="tab-num">02</span> Memory<span class="long-title"> match</span></button></div><button class="primary new-round" id="new-round">New round <span class="card-count-label">· <span id="top-card-count">50</span> cards</span><span class="arrow" aria-hidden="true">↗</span></button></nav>
+<section id="garden" role="tabpanel" aria-labelledby="garden-tab"><div class="section-heading"><div><h2>The times-table garden</h2><p class="subcopy">Tap a square. Make friends with a fact.</p></div><span class="badge">1–10 × 1–10</span></div><div class="garden-layout"><div class="table-card"><div class="times-table" id="times-table" role="group" aria-label="Multiplication table, 1 to 10"></div><div class="table-caption"><span><span class="tiny-dot"></span>Choose any number to explore</span><b>100 little discoveries</b></div></div><aside class="fact-detail" aria-label="Selected multiplication fact"><div class="detail-kicker">TODAY’S LITTLE DISCOVERY</div><div class="friend-frame" id="fact-animal"></div><div class="friend-name" id="fact-friend">Cat says…</div><div class="fact-equation" id="fact-equation">5 × 5 = <strong>25</strong></div><p class="fact-words" id="fact-words">5 groups of 5 make 25.</p><div class="array-wrap"><div class="dot-array" id="dot-array" aria-hidden="true"></div><p class="array-label" id="array-label"></p></div><button class="listen-fact" id="listen-fact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4zM17 8q5 4 0 8M19 4q9 8 0 16"/></svg>Say it with Kitty</button></aside></div><div class="garden-bottom"><p><strong>Ready to find your animal friends?</strong><br><span>Match a multiplication to its answer. Find a pair, play again.</span></p><button class="primary" id="garden-play">Let’s play <span aria-hidden="true">→</span></button></div></section>
+<section id="memory" role="tabpanel" aria-labelledby="memory-tab" hidden><div class="section-heading game-heading"><div><h2>Multiply. Match. Beat Kitty!</h2><p class="subcopy" id="round-caption">Match a multiplication to its answer.</p></div><div class="game-options"><span class="badge purple">Kitty · medium</span><button class="soft-btn" id="pause-button">Pause</button></div></div><div class="score-strip"><div class="score-card active" id="human-score-card"><div class="avatar" aria-hidden="true">J</div><div><div class="score-name">Juliette</div><div class="score-label">PAIRS FOUND</div></div><div class="score-number" id="human-score">0</div></div><div class="turn-card"><div class="turn-title" id="turn-title"><span></span>Your turn, Juliette!</div><div class="turn-hint" id="turn-hint">Match a multiplication to its answer. The animals will match too!</div><div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div></div><div class="score-card kitty" id="kitty-score-card"><div class="avatar kitty-avatar" data-paw aria-hidden="true"></div><div><div class="score-name">Naughty Kitty</div><div class="score-label">PAIRS FOUND</div></div><div class="score-number" id="kitty-score">0</div></div></div><div class="board-wrap"><div class="memory-board" id="memory-board" role="group" aria-label="Animal memory cards"></div><div class="pause-overlay" id="pause-overlay" hidden><div id="pause-kitty"></div><h3>A little catnap.</h3><p>Your cards and scores are right where you left them.</p><button class="primary" id="resume-button">Keep playing <span aria-hidden="true">→</span></button></div></div><div class="game-footer"><div class="kitty-says"><span class="mini-paw" data-paw aria-hidden="true"></span><span><strong>Kitty:</strong> <span id="kitty-line">“You know your tables? Oh no! I only remember animals!”</span></span></div><span class="footer-tip"><b>Find a pair</b> → play again</span></div></section>
+<footer class="site-footer"><span class="music-caption"><i aria-hidden="true"></i><span id="soundtrack-caption">Little paws, big daydreams · an evolving original soundtrack</span></span><button id="how-to-play">How to play</button></footer>
+</main>
+<div class="toast" id="toast" aria-hidden="true"></div><div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+<dialog id="settings-dialog" aria-labelledby="settings-title"><div class="dialog-inner"><div class="dialog-top"><h2 id="settings-title">Make it your game</h2><button class="close-btn" data-close="settings-dialog" aria-label="Close settings">×</button></div><label class="settings-label" for="pairs-slider">Animal pairs <span class="pair-count" id="pairs-value">25</span></label><input id="pairs-slider" type="range" min="2" max="42" value="25"><div class="range-ends"><span>2 pairs · tiny paws</span><span>42 pairs · big brain</span></div><p class="setting-note"><strong id="settings-card-count">25 pairs = 50 cards.</strong> Every animal needs two cards: a multiplication and its answer. Changes apply to your next round.</p><div class="presets"><button data-pairs="6">A little game · 12 cards</button><button data-pairs="12">A medium game · 24 cards</button><button data-pairs="25">A big game · 50 cards</button></div><hr class="settings-divider"><div class="toggle-row"><label for="music-toggle">Evolving synth music<small>A changing melody, warm bass & tiny synth drums.</small></label><input type="checkbox" role="switch" class="switch" id="music-toggle" checked></div><div class="toggle-row"><label for="effects-toggle">Little sound effects<small>Card flips, happy matches & kitty giggles.</small></label><input type="checkbox" role="switch" class="switch" id="effects-toggle" checked></div><div class="toggle-row"><label for="voice-toggle">Kitty’s voice<small>“Hee hee hee!” and “Oh no, you got me!”</small></label><input type="checkbox" role="switch" class="switch" id="voice-toggle" checked></div><label class="settings-label" for="volume-slider" style="margin-top:22px;font-size:12px">Sound volume <span id="volume-value">42%</span></label><input id="volume-slider" type="range" min="0" max="100" value="42"><p class="setting-note">Kitty has a forgetful, medium-strength memory. She only knows cards that have been turned over. No peeking!</p><div class="dialog-bottom"><button class="soft-btn" data-close="settings-dialog">Back</button><button class="primary" id="settings-new-round">Start a fresh round <span aria-hidden="true">→</span></button></div></div></dialog>
+<dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-inner"><div class="dialog-top"><h2 id="help-title">A game of little discoveries</h2><button class="close-btn" data-close="help-dialog" aria-label="Close instructions">×</button></div><div class="help-example"><div class="example-card"><div class="example-animal"></div>5 × 5</div><div class="example-card"><div class="example-animal"></div>25</div></div><div class="help-step"><b>1</b><p><strong>Meet the numbers.</strong> Explore the 1–10 times table. Tap a square to see the multiplication in little groups.</p></div><div class="help-step"><b>2</b><p><strong>Read the backs before you flip.</strong> One card says <strong>5 × 5</strong>; its partner says <strong>25</strong>. The matching animal is hidden on the other side. Every answer is different within a round.</p></div><div class="help-step"><b>3</b><p><strong>Find a pair, play again!</strong> Solve a multiplication, flip its two cards, and the matching animals confirm it! Miss a pair and it’s Kitty’s turn. You can remember the animals, too.</p></div><div class="help-step"><b>4</b><p><strong>Collect the most pairs.</strong> Kitty uses a forgetful animal memory, not the printed maths. Knowing your times tables lets you outsmart her! There’s no timer. Take all the thinking time you need.</p></div><p class="setting-note">Start with 25 pairs (50 cards), or change the size in settings. Use a mouse, touch, or arrow keys and Enter. Your game pauses when you visit the table or leave the tab. Sound starts after a tap; spoken lines use a voice available on your device.</p><div class="dialog-bottom"><button class="primary" data-close="help-dialog">Let’s do this!</button></div></div></dialog>
+<dialog id="restart-dialog" aria-labelledby="restart-title"><div class="dialog-inner"><div class="dialog-top"><h2 id="restart-title">A fresh little adventure?</h2><button class="close-btn" data-close="restart-dialog" aria-label="Keep this round">×</button></div><p class="setting-note">Starting a new round will replace these cards and reset both scores. Your times-table garden will still be here.</p><div class="dialog-bottom"><button class="soft-btn" data-close="restart-dialog">Keep this round</button><button class="primary" id="confirm-restart">New round</button></div></div></dialog>
+<dialog id="result-dialog" aria-labelledby="result-title"><div class="dialog-inner result-inner"><div class="dialog-top" style="margin-bottom:0"><span class="detail-kicker">EVERY FRIEND FOUND</span><button class="close-btn" data-close="result-dialog" aria-label="See the finished board">×</button></div><div class="result-art" id="result-art"></div><h2 class="result-title" id="result-title">Purr-fectly played!</h2><p class="result-copy" id="result-copy"></p><div class="result-scores"><div class="result-score">Juliette<b id="result-human">0</b>pairs</div><div class="result-score">Naughty Kitty<b id="result-kitty">0</b>pairs</div></div><div id="review-block" hidden><p class="review-label">A few facts to visit in the garden</p><div class="review-facts" id="review-facts"></div></div><div class="dialog-bottom"><button class="soft-btn" id="result-garden">Visit the garden</button><button class="primary" id="play-again">Play again <span aria-hidden="true">↗</span></button></div></div></dialog>
+<script id="core-source">
+/* Pure game rules. KittyMind is deliberately not given hidden card objects. */
+'use strict';
+(function (root) {
+  const ANIMALS = [
+    ['cat','Cat','#ffce91'],['rabbit','Bunny','#eedfff'],['fox','Fox','#ffad82'],
+    ['panda','Panda','#f6f4ec'],['frog','Frog','#b9dea0'],['bear','Bear','#d7ad86'],
+    ['pig','Piglet','#ffc1d1'],['owl','Owl','#b9b0ef'],['dog','Puppy','#dfba88'],
+    ['koala','Koala','#bfcddb'],['mouse','Mouse','#d5c6de'],['lion','Lion','#ffdc91'],
+    ['tiger','Tiger','#ffc072'],['penguin','Penguin','#839bad'],['duck','Duck','#ffe194'],
+    ['chick','Chick','#fff0a4'],['cow','Cow','#f8f2e4'],['sheep','Lamb','#fff5df'],
+    ['deer','Deer','#dcbc98'],['raccoon','Raccoon','#bfc4cf'],['elephant','Elephant','#b8cce5'],
+    ['hippo','Hippo','#cdbde4'],['monkey','Monkey','#bb916f'],['giraffe','Giraffe','#f3d384'],
+    ['zebra','Zebra','#eeebe9'],['horse','Pony','#cda98e'],['unicorn','Unicorn','#f1daff'],
+    ['seal','Seal','#cee5e6'],['otter','Otter','#c79f80'],['hedgehog','Hedgehog','#bd8d77'],
+    ['sloth','Sloth','#d0baa1'],['wolf','Wolf','#b6c7d7'],['bat','Bat','#baa6d9'],
+    ['bee','Bee','#ffe293'],['butterfly','Butterfly','#e0b6ed'],['ladybug','Ladybird','#f39d9d'],
+    ['turtle','Turtle','#aed3a6'],['whale','Whale','#a6d5ed'],['octopus','Octopus','#ebbdde'],
+    ['crab','Crab','#f4b299'],['fish','Fish','#ffcea1'],['snail','Snail','#d1bbe8']
+  ].map(([id,name,color])=>({id,name,color}));
+  const products = new Map();
+  for (let a=1;a<=10;a++) for(let b=1;b<=10;b++) {
+    const p=a*b; if(!products.has(p))products.set(p,[]); products.get(p).push([a,b]);
+  }
+  const FACTS = Array.from(products,([product,factors])=>({product,factors})).sort((a,b)=>a.product-b.product);
+  function seeded(seed=1) {
+    let s=seed>>>0;
+    return ()=>{s+=0x6D2B79F5;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};
+  }
+  function shuffle(input,rng=Math.random) {
+    const a=input.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
+  }
+  function makeDeck(count=25,rng=Math.random) {
+    if(!Number.isInteger(count)||count<2||count>FACTS.length)throw new RangeError('Choose 2–42 pairs.');
+    const facts=shuffle(FACTS,rng).slice(0,count), animals=shuffle(ANIMALS,rng);
+    const cards=[];
+    facts.forEach((fact,i)=>{
+      const [a,b]=fact.factors[Math.floor(rng()*fact.factors.length)];
+      for(const kind of ['question','answer'])cards.push({pairId:fact.product,a,b,product:fact.product,kind,animal:animals[i],matched:false,owner:null,revealed:false});
+    });
+    return shuffle(cards,rng).map((card,index)=>({...card,index}));
+  }
+  class Round {
+    constructor(count=25,rng=Math.random){
+      this.cards=makeDeck(count,rng);this.count=count;this.turn='human';this.phase='choosing';this.opened=[];this.scores={human:0,kitty:0};this.attempts=0;this.matches=0;
+    }
+    available(){return this.cards.filter(c=>!c.matched&&!c.revealed).map(c=>c.index);}
+    publicCard(index){const c=this.cards[index];if(!c||(!c.revealed&&!c.matched))return null;return {index:c.index,pairId:c.pairId,kind:c.kind,a:c.a,b:c.b,product:c.product,animal:c.animal};}
+    select(index){
+      const c=this.cards[index];
+      if(this.phase!=='choosing'||!c||c.matched||c.revealed)return null;
+      c.revealed=true;this.opened.push(index);if(this.opened.length===2){this.phase='resolving';this.attempts++;}
+      return {type:this.opened.length===1?'first':'second',card:this.publicCard(index)};
+    }
+    resolve(){
+      if(this.phase!=='resolving')return null;
+      const [x,y]=this.opened.map(i=>this.cards[i]);const match=x.pairId===y.pairId;const player=this.turn;const indices=this.opened.slice();
+      if(match){for(const c of [x,y]){c.matched=true;c.owner=player;}this.scores[player]++;this.matches++;}
+      else{for(const c of [x,y])c.revealed=false;this.turn=player==='human'?'kitty':'human';}
+      this.opened=[];this.phase=this.matches===this.count?'finished':'choosing';
+      return {match,player,indices,fact:{a:x.a,b:x.b,product:x.product,animal:x.animal},finished:this.phase==='finished',next:this.turn};
+    }
+  }
+  class KittyMind {
+    constructor(rng=Math.random,capacity=14){this.rng=rng;this.capacity=capacity;this.memory=new Map();this.clock=0;}
+    observe(card){
+      if(!card)return;this.clock++;
+      // Kitty notices most reveals, but sometimes gets distracted by her own tail.
+      if(this.rng()<0.83)this.memory.set(card.index,{index:card.index,pairId:card.pairId,seen:this.clock});
+      while(this.memory.size>this.capacity){let oldest=null;for(const e of this.memory.values())if(!oldest||e.seen<oldest.seen)oldest=e;this.memory.delete(oldest.index);}
+    }
+    remove(indices){for(const i of indices)this.memory.delete(i);}
+    choose(available,firstPublic=null){
+      if(!available.length)return null;
+      const legal=new Set(available);const remembered=Array.from(this.memory.values()).filter(e=>legal.has(e.index));
+      if(firstPublic){
+        const mate=remembered.find(e=>e.pairId===firstPublic.pairId);
+        if(mate&&this.rng()<0.90)return mate.index;
+      }else{
+        const seen=new Map();
+        for(const e of remembered){if(seen.has(e.pairId)&&this.rng()<0.87)return seen.get(e.pairId);seen.set(e.pairId,e.index);}
+      }
+      const unknown=available.filter(i=>!this.memory.has(i));
+      const pool=unknown.length&&this.rng()<0.84?unknown:available;
+      return pool[Math.floor(this.rng()*pool.length)];
+    }
+  }
+  root.MemoryRules=Object.freeze({ANIMALS,FACTS,seeded,shuffle,makeDeck,Round,KittyMind});
+})(globalThis);
+
+</script>
+<script id="art-source">
+/* Original, inline SVG animal illustrations. No image/font/network dependencies. */
+'use strict';
+function animalSVG(id,extra='') {
+  const animal=MemoryRules.ANIMALS.find(a=>a.id===id)||MemoryRules.ANIMALS[0];
+  const c=animal.color, ink='#51465e', cream='#fff7e9';
+  const el=(cx,cy,rx,ry,fill=c,more='')=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" ${more}/>`;
+  const ci=(x,y,r,f=c,more='')=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${more}/>`;
+  const path=(d,fill=c,more='')=>`<path d="${d}" fill="${fill}" ${more}/>`;
+  const line=d=>path(d,'none');
+  const eyes=(y=65,x=49,xx=71)=>`<g fill="${ink}" stroke="none">${el(x,y,2.5,3,ink)}${el(xx,y,2.5,3,ink)}${ci(x+.6,y-1,.8,'white')}${ci(xx+.6,y-1,.8,'white')}</g>`;
+  const blush=(y=75)=>`<g fill="#f7a8b1" stroke="none" opacity=".55">${el(40,y,5,2.7,'#f7a8b1')}${el(80,y,5,2.7,'#f7a8b1')}</g>`;
+  let back='',front='',face=el(60,66,31,28),detail='',customEyes=false;
+  const roundEars=(r=10,fill=c)=>ci(34,39,r,fill)+ci(86,39,r,fill);
+  const catEars=(fill=c)=>path('M30 52 L28 25 Q29 22 33 25 L49 40',fill)+path('M72 40 L88 25 Q92 23 92 28 L89 53',fill);
+  const muzzle=()=>el(60,77,15,10,cream)+path('M57 73 Q60 70 63 73 L60 76 Z',ink)+line('M60 76 v3 m0 0 q-4 4-7 0 m7 0 q4 4 7 0');
+  switch(id){
+    case 'cat':back=catEars();front=path('M34 41 L33 30 43 40','#eea49b')+path('M77 40 L88 30 86 43','#eea49b');detail=muzzle()+line('M36 72 l-11-2 M36 77 l-11 2 M84 72 l11-2 M84 77 l11 2');break;
+    case 'rabbit':back=el(44,28,10,24)+el(76,28,10,24)+el(44,27,4,17,'#f1b8d2')+el(76,27,4,17,'#f1b8d2');detail=muzzle()+path('M55 83 h10 v8 h-10z','white')+line('M60 84v6');break;
+    case 'fox':back=catEars();face=path('M29 57 Q25 35 47 43 Q60 33 73 43 Q95 33 91 58 Q90 82 60 99 Q30 82 29 57');front=path('M31 60 Q48 60 60 81 Q74 59 89 60 Q85 83 60 96 Q34 82 31 60',cream);detail=path('M55 79 Q60 75 65 79 L60 85Z',ink);break;
+    case 'panda':back=roundEars(12,ink);front=el(47,64,9,12,ink,'transform="rotate(20 47 64)"')+el(73,64,9,12,ink,'transform="rotate(-20 73 64)"');detail=ci(48,63,3,'white')+ci(72,63,3,'white')+ci(48,64,1.5,ink)+ci(72,64,1.5,ink)+muzzle();customEyes=true;break;
+    case 'frog':back=ci(41,44,13)+ci(79,44,13);face=el(60,70,35,25);front=ci(42,45,7,'#fffbe8')+ci(78,45,7,'#fffbe8')+ci(42,46,3,ink)+ci(78,46,3,ink);detail=line('M46 72 Q60 85 74 72');customEyes=true;break;
+    case 'bear':back=roundEars(12)+ci(34,39,6,'#bd917c')+ci(86,39,6,'#bd917c');detail=muzzle();break;
+    case 'pig':back=path('M31 55 Q18 24 37 30 L49 42')+path('M73 41 Q101 21 89 55');detail=el(60,77,17,11,'#f4a5b9')+el(54,77,2,3,ink)+el(66,77,2,3,ink);break;
+    case 'owl':back=path('M29 52 L30 29 48 39')+path('M72 39 L90 29 91 54');front=path('M60 51 Q37 30 31 57 Q30 83 60 90 Q90 83 89 57 Q84 30 60 51',cream);detail=ci(46,62,11,'white')+ci(74,62,11,'white')+eyes(62,46,74)+path('M55 73 L65 73 60 81Z','#efbf70');customEyes=true;break;
+    case 'dog':back=el(28,58,13,28,'#bb917b','transform="rotate(12 28 58)"')+el(92,58,13,28,'#bb917b','transform="rotate(-12 92 58)"');front=el(75,59,12,15,'#b98d70');detail=muzzle()+path('M60 84 q0 12 7 6 v-8','#f1a4ab');break;
+    case 'koala':back=roundEars(18)+ci(34,39,11,'#e5dce2')+ci(86,39,11,'#e5dce2');detail=el(60,73,8,12,ink)+line('M56 86 q4 3 8 0');break;
+    case 'mouse':back=roundEars(19)+ci(34,39,12,'#f5c2d4')+ci(86,39,12,'#f5c2d4');detail=muzzle()+line('M36 72 l-10-4 M36 78 l-12 2 M84 72 l10-4 M84 78 l12 2');break;
+    case 'lion':back=path('M60 21 70 27 83 25 89 36 101 41 100 54 108 65 99 76 98 89 85 94 77 105 64 101 53 105 43 97 29 95 24 82 14 74 20 61 18 48 30 42 33 29 47 29Z','#d99b69')+roundEars(10);detail=muzzle();break;
+    case 'tiger':back=roundEars(11);front=path('M51 39 L56 53 59 39 M63 39 L67 51 71 40 M30 59 L42 62 29 67 M90 59 L78 62 91 67',ink);detail=muzzle();break;
+    case 'penguin':face=el(60,63,31,37);front=path('M60 46 Q42 29 36 56 L36 75 Q42 93 60 95 Q79 93 84 75 L84 56 Q78 29 60 46',cream);detail=path('M54 75 L66 75 60 82Z','#f3bb73');back=el(38,96,13,5,'#efc078')+el(82,96,13,5,'#efc078');break;
+    case 'duck':back=path('M55 41 Q43 20 60 26 Q73 15 67 39');detail=el(60,78,18,8,'#eeb479')+line('M45 78 h30');break;
+    case 'chick':back=path('M54 40 Q41 23 55 30 Q59 15 62 31 Q76 22 67 40');detail=path('M54 74 Q60 70 66 74 L60 81Z','#efb471');break;
+    case 'cow':back=el(25,48,16,9)+el(95,48,16,9)+path('M36 41 Q23 17 43 33','#dfc39a')+path('M78 34 Q99 17 85 44','#dfc39a');front=path('M32 56 Q39 37 55 39 Q60 59 42 67Z','#8d8595');detail=el(60,81,23,12,'#f1b6c5')+el(50,80,2,3,ink)+el(70,80,2,3,ink);break;
+    case 'sheep':back=el(26,59,16,9,'#d3bfae')+el(94,59,16,9,'#d3bfae');face=el(60,65,28,29,'#e1caba');front=ci(33,49,10)+ci(40,38,10)+ci(52,32,11)+ci(66,31,11)+ci(79,37,11)+ci(87,49,10);detail=muzzle();break;
+    case 'deer':back=line('M39 44 L34 15 M35 25 L24 19 M34 31 L44 20 M81 44 L86 15 M85 25 L96 19 M86 31 L76 20')+el(28,47,14,8)+el(92,47,14,8);front=ci(44,52,3,cream)+ci(76,52,3,cream)+ci(60,46,3,cream);detail=muzzle();break;
+    case 'raccoon':back=catEars();front=path('M31 58 Q42 49 60 58 Q78 49 89 58 L85 76 Q71 81 60 69 Q49 81 35 76Z','#776f85');detail=eyes(64)+muzzle();customEyes=true;break;
+    case 'elephant':back=el(26,60,22,30)+el(94,60,22,30)+el(24,60,13,21,'#d5c8dd')+el(96,60,13,21,'#d5c8dd');detail=path('M51 72 L50 92 Q51 109 72 104 L77 96 Q61 101 66 89 L68 72')+line('M51 85 h12 M52 92 h10');break;
+    case 'hippo':back=roundEars(8);detail=el(60,81,27,16,'#dac9e9')+ci(46,76,3,ink)+ci(74,76,3,ink)+path('M49 92 v6 h6 v-6 M66 92 v6 h6 v-6','white');break;
+    case 'monkey':back=roundEars(16)+ci(34,39,9,'#e9caac')+ci(86,39,9,'#e9caac');front=path('M60 49 Q38 35 33 60 Q31 90 60 93 Q89 90 87 60 Q82 35 60 49','#edd5b6');detail=el(60,77,16,11,'#f5debe')+ci(56,74,1.5,ink)+ci(64,74,1.5,ink)+line('M51 81 q9 7 18 0');break;
+    case 'giraffe':back=line('M45 42 V22 M75 42 V22')+ci(45,21,6,'#b98b68')+ci(75,21,6,'#b98b68')+el(28,44,13,7)+el(92,44,13,7);front=ci(58,47,5,'#c79862')+ci(34,63,4,'#c79862')+ci(84,83,5,'#c79862');detail=el(60,84,20,12,'#f2e0af')+ci(53,82,2,ink)+ci(67,82,2,ink);break;
+    case 'zebra':back=el(40,31,9,17)+el(80,31,9,17)+path('M52 45 50 26 59 20 69 27 66 46','#807689');front=path('M32 48 47 55 31 58 M89 48 74 55 90 58 M56 43 60 59 64 43',ink);detail=el(60,83,22,13,'#bcb3c4')+ci(53,82,2,ink)+ci(67,82,2,ink);break;
+    case 'horse':back=el(40,31,9,17)+el(80,31,9,17);front=path('M30 51 Q35 23 60 30 Q89 27 91 55 Q75 40 61 54 Q69 39 53 45Z','#8a6e69');detail=el(60,83,22,13,'#ead5ba')+ci(53,82,2,ink)+ci(67,82,2,ink);break;
+    case 'unicorn':back=catEars()+path('M51 43 L60 7 69 43Z','#ffe1a0')+line('M55 29 l10 4 M57 21 l7 3');front=path('M30 55 Q28 32 48 34 Q83 22 88 53 Q67 37 62 58 Q60 43 46 52Z','#bcb4ef');detail=muzzle()+path('M88 69 l3-6 3 6 6 3-6 3-3 6-3-6-6-3Z','#ffe1a0','stroke="none"');break;
+    case 'seal':back=el(32,87,20,9)+el(88,87,20,9);face=el(60,69,35,29);detail=muzzle()+line('M37 73 l-12-3 M37 80 l-13 1 M83 73 l12-3 M83 80 l13 1');break;
+    case 'otter':back=roundEars(8);front=el(60,76,25,17,'#edcfac');detail=muzzle()+line('M36 73 l-10-2 M84 73 l10-2');break;
+    case 'hedgehog':back=path('M24 85 14 73 20 61 13 49 25 43 25 29 39 30 47 17 59 27 73 17 81 31 96 29 95 44 107 48 100 62 107 74 94 85Z','#9d776c');face=path('M29 77 Q30 41 50 46 L60 40 71 46 Q89 39 92 78 Q76 101 60 100 Q39 98 29 77','#edd1ac');detail=muzzle();break;
+    case 'sloth':front=el(46,66,14,16,'#8e7e77','transform="rotate(25 46 66)"')+el(74,66,14,16,'#8e7e77','transform="rotate(-25 74 66)"');detail=eyes(65)+muzzle();customEyes=true;break;
+    case 'wolf':back=catEars();front=path('M31 57 49 70 60 63 71 70 89 57 Q88 89 60 95 Q32 89 31 57',cream);detail=muzzle();break;
+    case 'bat':back=path('M34 50 Q15 21 6 41 L12 77 Q21 62 30 84 L42 74Z')+path('M86 50 Q105 21 114 41 L108 77 Q99 62 90 84 L78 74Z')+catEars();detail=line('M49 78 q11 8 22 0')+path('M51 79 55 87 58 81 M63 81 66 87 70 79','white');break;
+    case 'bee':back=el(33,49,21,28,'#e5eef1','transform="rotate(-30 33 49)"')+el(87,49,21,28,'#e5eef1','transform="rotate(30 87 49)"')+line('M47 41 38 23 M73 41 82 23')+ci(38,23,4,ink)+ci(82,23,4,ink);face=el(60,68,27,30);front=path('M37 82 h46 l-7 9 H44Z','#8f7a68');detail=line('M53 77 q7 6 14 0');break;
+    case 'butterfly':back=el(31,46,23,27,'#d7b2ed','transform="rotate(-25 31 46)"')+el(89,46,23,27,'#d7b2ed','transform="rotate(25 89 46)"')+el(32,83,22,19,'#f8c5cd')+el(88,83,22,19,'#f8c5cd')+ci(28,44,8,'#fff0b8')+ci(92,44,8,'#fff0b8')+line('M52 47 45 23 M68 47 75 23');face=el(60,68,16,29,'#c0b4e5');detail=line('M55 77 q5 5 10 0');front=eyes(64,54,66);customEyes=true;break;
+    case 'ladybug':back=el(60,73,35,30,'#ed9d9b')+line('M60 45 v55')+ci(38,73,6,ink)+ci(82,73,6,ink)+ci(45,92,5,ink)+ci(75,92,5,ink)+line('M45 42 35 25 M75 42 85 25');face=el(60,53,25,21,'#938098');detail=eyes(51)+line('M54 62 q6 5 12 0');customEyes=true;break;
+    case 'turtle':back=el(33,90,17,7)+el(87,90,17,7)+el(60,78,35,24,'#86b08d')+path('M47 67 60 58 73 67 73 82 60 91 47 82Z','#a8c990');face=el(60,48,25,23);detail=eyes(46)+line('M52 57 q8 5 16 0');customEyes=true;break;
+    case 'whale':back=path('M28 76 Q4 81 6 52 Q16 54 22 62 Q27 41 36 49 L35 78')+path('M56 34 Q48 8 43 19 M58 33 Q61 9 68 20','none');face=el(69,67,36,29);front=path('M35 74 Q68 98 102 73 Q96 95 69 96 Q42 94 35 74','#e8f3ef');detail=eyes(64,60,86)+line('M66 78 q7 5 14 0');customEyes=true;break;
+    case 'octopus':back=path('M32 70 Q10 94 24 98 Q32 97 39 84 Q31 109 47 102 L53 87 Q50 112 63 103 L68 87 Q70 112 82 101 L79 83 Q98 108 99 95 Q98 83 88 70');face=el(60,57,33,30);detail=eyes(55)+line('M53 70 q7 7 14 0');customEyes=true;break;
+    case 'crab':back=line('M33 79 16 84 14 94 M87 79 104 84 106 94 M33 70 13 70 10 79 M87 70 107 70 110 79')+path('M34 61 22 51 Q6 54 9 36 L18 42 18 27 Q37 34 29 49 L42 60')+path('M86 61 98 51 Q114 54 111 36 L102 42 102 27 Q83 34 91 49 L78 60')+line('M46 56 V40 M74 56 V40')+ci(46,39,6)+ci(74,39,6);face=el(60,73,31,22);detail=ci(46,39,2,ink)+ci(74,39,2,ink)+line('M51 78 q9 8 18 0');customEyes=true;break;
+    case 'fish':back=path('M40 67 L12 45 Q6 66 14 91 L40 78')+path('M52 45 68 27 79 48');face=el(68,68,34,26);detail=ci(84,61,3,ink)+line('M92 74 q-5 5-10 0')+path('M63 63 50 70 63 78','#f2b487');customEyes=true;break;
+    case 'snail':back=el(60,91,44,10,'#c3d49d')+ci(47,68,27)+path('M49 84 C18 76 34 40 55 53 C75 70 47 85 43 67 Q43 58 53 64','none')+line('M79 61 77 36 M94 60 101 36')+ci(77,35,5,'#c3d49d')+ci(101,35,5,'#c3d49d');face=el(87,76,15,22,'#c3d49d');detail=ci(77,35,1.8,ink)+ci(101,35,1.8,ink)+line('M82 77 q5 5 10 0');customEyes=true;break;
+  }
+  if(!detail)detail=line('M54 79 q6 5 12 0');
+  return `<svg viewBox="0 0 120 116" class="animal-svg ${extra}" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g stroke="${ink}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${back}${face}${front}${customEyes?'':eyes()}${blush(id==='octopus'?66:75)}${detail}</g></svg>`;
+}
+function kittySVG(extra='') {
+  return `<svg viewBox="0 0 190 175" class="mascot-svg ${extra}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><g stroke="#51465e" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M119 130 Q173 153 169 111 Q168 92 154 104" fill="none" stroke="#b5a1de" stroke-width="17"/><ellipse cx="91" cy="133" rx="39" ry="32" fill="#cbb8ed"/><path d="M47 78 L44 27 Q46 23 50 28 L74 48 M105 48 L132 26 Q137 24 136 31 L133 84" fill="#cbb8ed"/><path d="M52 57 51 37 69 53 M112 54 129 37 129 61" fill="#f1c0d5"/><path d="M46 71 Q48 45 90 45 Q135 45 137 77 Q141 118 93 122 Q42 121 46 71" fill="#cbb8ed"/><path d="M78 47 84 59 M94 46 95 58 M108 48 105 59" stroke="#a58acb"/><path d="M64 79 q7-7 13 0 M104 79 q7-7 13 0" fill="none"/><ellipse cx="63" cy="91" rx="9" ry="4" fill="#f1bad1" stroke="none"/><ellipse cx="119" cy="91" rx="9" ry="4" fill="#f1bad1" stroke="none"/><path d="M85 88 Q91 84 97 88 L91 94Z" fill="#775775"/><path d="M91 94 q-6 10-13 2 M91 94 q6 10 13 2" fill="none"/><path d="M77 105 Q89 115 103 103 L100 115 Q88 124 77 105" fill="#6d536e"/><path d="M88 114 q6-7 12-3 l-2 5 h-7" fill="#f4b6cb" stroke="none"/><path d="M49 86 32 82 M48 94 30 96 M133 86 150 82 M134 94 152 96"/><ellipse cx="66" cy="154" rx="18" ry="11" fill="#d7c9f1"/><ellipse cx="117" cy="154" rx="18" ry="11" fill="#d7c9f1"/><path d="M69 122 L91 132 111 121 91 115Z" fill="#ffdc8c"/><circle cx="91" cy="131" r="6" fill="#ffdc8c"/></g></svg>`;
+}
+function pawSVG(){return '<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="currentColor"><ellipse cx="20" cy="26" rx="11" ry="9"/><ellipse cx="8" cy="16" rx="4.5" ry="6" transform="rotate(-25 8 16)"/><ellipse cx="17" cy="10" rx="4.5" ry="6"/><ellipse cx="27" cy="11" rx="4.5" ry="6"/><ellipse cx="34" cy="19" rx="4.5" ry="6" transform="rotate(25 34 19)"/></g></svg>';}
+
+</script>
+<script id="audio-source">
+/* A tiny, original Web Audio score: evolving motifs over a 16-bar A/A/B/A form.
+   All oscillators, percussion and effects are synthesized locally. */
+'use strict';
+class ClubAudio {
+  constructor(){
+    this.ctx=null;this.timer=null;this.step=0;this.next=0;this.bpm=106;this.music=true;this.effects=true;this.voice=true;this.volume=.42;this.active=false;this.rng=MemoryRules.seeded(707);this.lastPhrase=-1;this.voiceToken=0;this.onBar=null;
+    this.themes=[[0,2,1,3,2,4,1,0],[0,1,2,4,3,2,1,2],[2,1,0,2,4,3,2,0],[0,2,3,1,2,4,3,2]];
+    this.rhythms=[[0,3,4,6,8,10,12,14],[0,2,5,6,8,11,12,15],[0,3,5,7,8,10,13,14]];
+  }
+  ensure(){
+    if(this.ctx){if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});return true;}
+    const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;
+    try{
+      this.ctx=new Audio();const c=this.ctx;
+      this.master=c.createGain();this.master.gain.value=this.volume;
+      const limiter=c.createDynamicsCompressor();limiter.threshold.value=-18;limiter.knee.value=22;limiter.ratio.value=4;limiter.attack.value=.005;limiter.release.value=.15;
+      this.master.connect(limiter);limiter.connect(c.destination);
+      this.musicGain=c.createGain();this.musicGain.gain.value=.62;this.musicGain.connect(this.master);
+      this.sfxGain=c.createGain();this.sfxGain.gain.value=.70;this.sfxGain.connect(this.master);
+      this.delay=c.createDelay(.8);this.delay.delayTime.value=60/this.bpm*.75;
+      this.delayFeedback=c.createGain();this.delayFeedback.gain.value=.20;
+      this.delayWet=c.createGain();this.delayWet.gain.value=.16;
+      this.delay.connect(this.delayFeedback);this.delayFeedback.connect(this.delay);this.delay.connect(this.delayWet);this.delayWet.connect(this.musicGain);
+      this.noise=c.createBuffer(1,c.sampleRate*1.0,c.sampleRate);const data=this.noise.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=this.rng()*2-1;
+      return true;
+    }catch(e){this.ctx=null;return false;}
+  }
+  unlock(){if(this.ensure()&&this.music)this.start();}
+  start(){
+    if(!this.music||!this.ensure()||this.timer)return;
+    this.active=true;this.next=this.ctx.currentTime+.065;
+    this.musicGain.gain.cancelScheduledValues(this.ctx.currentTime);this.musicGain.gain.setTargetAtTime(.62,this.ctx.currentTime,.08);
+    this.timer=setInterval(()=>this.schedule(),25);this.schedule();
+  }
+  stop(){
+    if(this.timer)clearInterval(this.timer);this.timer=null;this.active=false;
+    if(this.ctx){this.musicGain.gain.cancelScheduledValues(this.ctx.currentTime);this.musicGain.gain.setTargetAtTime(0,this.ctx.currentTime,.04);}
+  }
+  setVolume(v){this.volume=Math.max(0,Math.min(1,v));if(this.ctx)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.03);}
+  setMusic(on){this.music=!!on;if(on)this.start();else this.stop();}
+  note(midi,time,duration,amp=.08,type='triangle',destination=null,echo=false){
+    if(!this.ctx)return;
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=440*Math.pow(2,(midi-69)/12);
+    const attack=Math.min(.022,duration*.16), end=time+duration;
+    g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(Math.max(.0002,amp),time+attack);g.gain.exponentialRampToValueAtTime(.0001,end);
+    o.connect(g);g.connect(destination||this.musicGain);if(echo)g.connect(this.delay);
+    o.start(time);o.stop(end+.02);o.onended=()=>{o.disconnect();g.disconnect();};
+  }
+  drum(type,time,accent=1){
+    const c=this.ctx;if(!c)return;
+    const gain=c.createGain();gain.connect(this.musicGain);
+    if(type==='kick'){
+      const o=c.createOscillator();o.type='sine';o.frequency.setValueAtTime(142,time);o.frequency.exponentialRampToValueAtTime(43,time+.14);
+      gain.gain.setValueAtTime(.30*accent,time);gain.gain.exponentialRampToValueAtTime(.0001,time+.23);o.connect(gain);o.start(time);o.stop(time+.25);o.onended=()=>{o.disconnect();gain.disconnect();};
+    }else{
+      const src=c.createBufferSource();src.buffer=this.noise;const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=type==='hat'?7000:1600;
+      const duration=type==='hat'?.045:.15;gain.gain.setValueAtTime((type==='hat'?.033:.105)*accent,time);gain.gain.exponentialRampToValueAtTime(.0001,time+duration);
+      src.connect(f);f.connect(gain);src.start(time);src.stop(time+duration+.01);src.onended=()=>{src.disconnect();f.disconnect();gain.disconnect();};
+      if(type==='snare')this.note(50,time,.08,.065,'triangle');
+    }
+  }
+  prepareBar(bar){
+    const phrase=Math.floor(bar/16), local=bar%16, section=Math.floor(local/4);
+    if(phrase!==this.lastPhrase){
+      this.lastPhrase=phrase;this.rng=MemoryRules.seeded(19073+phrase*727);
+      this.theme=this.themes[Math.floor(this.rng()*this.themes.length)].slice();
+      // Keep the hook, mutate just one note on each new phrase.
+      if(phrase>0){const k=2+Math.floor(this.rng()*4);this.theme[k]=(this.theme[k]+1)%5;}
+      this.rhythm=this.rhythms[Math.floor(this.rng()*this.rhythms.length)];
+    }
+    const chords=[{root:48,ints:[0,4,7,12,16,19]},{root:45,ints:[0,3,7,12,15,19]},{root:53,ints:[0,4,7,12,16,19]},{root:55,ints:[0,4,7,12,16,19]}];
+    const progression=section===2?[1,2,0,3]:[0,1,2,3];
+    this.chord=chords[progression[bar%4]];this.section=section;
+    this.barMelody=this.theme.map((n,i)=>section===2?(4-n+(i%3===0?1:0))%5:section===1&&i===6?(n+1)%5:n);
+    if(this.onBar)this.onBar({bar:local+1,phrase:phrase+1,section:['Little paws','A playful twist','Kitty’s daydream','Home again'][section]});
+  }
+  schedule(){
+    if(!this.ctx||!this.active||this.ctx.state!=='running')return;
+    // Re-anchor after tab throttling instead of scheduling a burst of old notes.
+    if(this.next<this.ctx.currentTime-.1)this.next=this.ctx.currentTime+.04;
+    const sixteenth=60/this.bpm/4;
+    while(this.next<this.ctx.currentTime+.14){
+      const s=this.step%16,bar=Math.floor(this.step/16);if(s===0)this.prepareBar(bar);
+      const t=this.next+(s%2?.011:0),ch=this.chord,section=this.section;
+      if(s===0){for(const interval of ch.ints.slice(0,3))this.note(ch.root+interval+12,t,sixteenth*14,.025,'sine');}
+      if(s===0||s===8||(s===11&&bar%4===3))this.drum('kick',t,s===11?.6:1);
+      if(s===4||s===12)this.drum('snare',t,section===2?.66:.9);
+      if(s%2===0&&(section!==2||s%4===2))this.drum('hat',t,.7+(s%4===2?.3:0));
+      if(bar%4===3&&(s===14||s===15)&&this.rng()>.35)this.drum('snare',t,.25);
+      const bassSteps=section===2?[0,6,10]:[0,3,6,8,11,14];
+      if(bassSteps.includes(s)){const offset=s===6||s===14?7:s===11?12:0;this.note(ch.root-12+offset,t,sixteenth*(s===0?2.6:1.5),.16,'triangle');}
+      const mi=this.rhythm.indexOf(s);
+      if(mi>=0&&!(section===2&&mi===5)&&!(bar%4===3&&mi===7)){
+        const degree=this.barMelody[mi],midi=ch.root+24+ch.ints[degree];
+        this.note(midi,t,sixteenth*(mi%3===0?2.3:1.35),.078+(mi===0?.008:0),phraseEven(bar)?'triangle':'sine',null,true);
+        if(section===3&&mi===0)this.note(midi-12,t,sixteenth*4,.021,'sine');
+      }
+      this.step++;this.next+=sixteenth;
+    }
+  }
+  effect(name){
+    if(!this.effects||!this.ensure())return;
+    const t=this.ctx.currentTime+.005;
+    const motifs={flip:[[79,0,.045,.10]],match:[[72,0,.12,.13],[76,.07,.13,.13],[79,.14,.2,.14],[84,.22,.3,.10]],miss:[[64,0,.10,.07],[60,.10,.13,.065]],win:[[72,0,.17,.13],[76,.13,.17,.13],[79,.26,.18,.13],[84,.4,.5,.13]],kitty:[[79,0,.08,.08],[76,.10,.09,.08],[79,.20,.12,.08]],table:[[72,0,.15,.065]]};
+    for(const [n,d,l,v] of motifs[name]||motifs.flip)this.note(n,t+d,l,v,'sine',this.sfxGain);
+  }
+  say(text){
+    if(!this.voice)return;
+    const token=++this.voiceToken;
+    if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){this.effect('kitty');return;}
+    try{
+      window.speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=1.06;u.pitch=1.55;u.volume=Math.min(1,this.volume*1.65);
+      const voices=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
+      const local=voices.filter(v=>v.localService);u.voice=local.find(v=>/samantha|karen|moira|serena|aria/i.test(v.name))||local[0]||voices[0]||null;
+      if(this.ctx&&this.active)this.musicGain.gain.setTargetAtTime(.20,this.ctx.currentTime,.035);
+      const unduck=()=>{if(token===this.voiceToken&&this.ctx&&this.active)this.musicGain.gain.setTargetAtTime(.62,this.ctx.currentTime,.15);};
+      u.onend=unduck;u.onerror=()=>{unduck();if(token===this.voiceToken)this.effect('kitty');};
+      speechSynthesis.speak(u);setTimeout(unduck,4000);
+    }catch(e){this.effect('kitty');}
+  }
+  quiet(){this.voiceToken++;if('speechSynthesis' in window)speechSynthesis.cancel();}
+}
+function phraseEven(bar){return Math.floor(bar/16)%2===0;}
+
+</script>
+<script id="app-source">
+'use strict';
+(function(){
+  const $=id=>document.getElementById(id);
+  const {Round,KittyMind,FACTS,ANIMALS}=MemoryRules;
+  const audio=new ClubAudio();
+  const defaults={pairs:25,music:true,effects:true,voice:true,volume:42};
+  let prefs={...defaults};
+  try{const saved=JSON.parse(localStorage.getItem('juliette-kitty-club-v1')||'{}');prefs={...defaults,...saved};}catch(e){}
+  prefs.pairs=Math.max(2,Math.min(42,Math.round(Number(prefs.pairs)||25)));prefs.volume=Math.max(0,Math.min(100,Number(prefs.volume)||0));
+  for(const k of ['music','effects','voice'])prefs[k]=!!prefs[k];
+  audio.music=prefs.music;audio.effects=prefs.effects;audio.voice=prefs.voice;audio.setVolume(prefs.volume/100);
+  let round=null,mind=null,view='garden',manualPause=false,roundNumber=0,focusIndex=0,selectedFact={a:5,b:5};
+  let task=null,toastTimer=null,sessionId=0,missedFacts=new Map(),lastHumanMatch=null;
+  const dialogs=Array.from(document.querySelectorAll('dialog'));
+  function save(){try{localStorage.setItem('juliette-kitty-club-v1',JSON.stringify(prefs));}catch(e){}}
+  function announce(text){$('announcer').textContent=text;}
+  function showToast(text){clearTimeout(toastTimer);$('toast').textContent=text;$('toast').classList.add('visible');announce(text);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),2450);}
+  function unlocked(){audio.unlock();syncSound();}
+  function shouldPause(){return manualPause||view!=='memory'||document.hidden||dialogs.some(d=>d.open);}
+  function clearTask(){if(task?.timer)clearTimeout(task.timer);task=null;}
+  function later(fn,ms){clearTask();task={fn,remaining:ms,due:0,timer:null,session:sessionId};scheduleTask();}
+  function scheduleTask(){
+    if(!task||task.timer||shouldPause())return;
+    const item=task;item.due=performance.now()+item.remaining;
+    item.timer=setTimeout(()=>{if(task!==item||item.session!==sessionId)return;task=null;if(shouldPause()){task={...item,timer:null,remaining:0};return;}item.fn();},Math.max(0,item.remaining));
+  }
+  function synchronizePause(){
+    if(shouldPause()){
+      if(task?.timer){clearTimeout(task.timer);task.remaining=Math.max(0,task.due-performance.now());task.timer=null;}
+      audio.quiet();
+    }else scheduleTask();
+    $('pause-overlay').hidden=!manualPause;$('pause-button').textContent=manualPause?'Resume':'Pause';
+  }
+  function openDialog(id){
+    const d=$(id);if(d.open)return;d.showModal();synchronizePause();
+  }
+  function closeDialog(id){$(id).close();synchronizePause();}
+  dialogs.forEach(d=>{
+    d.addEventListener('close',synchronizePause);
+    d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});
+  });
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.dataset.close)));
+  document.querySelectorAll('[data-paw]').forEach(el=>el.innerHTML=pawSVG());
+  for(const id of ['hero-kitty','pause-kitty','result-art'])$(id).innerHTML=kittySVG();
+  document.querySelectorAll('.example-animal').forEach(el=>el.innerHTML=animalSVG('cat'));
+  function syncSound(){
+    $('music-button').classList.toggle('playing',audio.active);$('music-button').setAttribute('aria-pressed',String(audio.active));
+    $('music-button').setAttribute('aria-label',audio.active?'Turn music off':'Start the music');$('music-label').textContent=audio.active?'Music on':prefs.music?'Music':'Music off';
+    $('music-toggle').checked=prefs.music;$('effects-toggle').checked=prefs.effects;$('voice-toggle').checked=prefs.voice;
+  }
+  audio.onBar=info=>{if(audio.active)$('soundtrack-caption').textContent=`${info.section} · phrase ${info.phrase} · original synth soundtrack`;};
+  $('music-button').addEventListener('click',()=>{const on=!audio.active;prefs.music=on;audio.setMusic(on);save();syncSound();});
+  function syncOptions(){
+    $('pairs-slider').value=prefs.pairs;$('pairs-value').textContent=prefs.pairs;
+    $('settings-card-count').textContent=`${prefs.pairs} pairs = ${prefs.pairs*2} cards.`;
+    $('top-card-count').textContent=prefs.pairs*2;$('volume-slider').value=prefs.volume;$('volume-value').textContent=`${prefs.volume}%`;syncSound();
+  }
+  $('settings-button').addEventListener('click',()=>{syncOptions();openDialog('settings-dialog');});
+  $('pairs-slider').addEventListener('input',e=>{prefs.pairs=Number(e.target.value);syncOptions();save();});
+  document.querySelectorAll('[data-pairs]').forEach(b=>b.addEventListener('click',()=>{prefs.pairs=Number(b.dataset.pairs);syncOptions();save();}));
+  for(const key of ['music','effects','voice'])$(key+'-toggle').addEventListener('change',e=>{
+    prefs[key]=e.target.checked;audio[key]=prefs[key];if(key==='music')audio.setMusic(prefs.music);if(key==='voice'&&!prefs.voice)audio.quiet();save();syncSound();
+  });
+  $('volume-slider').addEventListener('input',e=>{prefs.volume=Number(e.target.value);audio.setVolume(prefs.volume/100);$('volume-value').textContent=`${prefs.volume}%`;save();});
+  $('how-to-play').addEventListener('click',()=>openDialog('help-dialog'));
+  function buildTable(){
+    let html='<div class="table-corner" aria-hidden="true">×</div>';
+    for(let b=1;b<=10;b++)html+=`<div class="table-head column-head" data-col="${b}" aria-hidden="true">${b}</div>`;
+    for(let a=1;a<=10;a++){
+      html+=`<div class="table-head row-head" data-row="${a}" aria-hidden="true">${a}</div>`;
+      for(let b=1;b<=10;b++)html+=`<button class="fact-cell" data-a="${a}" data-b="${b}" aria-label="${a} times ${b} equals ${a*b}" aria-pressed="false" tabindex="-1">${a*b}</button>`;
+    }
+    $('times-table').innerHTML=html;
+    $('times-table').addEventListener('click',e=>{const cell=e.target.closest('.fact-cell');if(!cell)return;unlocked();selectFact(+cell.dataset.a,+cell.dataset.b);audio.effect('table');});
+    $('times-table').addEventListener('keydown',e=>{
+      const cell=e.target.closest('.fact-cell');if(!cell)return;let a=+cell.dataset.a,b=+cell.dataset.b;
+      if(e.key==='ArrowRight')b=Math.min(10,b+1);else if(e.key==='ArrowLeft')b=Math.max(1,b-1);else if(e.key==='ArrowDown')a=Math.min(10,a+1);else if(e.key==='ArrowUp')a=Math.max(1,a-1);else if(e.key==='Home')b=1;else if(e.key==='End')b=10;else return;
+      e.preventDefault();selectFact(a,b);$('times-table').querySelector(`[data-a="${a}"][data-b="${b}"]`).focus();
+    });
+  }
+  function selectFact(a,b){
+    selectedFact={a,b};const product=a*b;
+    const animal=product===25?ANIMALS[0]:ANIMALS[FACTS.findIndex(f=>f.product===product)%ANIMALS.length];
+    $('fact-animal').innerHTML=animalSVG(animal.id);$('fact-friend').textContent=`${animal.name} says…`;
+    $('fact-equation').innerHTML=`${a} × ${b} = <strong>${product}</strong>`;$('fact-words').textContent=`${a} ${a===1?'group':'groups'} of ${b} ${a===1?'makes':'make'} ${product}.`;
+    $('dot-array').style.setProperty('--cols',b);$('dot-array').innerHTML=Array.from({length:product},(_,i)=>`<span class="count-dot ${Math.floor(i/b)%2?'even-row':''} ${Math.floor(i/b)===a-1?'last-row':''}"></span>`).join('');
+    $('array-label').innerHTML=`Count by ${b}s:<br><strong>${Array.from({length:a},(_,i)=>(i+1)*b).join(' · ')}</strong>`;
+    document.querySelectorAll('.fact-cell').forEach(el=>{const row=+el.dataset.a,col=+el.dataset.b,selected=row===a&&col===b;el.classList.toggle('cross',row===a||col===b);el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));el.tabIndex=selected?0:-1;});
+    document.querySelectorAll('.column-head').forEach(el=>el.classList.toggle('axis',+el.dataset.col===b));document.querySelectorAll('.row-head').forEach(el=>el.classList.toggle('axis',+el.dataset.row===a));
+    if(view==='garden')announce(`${a} times ${b} equals ${product}. ${a} groups of ${b}.`);
+  }
+  $('listen-fact').addEventListener('click',()=>{unlocked();const {a,b}=selectedFact;if(!audio.voice){showToast(`${a} × ${b} = ${a*b}. Kitty’s voice is off in settings.`);return;}audio.say(`${a} times ${b} equals ${a*b}. ${a} ${a===1?'group':'groups'} of ${b}!`);});
+  function setView(next){
+    view=next;$('garden').hidden=next!=='garden';$('memory').hidden=next!=='memory';
+    for(const key of ['garden','memory']){$(key+'-tab').setAttribute('aria-selected',String(key===next));$(key+'-tab').tabIndex=key===next?0:-1;}
+    synchronizePause();
+    if(next==='memory'&&round)renderStatus();
+  }
+  $('garden-tab').addEventListener('click',()=>{unlocked();setView('garden');});
+  $('memory-tab').addEventListener('click',()=>{unlocked();if(!round)startRound();else setView('memory');});
+  document.querySelector('.tabs').addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const target=e.key==='Home'?'garden-tab':e.key==='End'?'memory-tab':document.activeElement.id==='garden-tab'?'memory-tab':'garden-tab';$(target).click();$(target).focus();}});
+  function requestNewRound(){unlocked();if(round&&round.phase!=='finished'&&(round.attempts>0||round.opened.length))openDialog('restart-dialog');else startRound();}
+  $('new-round').addEventListener('click',requestNewRound);$('garden-play').addEventListener('click',()=>{unlocked();if(round&&round.phase!=='finished')setView('memory');else startRound();});
+  $('settings-new-round').addEventListener('click',()=>{closeDialog('settings-dialog');requestNewRound();});
+  $('confirm-restart').addEventListener('click',()=>{closeDialog('restart-dialog');startRound();});
+  $('play-again').addEventListener('click',()=>{closeDialog('result-dialog');startRound();});
+  $('result-garden').addEventListener('click',()=>{closeDialog('result-dialog');setView('garden');});
+  $('pause-button').addEventListener('click',()=>{manualPause=!manualPause;synchronizePause();renderStatus();});
+  $('resume-button').addEventListener('click',()=>{manualPause=false;unlocked();synchronizePause();renderStatus();});
+  function startRound(){
+    sessionId++;clearTask();audio.quiet();unlocked();manualPause=false;roundNumber++;
+    round=new Round(prefs.pairs);mind=new KittyMind(Math.random,Math.min(16,Math.max(6,Math.floor(prefs.pairs*.35)+5)));missedFacts=new Map();lastHumanMatch=null;focusIndex=0;
+    $('kitty-line').textContent='“You know your tables? Oh no! I only remember animals!”';
+    buildBoard();setView('memory');renderStatus();announce(`New round. ${round.count*2} cards. Your turn, Juliette. Read the card backs and match a multiplication to its answer.`);
+    $('garden-play').textContent='Back to our game →';
+  }
+  function buildBoard(){
+    const n=round.cards.length,cols=n<=12?6:n<=24?8:10,tablet=n<=12?6:8,mobile=n<=12?4:5;
+    const board=$('memory-board');board.style.setProperty('--board-cols',cols);board.style.setProperty('--tablet-cols',tablet);board.style.setProperty('--mobile-cols',mobile);
+    // The maths is always public. Only the matching animal is hidden.
+    // Back colours and decorations are identical across pairs, so they cannot
+    // give away a match: Juliette can calculate, remember an animal, or both.
+    board.innerHTML=round.cards.map(c=>`<button class="memory-card" data-index="${c.index}" aria-label="${cardLabel(c)}" tabindex="${c.index===0?0:-1}"><span class="card-inner"><span class="card-back ${c.kind}" aria-hidden="true"><span class="card-corner-star">✧</span><span class="back-clue"><span class="back-value">${cardMath(c)}</span><span class="back-kind">${c.kind==='question'?'TIMES':'ANSWER'}</span></span><span class="card-corner-star last">✧</span></span><span class="card-front" style="--animal-color:${c.animal.color}" aria-hidden="true">${animalSVG(c.animal.id)}<span class="card-value ${c.kind}">${cardMath(c)}</span><span class="card-kind">${c.kind==='question'?'TIMES TABLE':'THE ANSWER'}</span><span class="owner-tag"></span></span></span></button>`).join('');
+    board.setAttribute('aria-label',`${n} cards with visible multiplications and answers. ${round.count} animal pairs to discover.`);
+  }
+  function cardMath(c){return c.kind==='question'?`${c.a} × ${c.b}`:String(c.product);}
+  function cardLabel(c){
+    const desc=c.kind==='question'?`${c.a} times ${c.b}`:String(c.product);
+    return c.revealed||c.matched
+      ? `${desc}. ${c.animal.name}.${c.matched?` Found by ${c.owner==='human'?'Juliette':'Kitty'}.`:''}`
+      : `${desc}. ${c.kind==='question'?'Find its answer.':'Find its multiplication.'} Animal hidden. Card ${c.index+1}.`;
+  }
+  function renderCard(index){
+    const c=round.cards[index],button=$('memory-board').children[index];
+    button.classList.toggle('up',c.revealed||c.matched);button.classList.toggle('found',c.matched);button.classList.toggle('kitty-owned',c.owner==='kitty');
+    button.setAttribute('aria-label',cardLabel(c));
+    button.querySelector('.owner-tag').innerHTML=c.owner==='kitty'?pawSVG():'J';
+  }
+  function renderStatus(){
+    if(!round)return;
+    $('human-score').textContent=round.scores.human;$('kitty-score').textContent=round.scores.kitty;$('progress-fill').style.width=`${round.matches/round.count*100}%`;
+    $('round-caption').textContent=`Round ${roundNumber} · ${round.count} animal pairs · ${round.count*2} cards`;
+    const finished=round.phase==='finished',human=round.turn==='human';
+    $('human-score-card').classList.toggle('active',human&&!finished&&!manualPause);$('kitty-score-card').classList.toggle('active',!human&&!finished&&!manualPause);
+    $('turn-title').classList.toggle('kitty-turn',!human&&!finished);
+    $('turn-title').innerHTML=`<span></span>${finished?'Every friend found!':manualPause?'A little catnap.':human?'Your turn, Juliette!':'Kitty is thinking…'}`;
+    $('turn-hint').textContent=finished?`${round.matches} pairs found. Brilliant multiplying!`:manualPause?'Your round is safely paused.':human?(round.opened.length===1?'Read the other backs. Find the matching multiplication or answer.':lastHumanMatch?'A pair! You get another turn.':'Match a multiplication to its answer. The animals will match too!'):'Kitty remembers animals. You can work out the numbers!';
+    for(const c of round.cards){const b=$('memory-board').children[c.index];b.setAttribute('aria-disabled',String(c.matched||c.revealed||!human||round.phase!=='choosing'||manualPause));}
+    $('pause-button').disabled=finished;
+  }
+  function chooseCard(index,actor){
+    if(!round||round.turn!==actor||shouldPause())return false;
+    const result=round.select(index);if(!result)return false;
+    mind.observe(result.card);renderCard(index);renderStatus();audio.effect('flip');
+    const c=result.card;announce(`${actor==='kitty'?'Kitty turned over':'You turned over'} ${c.kind==='question'?`${c.a} times ${c.b}`:c.product}. ${c.animal.name}.`);
+    if(result.type==='second'){
+      const [a,b]=round.opened.map(i=>round.cards[i]);later(resolveTurn,a.pairId===b.pairId?670:1650);
+    }else if(actor==='kitty')later(kittyPick,1050);
+    return true;
+  }
+  function kittyPick(){
+    if(!round||round.turn!=='kitty'||round.phase!=='choosing')return;
+    const available=round.available(),first=round.opened.length?round.publicCard(round.opened[0]):null;
+    // Kitty still plays from her imperfect memory of revealed animals.
+    // She does not solve the printed maths: learning the tables is Juliette’s advantage.
+    // Only revealed-card observations and legal indices cross this boundary.
+    const choice=mind.choose(available,first);if(choice!==null)chooseCard(choice,'kitty');
+  }
+  function resolveTurn(){
+    if(!round)return;const attempted=round.opened.map(i=>round.cards[i]);const result=round.resolve();if(!result)return;
+    for(const i of result.indices)renderCard(i);
+    if(result.match){
+      mind.remove(result.indices);audio.effect('match');
+      for(const i of result.indices){const el=$('memory-board').children[i];el.classList.add('just-matched');const session=sessionId;setTimeout(()=>{if(session===sessionId)el.classList.remove('just-matched');},750);}
+      if(result.player==='human'){
+        lastHumanMatch=result.fact;$('kitty-line').textContent='“Oh no, you got me! You get to go again!”';
+        audio.say(round.scores.human%3===2?'You found my animal friends! Clever Juliette!':'Oh no, you got me!');
+        showToast(`${result.fact.a} × ${result.fact.b} = ${result.fact.product}. Purr-fect! Play again.`);
+      }else{
+        lastHumanMatch=null;$('kitty-line').textContent='“Hee hee hee! A pair for me!”';audio.say('Hee hee hee! A pair for me!');
+        showToast(`Kitty found ${result.fact.a} × ${result.fact.b} = ${result.fact.product}. Kitty plays again.`);
+      }
+    }else{
+      lastHumanMatch=null;audio.effect('miss');
+      if(result.player==='human'){
+        for(const c of attempted)if(c.kind==='question')missedFacts.set(c.product,{a:c.a,b:c.b,product:c.product});
+        $('kitty-line').textContent='“My turn! Where did I put that one?”';
+        announce('Not a pair this time. Kitty’s turn. Watch and remember her cards.');
+      }else{$('kitty-line').textContent='“Oops. I was thinking about tuna. Your turn!”';announce('Kitty missed. Your turn, Juliette.');}
+    }
+    renderStatus();
+    if(result.finished){later(finishRound,1000);return;}
+    if(round.turn==='kitty')later(kittyPick,result.match?1400:1100);
+  }
+  $('memory-board').addEventListener('click',e=>{
+    const button=e.target.closest('.memory-card');if(!button)return;unlocked();
+    if(!round||round.turn!=='human'||round.phase!=='choosing'||shouldPause())return;
+    focusIndex=+button.dataset.index;setBoardFocus(focusIndex,false);chooseCard(focusIndex,'human');
+  });
+  function setBoardFocus(i,doFocus=true){
+    const all=$('memory-board').children;if(!all.length)return;focusIndex=Math.max(0,Math.min(all.length-1,i));
+    Array.from(all).forEach((el,n)=>el.tabIndex=n===focusIndex?0:-1);if(doFocus)all[focusIndex].focus();
+  }
+  $('memory-board').addEventListener('keydown',e=>{
+    const button=e.target.closest('.memory-card');if(!button||!round)return;let i=+button.dataset.index;const cols=getComputedStyle($('memory-board')).gridTemplateColumns.split(' ').length;
+    if(e.key==='ArrowRight')i++;else if(e.key==='ArrowLeft')i--;else if(e.key==='ArrowDown')i+=cols;else if(e.key==='ArrowUp')i-=cols;else if(e.key==='Home')i=0;else if(e.key==='End')i=round.cards.length-1;else return;
+    e.preventDefault();setBoardFocus(i);
+  });
+  function finishRound(){
+    if(!round||round.phase!=='finished')return;
+    const h=round.scores.human,k=round.scores.kitty;
+    $('result-human').textContent=h;$('result-kitty').textContent=k;
+    $('result-title').textContent=h>k?'You outsmarted Kitty!':h===k?'Two brilliant little brains!':'A whisker of a win for Kitty!';
+    $('result-copy').textContent=h>k?'“Oh no, you got me!” Every animal has a friend, and you have a head full of multiplication facts.':h===k?'A tie! You and Kitty made a purr-fect team of animal-finding mathematicians.':'“Hee hee! That was fun!” Every new round is a fresh chance to remember. Kitty is ready for a rematch.';
+    const review=Array.from(missedFacts.values()).slice(0,6);$('review-block').hidden=!review.length;
+    $('review-facts').innerHTML=review.map(f=>`<button data-a="${f.a}" data-b="${f.b}">${f.a} × ${f.b} = ${f.product}</button>`).join('');
+    $('garden-play').textContent='Let’s play →';
+    openDialog('result-dialog');audio.effect('win');confetti();
+    announce(`Round complete. Juliette ${h} pairs. Kitty ${k} pairs. ${h>k?'Juliette wins!':h===k?'It’s a tie!':'Kitty wins this round.'}`);
+  }
+  $('review-facts').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;closeDialog('result-dialog');setView('garden');selectFact(+b.dataset.a,+b.dataset.b);});
+  function confetti(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const colors=['#b49bce','#e7bf72','#a7c4ae','#e9b8c5'];
+    for(let i=0;i<44;i++){const c=document.createElement('span');c.className='confetti';c.style.left=`${Math.random()*100}%`;c.style.background=colors[i%colors.length];c.style.setProperty('--duration',`${2.3+Math.random()*1.8}s`);c.style.setProperty('--drift',`${Math.random()*180-90}px`);c.style.setProperty('--spin',`${Math.random()*1100-550}deg`);c.style.animationDelay=`${Math.random()*.5}s`;document.body.appendChild(c);setTimeout(()=>c.remove(),4700);}
+  }
+  document.addEventListener('visibilitychange',()=>{
+    synchronizePause();if(document.hidden){audio.stop();audio.quiet();}else if(prefs.music&&audio.ctx)audio.start();syncSound();
+  });
+  // A read-only inspection surface makes browser regression tests reproducible.
+  // The opponent never calls this; its only input is choose(available, firstPublic).
+  window.KittyClub=Object.freeze({version:'1.1.0',snapshot:()=>({view,manualPause,roundNumber,prefs:{...prefs},audio:{active:audio.active,step:audio.step,state:audio.ctx?.state||'locked'},round:round?JSON.parse(JSON.stringify(round)):null}),publicKittyMemory:()=>Array.from(mind?.memory.values()||[]).map(x=>({...x}))});
+  syncOptions();buildTable();selectFact(5,5);
+})();
+
+</script>
+</body>
+</html>

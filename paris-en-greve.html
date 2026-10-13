@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#3f6d58"><meta name="description" content="Une aventure parisienne pour écrire, entendre et maîtriser 24 verbes français. Un jeu autonome pour Gretchen."><title>Paris en grève — L’aventure de Gretchen</title><style>:root{--paper:#f7f3e8;--ink:#273e35;--muted:#738073;--green:#3f6d58;--green-soft:#e5ecdf;--orange:#c96c47;--orange-soft:#f3e3d2;--gold:#b59852;--line:#d9dece;--white:#fffcf5;--shadow:0 12px 35px #3447370a;--serif:Georgia,'Times New Roman',serif;--sans:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}html{background:var(--paper);color:var(--ink);font-family:var(--sans);scroll-behavior:smooth}body{margin:0;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit;border:1px solid var(--line);background:var(--white);border-radius:9px;padding:9px 14px;transition:background .18s,transform .18s;touch-action:manipulation}button:hover{background:#eaf0e2;border-color:#adbda8}button:active{transform:translateY(1px)}button:disabled{opacity:.47;cursor:not-allowed;transform:none}button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #bf8244;outline-offset:3px}a{color:var(--green)}button.primary{background:var(--green);color:#fffdf3;border-color:var(--green);font-weight:650}button.primary:hover{background:#335d49}button.orange{background:var(--orange);color:#fffaf0;border-color:var(--orange)}button.ghost{border-color:transparent;background:transparent}button.small{font-size:12px;padding:6px 10px}button.icon-button{width:37px;height:37px;padding:0;font-size:18px;flex-shrink:0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[hidden]{display:none!important}
+.topbar{max-width:1340px;margin:auto;padding:22px 30px 19px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center}.brand-emblem{width:40px;height:43px;border:1px solid #829780;border-radius:22px 22px 5px 5px;display:flex;align-items:center;justify-content:center;position:relative}.brand-emblem:before,.brand-emblem:after{content:'';width:11px;height:21px;border:2px solid var(--green);transform:skewX(-13deg);position:absolute;bottom:7px;left:11px}.brand-emblem:after{transform:skewX(13deg);left:17px}.brand-title{font:700 22px/.94 var(--serif);letter-spacing:-.6px}.brand-title span{font:700 10px var(--sans);letter-spacing:3px;display:block;margin-top:6px}.edition{font-size:10px;letter-spacing:1.5px;margin-top:5px;color:var(--muted);text-transform:uppercase}.topnav{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.topnav button{font-size:13px;background:transparent}.topnav button.voice-on{background:var(--green-soft);border-color:var(--green-soft)}.nav-icon{margin-right:6px;font-size:15px}.topbar .name-tag{font-family:var(--serif);font-style:italic;color:var(--muted);margin-right:12px}
+.shell{max-width:1280px;margin:0 auto;padding:25px 24px 35px}.chapter-header{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}.eyebrow{text-transform:uppercase;font-size:10px;letter-spacing:2px;color:var(--green);font-weight:700}.chapter-header h1{font:400 clamp(27px,3vw,38px)/1.15 var(--serif);margin:6px 0 0;letter-spacing:-.7px}.day-tag{font-size:12px;color:var(--muted);display:flex;gap:9px;align-items:center}.live-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);display:inline-block}.layout{display:grid;grid-template-columns:minmax(0,1fr)280px;gap:23px}.play-column{min-width:0}.scene-card{border:1px solid #cfd7c6;border-radius:15px;overflow:hidden;background:#efe8d3;box-shadow:var(--shadow)}.scene-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 17px;background:#f7f2dfb5;border-bottom:1px solid #c3c9ad66;font-size:11px}.scene-location{font-weight:650}.scene-weather{color:#79876c;font-size:10px;letter-spacing:1px;text-transform:uppercase}.canvas-wrap{position:relative}#stage{display:block;width:100%;height:clamp(252px,27vw,355px)}.scene-stamp{position:absolute;top:14px;left:17px;background:#fbf5e5cd;border:1px solid #d4dcc5;padding:6px 10px;border-radius:5px;font-size:10px;color:#7d8166;letter-spacing:1px;text-transform:uppercase}.scene-bubble{position:absolute;top:48px;right:17px;background:#fff9e9ef;border:1px solid #bac8ad;border-radius:14px 14px 2px 14px;max-width:42%;padding:8px 12px;font-family:var(--serif);font-size:14px;box-shadow:0 5px 10px #5b69490a}.cast-labels{position:absolute;bottom:11px;left:0;right:0;display:flex;justify-content:space-between;padding:0 18%;pointer-events:none}.cast-labels span{padding:3px 9px;border-radius:30px;background:#fff8e4d9;color:#54654d;font-size:10px;max-width:45%;text-align:center}.captions{min-height:62px;background:#fcf8ed;padding:13px 17px;display:flex;gap:12px;align-items:flex-start;font-size:13px;border-top:1px solid #c8d1bc}.caption-name{min-width:66px;max-width:110px;font-size:10px;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding-top:3px}.caption-words{flex:1}mark{background:#e2d19c;color:inherit;border-radius:3px}.speech-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 16px;background:#f5f2e4;border-top:1px solid #e2e5d6}.speech-controls button{font-size:11px;padding:4px 8px;background:transparent}.speech-status{font-size:10px;color:var(--muted)}
+.story-strip{margin:16px 1px 17px;display:flex;align-items:flex-start;gap:12px}.story-number{width:26px;height:26px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font:italic 15px var(--serif);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}.story-text{margin:0;font-size:13px;color:#637162;line-height:1.7}.story-text strong{color:var(--ink);font-weight:600}.challenge{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:21px 23px 19px;box-shadow:var(--shadow);position:relative}.challenge-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:17px}.speaker{display:flex;gap:10px;align-items:center}.speaker-avatar{width:34px;height:34px;border-radius:11px;background:var(--orange-soft);color:var(--orange);display:flex;align-items:center;justify-content:center;font:italic 20px var(--serif)}.speaker-name{font-size:12px;font-weight:650}.speaker-role{font-size:10px;color:var(--muted)}.turn-pips{display:flex;gap:4px;align-items:center;flex-wrap:wrap}.turn-pips i{width:7px;height:7px;display:inline-block;border:1px solid #a6b49d;border-radius:50%}.turn-pips i.filled{background:var(--green);border-color:var(--green)}.turn-count{font-size:10px;color:var(--muted);margin-left:6px}.verb-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:13px}.tag{border-radius:4px;padding:4px 7px;font-size:10px;color:var(--green);background:var(--green-soft);font-weight:600}.tag.verb{font:italic 19px var(--serif);padding:1px 9px;background:var(--orange-soft);color:#b26643}.tag.literary{background:#ede6dc;color:#88734c}.tag.new{background:transparent;color:var(--muted);font-weight:400}.prompt{font:400 clamp(21px,2.05vw,27px)/1.6 var(--serif);margin:0 0 10px;letter-spacing:-.2px}.blank{display:inline-block;min-width:75px;border-bottom:2px solid #c58c64;color:#c2916c;text-align:center;line-height:1.05;letter-spacing:4px;padding:0 6px}.filled-answer{color:var(--green);background:#e7eedf;border-radius:4px;padding:0 5px}.context-hint{font-size:11px;color:#77846d;margin:8px 0 12px}.context-hint b{font-weight:600;color:#566c57}.meaning{font-size:11px;color:#88907d;margin:6px 0 13px;font-style:italic}.answer-row{display:flex;gap:9px;align-items:stretch}.answer-wrap{flex:1;min-width:0;position:relative}.answer-input{resize:vertical;width:100%;min-height:56px;padding:14px 15px;line-height:1.4;font-size:19px;border-radius:9px;border:1.5px solid #b5c7ad;background:#fcfdf7;color:var(--ink);display:block}.answer-input::placeholder{font-size:15px;color:#9aa18e}.answer-input:focus{border-color:var(--green);outline:2px solid #cfddc780;outline-offset:0}.answer-row button{min-width:102px}.accent-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin:9px 0 13px}.accent-row button{min-width:29px;height:27px;padding:1px 6px;font:16px var(--serif);border-color:#e5e6d9;background:#f7f7ee}.accent-row .keyboard-note{margin-left:auto;font-size:9px;color:#909782}.feedback{margin-top:13px;padding:12px 14px;border-radius:8px;background:#edf2e5;border:1px solid #d0dcc6;font-size:12px}.feedback.bad{background:#fbebe0;border-color:#ebc6ae;color:#845c43}.feedback.assisted{background:#f4ecd9;border-color:#ddd0b0;color:#796647}.feedback strong{font-size:14px;display:block;margin-bottom:4px}.feedback .correction{font-family:var(--serif);font-size:24px;letter-spacing:.2px;margin:7px 0 4px}.challenge-bottom{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:8px}.help-btn{font-size:11px;padding:8px 11px;background:#f4f2e7}.stars{font-size:15px;letter-spacing:3px;color:#b99b57;white-space:nowrap}.memory-note{font-size:9px;color:var(--muted);letter-spacing:0}.next-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:13px}.next-row span{font-size:10px;color:var(--muted)}.correction-note{font-size:11px;color:#8d7059}.choice-title{font:28px var(--serif);margin:4px 0 10px}.choices{display:grid;gap:10px}.choice{display:flex;text-align:left;justify-content:space-between;align-items:center;gap:15px;padding:15px 17px;border-radius:10px;background:#f7f8ef}.choice b{display:block;font-size:14px;font-weight:650}.choice small{display:block;color:var(--muted);margin-top:4px;font-size:11px}.choice .arrow{font-size:23px;font-family:var(--serif);color:var(--green)}.choice-warning{color:#976f4f!important}.story-outcome{padding:17px 20px;border-left:3px solid var(--orange);background:var(--orange-soft);border-radius:5px;margin:16px 0;font-family:var(--serif);font-size:20px}.arrival-title{font:40px/1.1 var(--serif);margin:12px 0}.arrival{padding:28px}.arrival p{font-size:14px;color:#687961}.arrival-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.arrival-grid div{padding:12px;border:1px solid var(--line);border-radius:8px}.arrival-grid strong{font:25px var(--serif);display:block}.arrival-grid small{font-size:10px;color:var(--muted)}
+.sidebar{display:flex;flex-direction:column;gap:16px}.side-card{background:#f5f5ea;border:1px solid var(--line);border-radius:12px;padding:17px}.side-card h2{font-size:10px;text-transform:uppercase;letter-spacing:1.7px;margin:0 0 12px;font-weight:650}.route-map{margin:0 -7px;position:relative}.route-map svg{width:100%;height:189px;display:block}.route-legend{font-size:9px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;margin-top:4px}.route-stage{font:21px var(--serif);margin-bottom:7px}.route-task{font-size:11px;color:var(--muted);margin:0}.route-foot{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:10px;color:var(--muted)}.wallet{display:flex;gap:12px;justify-content:space-between;margin-top:3px}.wallet b{font:25px var(--serif);font-weight:400}.wallet small{display:block;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}.coin-symbol{color:var(--gold);font-size:18px!important}.inventory{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.inventory-item{font-size:10px;border-radius:6px;padding:5px 7px;background:#e9eedf;border:1px solid #d8e1cc}.inventory-empty{font:italic 12px var(--serif);color:#8f9783}.side-shop{width:100%;margin-top:14px;font-size:11px;padding:7px}.mastery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.mastery-head strong{font:28px var(--serif)}.mastery-head small{font-size:10px;color:var(--muted)}.progress-track{height:5px;border-radius:5px;background:#e0e4d4;overflow:hidden}.progress-fill{height:100%;background:var(--green);transition:width .35s}.mastery-meta{font-size:10px;color:var(--muted);margin:10px 0 0}.current-course{font:italic 16px var(--serif);margin:11px 0 4px}.core-dots{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.core-dots span{font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid #d4dcca}.side-foot{font-size:10px;color:#8b957f;line-height:1.65;padding:0 5px}.side-foot button{font-size:10px;padding:0;text-decoration:underline}.footer{font-size:10px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:24px;color:#8c9582}.footer button{padding:0;font-size:10px;text-decoration:underline}.save-warning{padding:10px 14px;background:#f3dfbe;color:#7d6040;font-size:12px;border-radius:9px;margin-bottom:15px}.course-banner{padding:11px 14px;border-radius:10px;background:#e4ecda;border:1px solid #c5d5b7;display:flex;justify-content:space-between;gap:12px;font-size:12px;margin-bottom:15px}
+/* Dialogs, book and curriculum */
+dialog{color:var(--ink);background:var(--white);border:1px solid #bac8ae;border-radius:17px;padding:0;max-width:min(760px,calc(100vw - 28px));width:760px;max-height:88dvh;box-shadow:0 25px 100px #1d342b33}dialog::backdrop{background:#253d3359;backdrop-filter:blur(3px)}.dialog-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 23px;background:#fffdf4f5;border-bottom:1px solid var(--line)}.dialog-top h2{font:26px var(--serif);margin:0}.dialog-body{padding:22px 24px}.dialog-body p{font-size:13px;color:#65735f;line-height:1.75}.dialog-body h3{font:22px var(--serif);margin:22px 0 10px}.dialog-body h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;margin:20px 0 9px}.dialog-bottom{position:sticky;bottom:0;background:#fffdf5f5;border-top:1px solid var(--line);padding:14px 24px;display:flex;justify-content:space-between;gap:12px;z-index:3}.dialog-bottom small{font-size:11px;color:var(--muted);align-self:center}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label,.field>span{font-size:11px;font-weight:650;display:block;margin-bottom:5px}.field select,.field input[type=text],.field input[type=number]{width:100%;padding:10px 11px;border-radius:7px;border:1px solid #c7d3bd;color:var(--ink);background:#f8faef;min-height:43px}.field small{display:block;font-size:10px;color:var(--muted);margin-top:4px}.field.full{grid-column:1/-1}.check{display:flex;gap:8px;align-items:flex-start;font-size:12px;margin:8px 0}.check input{accent-color:var(--green);margin-top:3px}.check small{display:block;color:var(--muted);font-size:10px}.preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}.preset-row button{font-size:10px;padding:7px 10px}.chip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.chip{position:relative;display:flex;align-items:center;gap:7px;background:#f1f4e8;border:1px solid #dce2d1;border-radius:7px;padding:8px 9px;font-size:12px;cursor:pointer}.chip:has(input:checked){border-color:#9bb695;background:#e5eddb}.chip input{accent-color:var(--green);margin:0}.chip.core{font-weight:700}.tense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.tense-group{border:1px solid var(--line);border-radius:8px;padding:10px 12px}.tense-group h4{margin:0 0 8px}.tense-group .check{font-size:11px;gap:5px}.tense-group small{color:#9d886a}.muted-note{background:#f0f2e5;border-radius:8px;padding:11px 14px;font-size:11px!important}.field input[type=range]{width:100%;accent-color:var(--green)}.setting-summary{padding:10px 14px;border-radius:7px;background:#e9efdf;font-size:11px}.settings-error{color:#a34c37;font-size:12px}.reference-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.reference-controls select{font:20px var(--serif);padding:6px 12px;background:#ecf0e1;border:1px solid #c5d2b8;border-radius:6px}.ref-current{border-left:3px solid var(--orange);background:#f5e6d2;padding:13px 16px;margin:10px 0 20px}.ref-current span{font-size:11px;color:#987c50;display:block}.ref-current strong{font:27px var(--serif);font-weight:400}.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.ref-tense{border:1px solid var(--line);border-radius:8px;overflow:hidden}.ref-tense.active{border-color:#c98954;box-shadow:0 0 0 1px #e0b889}.ref-tense h3{font-size:11px;font-family:var(--sans);padding:9px 11px;background:#eef0e3;margin:0;font-weight:650}.ref-tense h3 span{display:block;font-size:9px;color:var(--muted);font-weight:400}.ref-table{border-collapse:collapse;width:100%;font-size:12px}.ref-table td{padding:5px 10px;border-bottom:1px solid #eff0e6}.ref-table tr:last-child td{border-bottom:0}.ref-table td:first-child{color:var(--muted);width:58px;font-size:10px}.ref-table tr.highlight{background:#f8e9d0}.ref-form{font-weight:550;cursor:pointer}.ref-form:hover{background:#e6eddb}.ref-table .listen-cell{width:31px;padding:1px 4px}.ref-table button{padding:0 4px;border:0;background:transparent;font-size:11px}.ref-note{font-size:11px;color:#75816c;margin:8px 0}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.summary-grid div{border:1px solid var(--line);border-radius:9px;padding:13px}.summary-grid strong{font:28px var(--serif);display:block}.summary-grid small{font-size:10px;color:var(--muted)}.heat-wrap{overflow:auto;margin:17px 0;border:1px solid var(--line);border-radius:8px}.heatmap{width:100%;border-collapse:collapse;min-width:440px}.heatmap th{font-size:9px;font-weight:600;text-align:center;white-space:nowrap;padding:10px 8px;background:#f1f3e6}.heatmap th:first-child{position:sticky;left:0;text-align:left;background:#f1f3e6;z-index:1}.heatmap td{padding:5px;border-top:1px solid #e6eadb;text-align:center}.heatmap td:first-child{position:sticky;left:0;background:var(--white);text-align:left;font-size:12px;font-weight:550;padding:8px 11px}.heat-cell{font-size:10px;border-radius:5px;padding:6px 7px;min-width:42px;background:#f3f2e6;display:block}.heat-cell.level-1{background:#efe1be}.heat-cell.level-2{background:#dce7c9}.heat-cell.level-3{background:#6e9570;color:#fff}.heat-cell.level-4{background:#365f52;color:#fff}.progress-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--muted)}.progress-legend i{width:8px;height:8px;display:inline-block;margin-right:4px;border-radius:2px}.recent-table{border-collapse:collapse;font-size:11px;width:100%}.recent-table td,.recent-table th{padding:9px 7px;border-bottom:1px solid var(--line);text-align:left}.recent-table th{color:var(--muted);font-size:10px}.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.shop-item{border:1px solid var(--line);border-radius:11px;padding:17px;display:flex;flex-direction:column;align-items:flex-start}.shop-item .object{font:40px var(--serif);color:#9c9369;line-height:1.2}.shop-item h3{font-size:19px;margin:10px 0 3px}.shop-item p{font-size:11px;flex:1}.shop-item button{font-size:12px;width:100%}.journal-item{border-left:2px solid #becdad;margin:0 0 16px 5px;padding-left:15px}.journal-item small{font-size:10px;color:var(--muted)}.journal-item h3{font:19px var(--serif);margin:3px 0}.journal-item p{font-size:12px;margin:5px 0}.reference-source{font-size:10px!important;line-height:1.6!important;color:#8d9580!important}
+/* Opening cover */
+#welcomeDialog{max-width:min(660px,calc(100vw - 28px));width:660px;background:#f9f5e8}.welcome-body{padding:35px 38px;position:relative}.welcome-top{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#869275;display:flex;align-items:center;gap:10px}.welcome-top:before{content:'';display:block;height:1px;flex:0 0 30px;background:#b6c3a4}.welcome-title{font:400 clamp(40px,6vw,64px)/1.04 var(--serif);letter-spacing:-2px;margin:22px 0 20px}.welcome-title em{color:var(--orange);font-weight:400}.welcome-description{font-size:14px;line-height:1.8;color:#6b785f;max-width:490px}.welcome-contract{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:20px 0;margin:24px 0}.welcome-contract strong{font:21px var(--serif);font-weight:400;display:block;margin-bottom:3px}.welcome-contract small{font-size:11px;color:#7b886f}.welcome-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.welcome-actions button{padding:12px 17px;font-size:13px}.welcome-foot{font-size:10px;color:#929a84;margin-top:17px}.welcome-books{font:italic 15px var(--serif);color:#7b8b6b;margin-bottom:12px}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#304f40;color:#fff7e7;border:1px solid #6a8765;box-shadow:0 8px 35px #304b4326;padding:12px 20px;border-radius:9px;font-size:12px;z-index:20;max-width:calc(100vw - 28px);text-align:center}.shake{animation:shake .3s}@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}.no-motion *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(min-width:1450px){.shell{padding-top:30px}.layout{gap:28px}.scene-card{border-radius:17px}}
+@media(max-width:1050px){.layout{grid-template-columns:minmax(0,1fr)245px;gap:16px}.shell{padding:22px 18px}.topbar{padding:17px 21px}.name-tag{display:none}.side-card{padding:14px}.scene-weather{display:none}.challenge{padding:18px}.topnav button{padding:7px 10px}}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr;gap:13px}.side-card.map-card{grid-row:span 2}.side-foot{grid-column:1/-1}.chapter-header h1{font-size:31px}.shell{max-width:760px}.topbar{max-width:800px}.side-card{padding:17px}#stage{height:300px}.scene-bubble{font-size:14px}.route-map svg{height:215px}}
+@media(max-width:540px){.topbar{padding:13px 14px;gap:10px;align-items:center}.brand-title{font-size:18px}.brand-title span{font-size:8px;letter-spacing:2px}.brand-emblem{display:none}.edition{display:none}.topnav{gap:3px}.topnav button{font-size:11px;padding:6px 7px;min-height:35px}.topnav .nav-icon{margin-right:0}.topnav .nav-text.mobile-hide{display:none}.shell{padding:20px 12px}.chapter-header{align-items:start;margin-bottom:14px}.chapter-header h1{font-size:28px;max-width:270px}.chapter-header .eyebrow{font-size:9px;letter-spacing:1.3px}.day-tag{font-size:10px;max-width:75px;text-align:right;justify-content:end;padding-top:3px}.scene-toolbar{font-size:10px;padding:9px 12px}#stage{height:255px}.scene-stamp{font-size:8px;top:10px;left:10px}.scene-bubble{top:47px;right:12px;font-size:12px;max-width:44%;padding:6px 8px}.captions{font-size:12px;padding:11px 12px;gap:9px;min-height:77px}.caption-name{min-width:51px;max-width:71px;font-size:8px}.speech-controls{padding:5px 10px}.speech-status{font-size:8px}.speech-controls button{font-size:10px}.cast-labels{padding:0 16%;bottom:8px}.cast-labels span{font-size:8px}.story-strip{margin:13px 1px}.story-text{font-size:12px}.challenge{padding:16px 14px}.challenge-head{margin-bottom:14px}.speaker-role{font-size:9px}.prompt{font-size:23px;line-height:1.5}.verb-tags{gap:5px}.tag{font-size:9px}.answer-row{gap:7px}.answer-row button{min-width:74px;padding:10px;font-size:12px}.answer-input{font-size:19px;padding:12px;min-height:54px}.answer-input::placeholder{font-size:12px}.accent-row .keyboard-note{display:none}.accent-row button{min-width:30px;min-height:30px}.help-btn{font-size:10px}.stars{font-size:13px;letter-spacing:2px}.memory-note{font-size:8px}.next-row{align-items:start}.next-row span{font-size:9px;max-width:170px}.next-row button{font-size:11px;min-height:39px}.sidebar{grid-template-columns:1fr 1fr;gap:9px}.side-card{padding:12px}.side-card.map-card{grid-column:1/-1;grid-row:auto;display:grid;grid-template-columns:1fr 1fr;gap:3px 16px}.map-card h2{grid-column:1/-1}.route-map{grid-column:2;grid-row:2/6;margin:-12px 0 -10px}.route-map svg{height:160px}.route-legend{display:none}.route-stage{font-size:18px}.route-task{font-size:10px}.route-foot{font-size:9px}.side-card h2{font-size:9px}.wallet b{font-size:21px}.wallet{gap:5px}.wallet small{font-size:8px}.core-dots{gap:4px}.core-dots span{font-size:9px}.mastery-meta{font-size:9px}.current-course{font-size:14px}.side-foot{font-size:9px}.footer{font-size:9px}.dialog-body{padding:17px}.dialog-top{padding:14px 17px}.dialog-top h2{font-size:22px}.dialog-bottom{padding:12px 17px}.dialog-bottom small{font-size:9px;max-width:140px}.field-grid{gap:10px}.chip-grid{grid-template-columns:repeat(3,1fr)}.chip{font-size:11px;padding:7px;gap:5px}.tense-grid{grid-template-columns:1fr}.tense-group{display:flex;flex-wrap:wrap;gap:3px 10px}.tense-group h4{width:100%}.tense-group .check{margin:4px 0;width:calc(50% - 6px)}.ref-grid{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr 1fr}.reference-controls{gap:6px}.welcome-body{padding:25px}.welcome-title{font-size:46px;letter-spacing:-1.3px}.welcome-description{font-size:13px}.welcome-contract{gap:12px;padding:17px 0}.welcome-contract strong{font-size:18px}.welcome-contract small{font-size:10px}.welcome-actions button{width:100%}.welcome-foot{font-size:9px}.arrival{padding:20px 16px}.arrival-title{font-size:34px}.arrival-grid{gap:7px}.arrival-grid div{padding:9px}.arrival-grid strong{font-size:23px}.arrival-grid small{font-size:9px}.shop-item{padding:13px}.shop-grid{gap:9px}.choice b{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+@media(max-width:540px){.scene-bubble{top:12px;font-size:11px;line-height:1.45;max-width:47%;padding:6px 9px}}
+</style></head>
+<body>
+<header class="topbar"><div class="brand"><div class="brand-emblem" aria-hidden="true"></div><div><div class="brand-title">PARIS<span>EN GRÈVE</span></div><div class="edition">Une aventure de conjugaison</div></div></div><nav class="topnav" aria-label="Outils du jeu"><span class="name-tag" id="nameTag">pour Gretchen</span><button id="voiceButton" class="voice-on" aria-label="Activer ou désactiver la voix"><span class="nav-icon">♫</span><span class="nav-text mobile-hide" id="voiceLabel">Voix</span></button><button data-open="progress"><span class="nav-icon">▥</span> <span class="nav-text">Maîtrise</span></button><button data-open="journal"><span class="nav-icon">▤</span><span class="nav-text mobile-hide">Carnet</span></button><button data-open="settings"><span class="nav-icon">⚙</span> <span class="nav-text">Réglages</span></button></nav></header>
+<main class="shell" id="gameMain"><div class="save-warning" id="saveWarning" hidden>La sauvegarde locale est indisponible. Exportez votre carnet pour conserver les progrès.</div><div id="courseBanner" class="course-banner" hidden></div><div class="chapter-header"><div><div class="eyebrow" id="chapterKicker">Un cartable. Une ville. Mille détours.</div><h1 id="chapterTitle">Le grand départ</h1></div><div class="day-tag"><i class="live-dot"></i><span id="dayLabel">Jour 1<br>Paris, en grève</span></div></div>
+<div class="layout"><section class="play-column" aria-label="L’aventure"><div class="scene-card"><div class="scene-toolbar"><span class="scene-location" id="sceneLocation">⌁ Une cour parisienne</span><span class="scene-weather">La ville ralentit. Pas vous.</span></div><div class="canvas-wrap"><canvas id="stage" role="img" aria-label="Gretchen et un habitant discutent dans un décor parisien animé."></canvas><span class="scene-stamp" id="sceneStamp">01 / Le départ</span><div class="scene-bubble" id="sceneBubble">Le quartier a encore des jambes !</div><div class="cast-labels"><span id="heroName">Gretchen</span><span id="npcName">Madame Colette</span></div></div><div class="captions" id="captions" aria-live="off"><span class="caption-name">Le récit</span><span class="caption-words">Le métro dort, mais l’école vous attend.</span></div><div class="speech-controls"><span class="speech-status" id="speechStatus">Voix française activée</span><div><button id="replayButton" title="Relire la conversation, sans dévoiler la réponse">↻ Réécouter</button><button id="stopSpeechButton" title="Arrêter la lecture">■</button></div></div></div><div class="story-strip"><div class="story-number" aria-hidden="true">↗</div><p class="story-text" id="storyText"></p></div><section class="challenge" id="challenge" aria-label="Écrire la réponse"></section></section>
+<aside class="sidebar" aria-label="Votre trajet et vos progrès"><section class="side-card map-card"><h2>Le chemin de l’école</h2><div class="route-stage" id="routeStage">Une ville à traverser</div><p class="route-task" id="routeTask"></p><div class="route-map" id="routeMap"></div><div class="route-legend"><span>● Votre trajet</span><span>○ Autres chemins</span></div><div class="route-foot" id="routeFoot"></div></section><section class="side-card"><h2>Dans votre sac</h2><div class="wallet"><div><span class="coin-symbol">◉</span> <b id="coinCount">12</b><small>Pièces de trajet</small></div><div><b id="allyCount">0</b><small>Alliés</small></div></div><div class="inventory" id="inventory"></div><button class="side-shop" data-open="shop">Visiter la boutique ↗</button></section><section class="side-card"><h2>Vos verbes, vraiment appris</h2><div class="mastery-head"><strong id="masteryPercent">0%</strong><small id="activeCount">32 formes</small></div><div class="progress-track" role="progressbar" aria-label="Formes acquises" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="masteryBar"><div class="progress-fill" id="masteryFill" style="width:0%"></div></div><p class="mastery-meta" id="masteryMeta"></p><div class="current-course" id="currentCourse"></div><div class="core-dots" id="coreDots"></div><button class="side-shop" data-open="progress">Ouvrir le carnet de maîtrise ↗</button></section><div class="side-foot">L’histoire récompense chaque effort. Les étoiles récompensent les réponses écrites de mémoire. <button class="ghost" data-open="about">Comment ça marche ?</button></div></aside></div><footer class="footer"><span id="saveStatus">Sauvegarde sur cet appareil · aucun compte</span><span>Une fiction parisienne · <button class="ghost" data-open="about">Référence & règles du jeu</button></span></footer></main>
+<dialog id="welcomeDialog" aria-labelledby="welcomeTitle"><div class="welcome-body"><div class="welcome-top">L’aventure de <span id="welcomeName">Gretchen</span></div><h2 class="welcome-title" id="welcomeTitle">Tout Paris s’arrête.<br><em>Pas votre français.</em></h2><p class="welcome-description">La grève a fermé le métro. Pour rejoindre l’école, il faudra discuter, négocier, trouver des alliés… et écrire les bons verbes. Chaque conversation fait avancer l’histoire.</p><div class="welcome-contract"><div><strong>24 verbes</strong><small>Les quatre essentiels,<br>puis vingt nouveaux alliés.</small></div><div><strong>15 rubriques</strong><small>Indicatif, conditionnel,<br>subjonctif. Tout est réglable.</small></div><div><strong>De mémoire</strong><small>Écrire, corriger,<br>retrouver plus tard.</small></div></div><div class="welcome-books" id="welcomeProgram">On commence par être, avoir, venir et aller.</div><div class="welcome-actions"><button class="primary orange" id="startButton">Commencer l’aventure →</button><button id="welcomeSettings">Choisir mon programme</button></div><div class="welcome-foot">Voix française activée après ce premier clic. Aide toujours disponible.<br>Le jeu ne montre ni ne prononce la conjugaison attendue avant votre essai, sauf si vous demandez de l’aide.</div></div></dialog>
+<dialog id="mainDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><h2 id="dialogTitle"></h2><button class="icon-button" id="closeDialog" aria-label="Fermer">×</button></div><div id="dialogContent"></div></dialog><div class="toast" id="toast" role="status" hidden></div><input type="file" id="importFile" accept="application/json,.json" hidden>
+<noscript><p style="padding:2em">Ce jeu a besoin de JavaScript. Activez JavaScript pour commencer l’aventure.</p></noscript>
+<script>/* Paris en grève — morphology, independent of the story and scheduler.
+   Reference: the user's Bescherelle, La conjugaison pour tous, supplied PDF.
+   Page numbers below are PDF page numbers, not printed page labels.
+   Story sentences and pedagogy are original, not quotations from the book. */
+(function (root) {
+'use strict';
+const split = s => s.split('|');
+const endings = (stem, xs) => xs.map(x=>stem+x);
+const IMP = split('ais|ais|ait|ions|iez|aient');
+const FUT = split('ai|as|a|ons|ez|ont');
+const SUB = split('e|es|e|ions|iez|ent');
+const TENSES = [
+ {id:'ip', mode:'Indicatif', name:'Présent', short:'Prés.', use:'Une action ou une situation actuelle.', en:'What is happening now.'},
+ {id:'ipc',mode:'Indicatif',name:'Passé composé',short:'P. comp.',aux:'ip',use:'Une action accomplie, liée au présent.',en:'A completed event, connected to the present.'},
+ {id:'ii',mode:'Indicatif',name:'Imparfait',short:'Imparf.',use:'Un décor, une habitude ou une action en cours dans le passé.',en:'Background, a habit, or an ongoing past action.'},
+ {id:'ipq',mode:'Indicatif',name:'Plus-que-parfait',short:'P.-q.-p.',aux:'ii',use:'Une action accomplie avant un autre moment du passé.',en:'Something that had happened before another past moment.'},
+ {id:'ips',mode:'Indicatif',name:'Passé simple',short:'P. simple',literary:true,use:'Une action délimitée dans un récit écrit.',en:'A completed event in written narration.'},
+ {id:'ipa',mode:'Indicatif',name:'Passé antérieur',short:'P. ant.',aux:'ips',literary:true,use:'Une action achevée avant une autre, dans un récit littéraire.',en:'An earlier completed event in literary narration.'},
+ {id:'ifs',mode:'Indicatif',name:'Futur simple',short:'Futur',use:'Une action ou une situation à venir.',en:'What will happen.'},
+ {id:'ifa',mode:'Indicatif',name:'Futur antérieur',short:'Fut. ant.',aux:'ifs',use:'Une action qui sera déjà accomplie à un moment futur.',en:'What will already have happened by a future time.'},
+ {id:'cp',mode:'Conditionnel',name:'Présent',short:'Cond.',use:'Une hypothèse, un souhait ou une demande atténuée.',en:'A hypothetical situation, a wish, or a polite request.'},
+ {id:'cpa',mode:'Conditionnel',name:'Passé (1re forme)',short:'Cond. p.',aux:'cp',use:'Ce qui aurait eu lieu dans une autre situation.',en:'What would have happened.'},
+ {id:'cp2',mode:'Conditionnel',name:'Passé (2e forme)',short:'Cond. 2',aux:'si',alias:'spq',literary:true,use:'Forme littéraire : mêmes formes que le plus-que-parfait du subjonctif.',en:'Literary form; the same forms as the pluperfect subjunctive.'},
+ {id:'sp',mode:'Subjonctif',name:'Présent',short:'Subj.',use:'Après, par exemple, « il faut que » ou « je souhaite que ».',en:'After expressions such as “it is necessary that” or “I wish that”.'},
+ {id:'spa',mode:'Subjonctif',name:'Passé',short:'Subj. p.',aux:'sp',use:'Une action accomplie envisagée au subjonctif.',en:'A completed action presented in the subjunctive.'},
+ {id:'si',mode:'Subjonctif',name:'Imparfait',short:'Subj. imp.',literary:true,use:'Concordance des temps dans la langue littéraire.',en:'Literary tense agreement after a past-tense main clause.'},
+ {id:'spq',mode:'Subjonctif',name:'Plus-que-parfait',short:'Subj. pq.',aux:'si',literary:true,use:'Une action antérieure dans une subordonnée littéraire.',en:'An earlier action in a literary subjunctive clause.'}
+];
+const TM=Object.fromEntries(TENSES.map(t=>[t.id,t]));
+const PEOPLE=[
+ {id:'je',pronoun:'je',index:0,gender:'f',who:'Gretchen',plural:false},
+ {id:'tu',pronoun:'tu',index:1,gender:'f',who:'Camille, une amie',plural:false},
+ {id:'il',pronoun:'il',index:2,gender:'m',who:'Léo, un parent',plural:false},
+ {id:'elle',pronoun:'elle',index:2,gender:'f',who:'Nadia, une voisine',plural:false},
+ {id:'nous',pronoun:'nous',index:3,gender:'m',who:'Gretchen et Léo, groupe mixte',plural:true},
+ {id:'vous',pronoun:'vous',index:4,gender:'m',who:'Camille et Léo, plusieurs personnes',plural:true},
+ {id:'ils',pronoun:'ils',index:5,gender:'m',who:'les parents, groupe mixte',plural:true},
+ {id:'elles',pronoun:'elles',index:5,gender:'f',who:'les voisines, groupe féminin',plural:true}
+];
+function past(base,type){
+ const e=type==='in'?split('ins|ins|int|înmes|întes|inrent'):type==='u'?split('us|us|ut|ûmes|ûtes|urent'):split('is|is|it|îmes|îtes|irent');
+ const s=type==='in'?split('insse|insses|înt|inssions|inssiez|inssent'):type==='u'?split('usse|usses|ût|ussions|ussiez|ussent'):split('isse|isses|ît|issions|issiez|issent');
+ return {ips:endings(base,e),si:endings(base,s)};
+}
+function irregular(inf,en,pp,aux,present,imperfect,future,pbase,ptype,sub,page,table){
+ return {inf,en,pp,aux,page,table,forms:{ip:split(present),ii:endings(imperfect,IMP),ifs:endings(future,FUT),cp:endings(future,IMP),sp:split(sub),...past(pbase,ptype)}};
+}
+function er(inf,en,page=18,table=7){
+ const s=inf.slice(0,-2);
+ return {inf,en,pp:s+'é',aux:'avoir',page,table,forms:{ip:endings(s,split('e|es|e|ons|ez|ent')),ii:endings(s,IMP),ips:endings(s,split('ai|as|a|âmes|âtes|èrent')),ifs:endings(inf,FUT),cp:endings(inf,IMP),sp:endings(s,SUB),si:endings(s,split('asse|asses|ât|assions|assiez|assent'))}};
+}
+const VERBS={};
+function put(v){ VERBS[v.inf]=v;return v; }
+put(irregular('être','to be','été','avoir','suis|es|est|sommes|êtes|sont','ét','ser','f','u','sois|sois|soit|soyons|soyez|soient',10,1));
+put(irregular('avoir','to have','eu','avoir','ai|as|a|avons|avez|ont','av','aur','e','u','aie|aies|ait|ayons|ayez|aient',11,2));
+put(irregular('venir','to come','venu','être','viens|viens|vient|venons|venez|viennent','ven','viendr','v','in','vienne|viennes|vienne|venions|veniez|viennent',37,24));
+const aller=er('aller','to go',36,23);aller.aux='être';aller.forms.ip=split('vais|vas|va|allons|allez|vont');aller.forms.ifs=endings('ir',FUT);aller.forms.cp=endings('ir',IMP);aller.forms.sp=split('aille|ailles|aille|allions|alliez|aillent');put(aller);
+put(irregular('faire','to do / make','fait','avoir','fais|fais|fait|faisons|faites|font','fais','fer','f','i','fasse|fasses|fasse|fassions|fassiez|fassent',81,67));
+put(irregular('dire','to say / tell','dit','avoir','dis|dis|dit|disons|dites|disent','dis','dir','d','i','dise|dises|dise|disions|disiez|disent',98,84));
+const pouvoir=put(irregular('pouvoir','to be able to','pu','avoir','peux|peux|peut|pouvons|pouvez|peuvent','pouv','pourr','p','u','puisse|puisses|puisse|puissions|puissiez|puissent',58,45));pouvoir.alternates={ip:{0:['puis']}};
+put(irregular('vouloir','to want','voulu','avoir','veux|veux|veut|voulons|voulez|veulent','voul','voudr','voul','u','veuille|veuilles|veuille|voulions|vouliez|veuillent',63,50));
+put(irregular('devoir','to have to / owe','dû','avoir','dois|dois|doit|devons|devez|doivent','dev','devr','d','u','doive|doives|doive|devions|deviez|doivent',57,44));
+put(irregular('savoir','to know (a fact / how)','su','avoir','sais|sais|sait|savons|savez|savent','sav','saur','s','u','sache|saches|sache|sachions|sachiez|sachent',56,43));
+put(irregular('voir','to see','vu','avoir','vois|vois|voit|voyons|voyez|voient','voy','verr','v','i','voie|voies|voie|voyions|voyiez|voient',54,41));
+put(irregular('prendre','to take','pris','avoir','prends|prends|prend|prenons|prenez|prennent','pren','prendr','pr','i','prenne|prennes|prenne|prenions|preniez|prennent',73,59));
+put(irregular('mettre','to put','mis','avoir','mets|mets|met|mettons|mettez|mettent','mett','mettr','m','i','mette|mettes|mette|mettions|mettiez|mettent',75,61));
+put(irregular('tenir','to hold','tenu','avoir','tiens|tiens|tient|tenons|tenez|tiennent','ten','tiendr','t','in','tienne|tiennes|tienne|tenions|teniez|tiennent',37,24));
+put(irregular('partir','to leave','parti','être','pars|pars|part|partons|partez|partent','part','partir','part','i','parte|partes|parte|partions|partiez|partent',39,26));
+put(irregular('sortir','to go out','sorti','être','sors|sors|sort|sortons|sortez|sortent','sort','sortir','sort','i','sorte|sortes|sorte|sortions|sortiez|sortent',39,26));
+put(er('parler','to speak'));put(er('marcher','to walk'));put(er('demander','to ask'));
+const acheter=er('acheter','to buy',24,13);acheter.forms.ip=split('achète|achètes|achète|achetons|achetez|achètent');acheter.forms.sp=split('achète|achètes|achète|achetions|achetiez|achètent');acheter.forms.ifs=endings('achèter',FUT);acheter.forms.cp=endings('achèter',IMP);put(acheter);
+const payer=er('payer','to pay',28,17);payer.forms.ip=split('paie|paies|paie|payons|payez|paient');payer.forms.sp=split('paie|paies|paie|payions|payiez|paient');payer.forms.ifs=endings('paier',FUT);payer.forms.cp=endings('paier',IMP);payer.alternates={ip:{0:['paye'],1:['payes'],2:['paye'],5:['payent']},sp:{0:['paye'],1:['payes'],2:['paye'],5:['payent']},ifs:Object.fromEntries(endings('payer',FUT).map((x,i)=>[i,[x]])),cp:Object.fromEntries(endings('payer',IMP).map((x,i)=>[i,[x]]))};put(payer);
+const appeler=er('appeler','to call',23,12);appeler.forms.ip=split('appelle|appelles|appelle|appelons|appelez|appellent');appeler.forms.sp=split('appelle|appelles|appelle|appelions|appeliez|appellent');appeler.forms.ifs=endings('appeller',FUT);appeler.forms.cp=endings('appeller',IMP);put(appeler);
+put(irregular('finir','to finish','fini','avoir','finis|finis|finit|finissons|finissez|finissent','finiss','finir','fin','i','finisse|finisses|finisse|finissions|finissiez|finissent',31,20));
+const comprendre=JSON.parse(JSON.stringify(VERBS.prendre));comprendre.inf='comprendre';comprendre.en='to understand';comprendre.pp='compris';for(const k of Object.keys(comprendre.forms))comprendre.forms[k]=comprendre.forms[k].map(x=>'com'+x);put(comprendre);
+const CORE=['être','avoir','venir','aller'];
+const ALL=Object.keys(VERBS);
+const EVERYDAY=TENSES.filter(t=>!t.literary).map(t=>t.id);
+const COURSES=[
+ {name:'Les quatre indispensables',verbs:CORE,tenses:['ip'],description:'Être, avoir, venir, aller au présent.'},
+ {name:'Raconter et prévoir',verbs:CORE,tenses:['ip','ipc','ii','ifs','cp'],description:'Les quatre verbes : présent, passé composé, imparfait, futur et conditionnel présent.'},
+ {name:'Nuances et subjonctif',verbs:CORE,tenses:EVERYDAY,description:'Les quatre verbes dans les dix temps non littéraires du programme.'},
+ {name:'Vingt nouveaux alliés',verbs:ALL,tenses:EVERYDAY,description:'Les 24 verbes et les dix temps non littéraires.'},
+ {name:'La grande épopée',verbs:ALL,tenses:TENSES.map(t=>t.id),description:'Tous les temps, y compris les formes littéraires.'}
+];
+function person(id,config={}){
+ const original=PEOPLE.find(p=>p.id===id);if(!original)throw new Error('Personne inconnue : '+id);
+ const p={...original};
+ if(id==='je'){p.who=config.name||'Gretchen';p.gender=config.gender==='m'?'m':'f';}
+ if(id==='nous')p.who=(config.name||'Gretchen')+' et Léo, groupe mixte';
+ return p;
+}
+function forms(v,t,p,config={}){
+ const verb=VERBS[v], tense=TM[t],subject=typeof p==='string'?person(p,config):p;
+ if(!verb||!tense||!subject)throw new Error('Verbe, temps ou personne inconnus.');
+ if(tense.aux){
+  let pp=verb.pp;
+  if(verb.aux==='être'){if(subject.gender==='f')pp+='e';if(subject.plural)pp+='s';}
+  return VERBS[verb.aux].forms[tense.aux].slice(subject.index,subject.index+1).map(x=>x+' '+pp);
+ }
+ return [verb.forms[t][subject.index],...(verb.alternates?.[t]?.[subject.index]||[])];
+}
+function subjectPrefix(p,verbForm){return p.pronoun==='je' && /^[aàâeéèêëiîïoôuùûüyœ]/i.test(verbForm)?"j’":p.pronoun+' ';}
+function clause(v,t,p,config={}){p=typeof p==='string'?person(p,config):p;const f=forms(v,t,p,config)[0];return subjectPrefix(p,f)+f;}
+function normalize(s){return String(s).normalize('NFC').toLocaleLowerCase('fr').replace(/[’‘`´]/g,"'").replace(/\s*'\s*/g,"'").replace(/[«»“”"]/g,'').replace(/[.!?;:,]/g,'').trim().replace(/\s+/g,' ');}
+function noAccents(s){return normalize(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function compare(answer,accepted){const a=normalize(answer);if(accepted.some(x=>normalize(x)===a))return 'exact';if(accepted.some(x=>noAccents(x)===noAccents(a)))return 'accent';return 'wrong';}
+const api={TENSES,TM,VERBS,CORE,ALL,EVERYDAY,PEOPLE,COURSES,person,forms,clause,subjectPrefix,normalize,noAccents,compare};
+root.French=api;if(typeof module!=='undefined')module.exports=api;
+})(globalThis);
+
+
+/* Original fictional Paris, fictional transport rules and prices. */
+(function(root){
+'use strict';
+const GENERAL={
+ 'être':['en route pour l’école','devant le passage piéton','dans le bon quartier','à la réunion des parents'],
+ 'avoir':['un plan de secours','besoin d’un autre itinéraire','un billet pour le bus','de quoi réparer le vélo'],
+ 'venir':['avec les autres parents','à la réunion du quartier','jusqu’à la place','à pied malgré la pluie'],
+ 'aller':['jusqu’à l’école','à la mairie','vers le pont','au rendez-vous des parents'],
+ 'faire':['un détour par le jardin','une pause devant la boulangerie','une proposition aux parents','un effort pour garder le sourire'],
+ 'dire':['la vérité sur le trajet','bonjour aux voisins','merci à la conductrice','quelques mots à la réunion'],
+ 'pouvoir':['traverser avec les autres parents','prendre un autre bus','aider à réparer le vélo','expliquer le problème'],
+ 'vouloir':['trouver un passage sûr','discuter sans crier','aider les autres parents','arriver à l’école'],
+ 'devoir':['attendre le signal','expliquer le changement de trajet','porter un casque','prendre un autre chemin'],
+ 'savoir':['où se trouve l’école','comment réparer la roue','pourquoi le métro est fermé','quel bus prendre'],
+ 'voir':['le panneau de déviation','les parents près du kiosque','un passage entre les arbres','la cour de l’école'],
+ 'prendre':['le chemin du jardin','le bus du quartier','une pompe à vélo','le temps de discuter'],
+ 'mettre':['le casque dans le panier','le plan sur la table','un billet dans la poche','la pompe à côté du vélo'],
+ 'tenir':['la porte pour les voisins','le plan du quartier','une réunion devant le kiosque','le guidon du vélo'],
+ 'partir':['avec le groupe de parents','de la place à pied','vers l’école','du jardin par la petite porte'],
+ 'sortir':['de la station de métro','de la quincaillerie','du jardin','de la mairie avec un plan'],
+ 'parler':['avec la conductrice','de la grève avec les voisins','calmement avec les agents','du trajet avec les parents'],
+ 'marcher':['jusqu’au prochain arrêt','le long du canal','avec les autres parents','sans perdre le sourire'],
+ 'demander':['un passage sûr','le prix de la pompe','une explication aux agents','de l’aide à la voisine'],
+ 'acheter':['une pompe à vélo','un petit parapluie','un billet de bus','une clé pour réparer le vélo'],
+ 'payer':['le billet de bus','la pompe à vélo','les outils à la caisse','le goûter du groupe'],
+ 'appeler':['la directrice','les autres parents','la mairie','la voisine pour la prévenir'],
+ 'finir':['la réparation du vélo','le trajet à pied','le message aux parents','la réunion du quartier'],
+ 'comprendre':['le problème des transports','les consignes de la conductrice','le point de vue des voisins','le nouveau plan du quartier']
+};
+const ITEMS={plan:{name:'Plan des passages',icon:'⌁',desc:'Un raccourci sûr dans le jardin.'},pump:{name:'Pompe à vélo',icon:'↟',price:8,desc:'Répare la roue à l’atelier.'},umbrella:{name:'Parapluie',icon:'☂',price:5,desc:'Permet d’abriter le groupe sur le chemin du jardin.'},wrench:{name:'Clé de réparation',icon:'⚒',price:7,desc:'Remet la chaîne du vélo en place.'},ticket:{name:'Billet solidaire',icon:'▤',price:3,desc:'Permet de monter dans le bus du quartier.'},bike:{name:'Vélo réparé',icon:'◎',desc:'Une traversée du pont à vélo.'},pass:{name:'Passage piéton validé',icon:'✓',desc:'Une solution négociée avec les agents.'},ribbon:{name:'Ruban des parents',icon:'✿',desc:'Le quartier reconnaît votre aide.'}};
+const NPC={
+ concierge:{name:'Madame Colette',role:'Gardienne • radar du quartier',color:'#648269',skin:'#e4b18e',hair:'#e3ded0',hat:'beret'},
+ baker:{name:'Basile',role:'Boulanger • philosophe du croissant',color:'#eee1c0',skin:'#bd825d',hair:'#49382d',hat:'chef'},
+ metro:{name:'Lucie',role:'Agente de station • reine des plans B',color:'#407b78',skin:'#e2af8a',hair:'#443f38',hat:'cap'},
+ police:{name:'L’agent Moreau',role:'Police • une barrière, mille questions',color:'#34495b',skin:'#d0a07e',hair:'#4c4235',hat:'police'},
+ union:{name:'Nadia',role:'Voisine • porte-parole improvisée',color:'#be7357',skin:'#ac7453',hair:'#3e322c',hat:'none'},
+ shop:{name:'Monsieur Clé',role:'Quincaillier • prêt à tout, sauf au crédit',color:'#747553',skin:'#dfac80',hair:'#938c77',hat:'cap'},
+ mechanic:{name:'Sam',role:'Mécanicienne • deux roues, mille vies',color:'#647987',skin:'#875b43',hair:'#352c2b',hat:'none'},
+ parent:{name:'Camille',role:'Parent • une poussette et un plan',color:'#ae858e',skin:'#edbc92',hair:'#a57443',hat:'none'},
+ driver:{name:'Fatou',role:'Conductrice • capitaine du bus solidaire',color:'#397c77',skin:'#875941',hair:'#2b2927',hat:'cap'},
+ gardener:{name:'Marcel',role:'Jardinier • gardien du passage secret',color:'#728754',skin:'#d2a47d',hair:'#c8c3af',hat:'garden'},
+ bridge:{name:'Léo',role:'Parent • expert en raccourcis douteux',color:'#b89658',skin:'#c99269',hair:'#54382d',hat:'none'},
+ clerk:{name:'Madame Tampon',role:'Mairie • la forme avant le fond',color:'#777990',skin:'#e2b69a',hair:'#473b34',hat:'none'},
+ teacher:{name:'Madame Aurore',role:'Directrice • le dernier portail',color:'#7c9379',skin:'#a66f4e',hair:'#302d2a',hat:'none'}
+};
+// The choices below change destination, inventory and/or the next encounter.
+const SCENES={
+ home:{name:'Le grand départ',place:'Une cour parisienne',npc:'concierge',look:'home',x:6,y:65,
+ intro:'Paris est en grève. Le métro dort, les bus hésitent, mais l’école reste ouverte. Votre mission : traverser le quartier sans perdre votre français… ni votre sens de l’humour.',
+ lines:['Le métro est fermé, ma chère. Mais le quartier a encore des jambes !','Il y a deux sortes de Parisiens : ceux qui ont un plan, et ceux qui connaissent Colette.','J’ai connu une grève des ascenseurs. Depuis, je me méfie des étages.'],
+ task:'Convaincre Colette de partager ses informations.',
+ complements:{'être':['en route pour l’école','dans la cour avec les voisins'],'avoir':['un plan de secours','besoin d’un itinéraire'],'aller':['jusqu’à l’école','vers la boulangerie'],'venir':['avec les autres parents','demander de l’aide']},
+ choices:[{title:'Demander le plan du quartier',text:'Colette déplie un plan. « Les petites rues font les grandes aventures. »',to:'bakery',item:'plan',mood:'diplomatie',action:'give',label:'Un plan + une alliée',ally:1},{title:'Partir à l’instinct',text:'« À l’instinct ? Très parisien. Passez au moins voir Basile ! »',to:'bakery',coins:3,mood:'audace',action:'walk',label:'3 pièces • un peu de panache'}]},
+ bakery:{name:'Le parlement du croissant',place:'Rue des Petits-Détours',npc:'baker',look:'bakery',x:17,y:45,
+ intro:'Devant la boulangerie, on discute transports, salaires et chocolatines. Basile a un avis sur tout. Même sur les itinéraires.',
+ lines:['La grève, c’est compliqué. Le croissant, normalement, non. On parle ?','Vous défendez quel plan : attendre un bus ou organiser un groupe à pied ?','On peut ne pas être d’accord et partager un pain au chocolat. C’est mon programme.'],
+ task:'Discuter du quartier sans déclencher une deuxième grève.',
+ complements:{'être':['du même avis que les voisins'],'avoir':['une autre idée pour le trajet'],'dire':['quelques mots sur la grève'],'parler':['des transports avec les voisins'],'comprendre':['le point de vue des grévistes']},
+ choices:[{title:'Écouter puis proposer un compromis',text:'Basile vous confie un message pour les parents. « La solidarité se transporte à pied. »',to:'metro',ally:1,mood:'diplomatie',action:'agree',label:'Les voisins vous font confiance'},{title:'Plaider pour un passage vers l’école',text:'Votre plaidoyer fait sourire la file. « Voilà une priorité qui nous rassemble. »',to:'metro',coins:3,mood:'audace',action:'argue',label:'3 pièces pour la caisse du trajet'}]},
+ metro:{name:'Le métro fantôme',place:'Station Plan-B',npc:'metro',look:'metro',x:28,y:31,
+ intro:'Les grilles du métro sont fermées. Lucie connaît une place où les habitants préparent des solutions. Un barrage sépare encore les deux quartiers.',
+ lines:['Le prochain métro ? Disons que l’horaire est devenu un concept philosophique.','Pour l’école, il reste la rue. Il faut seulement expliquer votre projet au barrage.','Je peux fermer une station. Pas votre imagination.'],
+ task:'Obtenir des informations précises sur le détour.',
+ complements:{'être':['devant la station fermée'],'avoir':['besoin d’un autre passage'],'aller':['vers le barrage'],'venir':['de la station de métro'],'savoir':['où se trouve le passage piéton'],'sortir':['de la station sans prendre le métro']},
+ choices:[{title:'Préparer une explication pour les agents',text:'Lucie vous indique le passage piéton et les personnes à contacter.',to:'barrage',mood:'diplomatie',action:'give',label:'Un échange calme au barrage'},{title:'Emmener le groupe de voisins',text:'Vous partez en petit groupe. Lucie vous souhaite « bon courage, et bons verbes ! »',to:'barrage',ally:1,mood:'collectif',action:'walk',label:'Une voix collective'}]},
+ barrage:{name:'Le duel des politesses',place:'Boulevard des Négociations',npc:'police',look:'barrage',x:38,y:46,
+ intro:'Une barrière coupe le boulevard. L’agent Moreau n’a pas l’intention de bouger sans une explication claire. Ni de gagner un concours de sourires.',
+ lines:['Le boulevard est fermé. Expliquez-moi votre trajet, et cherchons une solution sûre.','Je vous écoute. Pas tous en même temps : même mes oreilles ont un règlement.','Une bonne explication ouvre parfois plus de portes qu’un grand discours.'],
+ task:'Argumenter avec Moreau et négocier un passage sûr.',
+ complements:{'être':['en route pour l’école'],'avoir':['besoin d’un passage sûr'],'aller':['à la réunion des parents'],'venir':['du quartier voisin'],'pouvoir':['emprunter le passage piéton'],'demander':['une solution sûre aux agents'],'devoir':['respecter le passage indiqué']},
+ choices:[{title:'Négocier le passage piéton',text:'Moreau écarte la barrière. « Voilà. On peut discuter et trouver un passage. »',to:'square',item:'pass',mood:'diplomatie',action:'barrier',label:'Passage validé'},{title:'Argumenter, puis accepter le détour',text:'« J’admire votre énergie. Le détour mène aussi à la place. » Vous partez avec dignité.',to:'square',coins:4,mood:'audace',action:'argue',label:'4 pièces • aucun raccourci dangereux'}]},
+ square:{name:'L’assemblée des plans B',place:'Place de la Petite-République',npc:'union',look:'square',x:50,y:30,
+ intro:'La place est pleine de pancartes, de café et de solutions contradictoires. Nadia veut comprendre comment aider les familles sans effacer le débat.',
+ lines:['On peut soutenir une cause et chercher un chemin vers l’école. Parlons des deux.','Une réunion de quartier, c’est simple : douze personnes, treize avis.','Les slogans tiennent sur une pancarte. Les bonnes solutions demandent une conversation.'],
+ task:'Débattre, écouter et décider comment continuer.',
+ complements:{'être':['à la réunion du quartier'],'avoir':['une proposition pour les familles'],'venir':['écouter les habitants'],'dire':['la vérité sur les difficultés du trajet'],'vouloir':['trouver une solution commune'],'comprendre':['les inquiétudes des parents']},
+ choices:[{title:'Réparer un vélo pour ouvrir la route',text:'Nadia connaît une mécanicienne. Première étape : trouver des outils chez Monsieur Clé.',to:'shop',action:'walk',mood:'bricolage',label:'Route atelier • outils et vélo'},{title:'Organiser les parents du quartier',text:'Camille vous fait signe près du kiosque. Une expédition collective prend forme.',to:'parents',ally:1,action:'agree',mood:'collectif',label:'Route solidaire • bus ou jardin'}]},
+ shop:{name:'La boutique des solutions',place:'Quincaillerie Clé & Compagnie',npc:'shop',look:'shop',x:60,y:15,
+ intro:'Une pompe, une clé, un parapluie : la vitrine ressemble soudain à un coffre au trésor. Ici, chaque achat commence par une conversation.',
+ lines:['Une pompe à vélo ? J’en ai. Une fin de grève ? Pas en stock.','On répare une roue avec des outils. On négocie le prix avec des mots.','Je vends des clés, pas des miracles. Quoique, pour une chaîne coincée…'],
+ task:'Demander conseil et négocier votre équipement.',
+ complements:{'avoir':['de quoi payer la pompe'],'acheter':['une pompe à vélo','une clé de réparation'],'payer':['les outils à la caisse'],'demander':['le prix du parapluie'],'prendre':['la pompe sur le comptoir'],'aller':['à l’atelier du quartier']},
+ choices:[{title:'Emporter une pompe à vélo',text:'« Huit pièces. Et la recommandation de ne pas gonfler les pneus avec des discours. »',to:'workshop',item:'pump',cost:8,freeIfOwned:true,action:'give',mood:'bricolage',label:'8 pièces • gratuit si déjà achetée'},{title:'Demander un prêt à l’atelier',text:'Monsieur Clé vous envoie chez Sam. « Elle a une pompe. Aidez-la un peu, elle vous la prêtera. »',to:'workshop',action:'walk',mood:'entraide',label:'Sans achat • deux échanges supplémentaires'}]},
+ workshop:{name:'Une roue et beaucoup d’espoir',place:'Atelier du passage',npc:'mechanic',look:'workshop',x:69,y:25,
+ intro:'Sam examine le vélo. Un pneu à plat, une chaîne capricieuse : rien qui résiste longtemps à de l’entraide et à quelques phrases bien écrites.',
+ lines:['Tenez le guidon. Non, l’autre. Voilà, maintenant nous formons une équipe.','Le vélo a deux roues. Votre plan devrait avoir au moins deux options.','Une erreur ? On corrige, on recommence. C’est aussi comme ça qu’on répare une chaîne.'],
+ task:'Expliquer les étapes de la réparation à Sam.',
+ complements:{'être':['à l’atelier avec Sam'],'avoir':['une pompe pour le pneu'],'faire':['la réparation avec Sam'],'mettre':['la pompe à côté du vélo'],'tenir':['le guidon du vélo'],'finir':['la réparation du vélo']},
+ choices:[{title:'Tester le vélo réparé',text:'La roue tourne ! Sam lève le pouce. Le pont vous attend.',to:'bridge',item:'bike',action:'bike',label:'Vélo réparé • route du pont'},{title:'Prêter le vélo et rejoindre les parents',text:'Vous confiez le vélo à un voisin et rejoignez Camille. Sam sourit : « Ça, c’est circuler. »',to:'parents',ally:2,action:'give',label:'Deux alliés • route collective'},{title:'Réparer aussi la chaîne avec votre clé',text:'La clé fait merveille. Sam ajoute quatre pièces à la caisse du trajet et vous confie le vélo.',to:'bridge',requires:'wrench',item:'bike',coins:4,action:'bike',label:'Nécessite la clé • vélo et 4 pièces'}]},
+ parents:{name:'La coalition des cartables',place:'Le kiosque des parents',npc:'parent',look:'parents',x:54,y:61,
+ intro:'Camille rassemble les familles. Le bus solidaire fait un détour ; le jardin offre un chemin à pied. Tout le monde attend votre proposition.',
+ lines:['J’ai les cartables, les goûters et six avis sur l’itinéraire. Il manque une décision.','Nous sommes des parents. Nous savons négocier avec quelqu’un qui refuse de mettre ses chaussures.','La conductrice nous attend peut-être. Le jardin, lui, ne risque pas de partir.'],
+ task:'Organiser le groupe et expliquer le plan aux autres parents.',
+ complements:{'être':['avec les autres parents'],'avoir':['un itinéraire pour le groupe'],'venir':['avec les familles du quartier'],'aller':['vers le prochain arrêt'],'appeler':['la directrice pour la prévenir'],'prendre':['le bus solidaire']},
+ choices:[{title:'Tenter le bus solidaire',text:'Le groupe se dirige vers l’arrêt. Au loin, une conductrice vous fait signe.',to:'bus',action:'walk',mood:'collectif',label:'Transport • conversation avec Fatou'},{title:'Traverser le jardin à pied',text:'Camille mène les cartables. Vous prenez la tête de l’expédition pédestre.',to:'garden',action:'walk',mood:'marche',label:'Marche • le passage de Marcel'}]},
+ bus:{name:'Le bus qui voulait bien',place:'Arrêt Solidarité',npc:'driver',look:'bus',x:68,y:57,
+ intro:'Fatou conduit le dernier bus du quartier. Elle peut vous emmener près du pont, à condition que tout le monde comprenne les consignes.',
+ lines:['Montez avec vos cartables et vos bonnes idées. Les mauvaises humeurs restent sur le trottoir.','Ce bus s’arrête au pont. Pas au pays des horaires parfaits.','Pour les enfants : une place sûre. Pour les adultes : un peu de patience.'],
+ task:'Parler avec Fatou, expliquer la destination et préparer le départ.',
+ complements:{'être':['à l’arrêt avec les familles'],'avoir':['un billet pour le bus'],'aller':['jusqu’au pont'],'venir':['du kiosque des parents'],'prendre':['le bus solidaire'],'payer':['le billet à la conductrice'],'devoir':['laisser le passage libre']},
+ choices:[{title:'Prendre un billet et monter',text:'Fatou ferme les portes. « Prochain arrêt : un peu plus près de l’école ! »',to:'bridge',item:'ticket',cost:3,freeIfOwned:true,action:'bus',label:'3 pièces • le bus prend la route'},{title:'Garder la caisse et passer par le jardin',text:'Vous remerciez Fatou et choisissez la marche. « Bon trajet, les courageux ! »',to:'garden',action:'walk',label:'Gratuit • un détour dans le jardin'}]},
+ garden:{name:'Le secret des petits chemins',place:'Jardin des Détours',npc:'gardener',look:'garden',x:70,y:78,
+ intro:'Marcel arrose les fleurs alors que la ville discute. Il connaît une petite porte qui débouche près du pont. Encore faut-il lui expliquer où vous allez.',
+ lines:['Les fleurs ne font pas grève. Elles prennent seulement leur temps.','Le grand portail est fermé. La petite porte aime les gens polis.','Vous avez un plan ? Excellent. Vous avez un parapluie ? Encore mieux.'],
+ task:'Demander le bon chemin et traverser ensemble.',
+ complements:{'être':['dans le jardin avec les familles'],'avoir':['un plan du jardin'],'aller':['vers la petite porte'],'venir':['à pied depuis le kiosque'],'marcher':['entre les arbres'],'sortir':['du jardin par la petite porte']},
+ choices:[{title:'Suivre le plan par la petite porte',text:'Marcel vous montre le passage. Le pont apparaît au bout de l’allée.',to:'bridge',requires:'plan',action:'walk',label:'Nécessite le plan de Colette'},{title:'Demander à Marcel de vous guider',text:'Marcel range son arrosoir. « Suivez-moi. Et admirez au moins une tulipe. »',to:'bridge',ally:1,action:'walk',label:'Un guide • aucun objet nécessaire'},{title:'Partager votre parapluie avec les voisins',text:'Une averse traverse le jardin. Vous abritez les voisins, et Marcel ouvre le petit passage couvert.',to:'bridge',requires:'umbrella',ally:2,action:'walk',label:'Nécessite le parapluie • deux alliés'}]},
+ bridge:{name:'Le pont des presque-arrivés',place:'Passerelle du Canal',npc:'bridge',look:'bridge',x:82,y:47,
+ intro:'L’autre rive est enfin en vue. Léo annonce une dernière complication : la directrice attend un message clair sur l’arrivée du groupe.',
+ lines:['Bonne nouvelle : nous voyons l’école. Mauvaise nouvelle : j’ai promis d’expliquer notre retard.','Mon raccourci est très court. Sauf quand on le mesure.','Avant d’arriver, racontons correctement ce que nous avons fait.'],
+ task:'Raconter le trajet et préparer le message à la directrice.',
+ complements:{'être':['sur le pont avec le groupe'],'avoir':['un message pour la directrice'],'venir':['de l’autre côté du canal'],'aller':['à l’école avec les voisins'],'faire':['un long détour'],'dire':['la vérité sur le trajet'],'finir':['la traversée du quartier']},
+ choices:[{title:'Passer à la mairie pour coordonner la suite',text:'Le groupe rejoint la mairie. Peut-être que demain sera moins compliqué.',to:'townhall',action:'walk',ally:1,label:'Une mission civique supplémentaire'},{title:'Prévenir l’école et rejoindre le portail',text:'Léo envoie votre message. La directrice vous attend au portail.',to:'school',action:'walk',label:'La dernière ligne droite'}]},
+ townhall:{name:'Le royaume du tampon',place:'Annexe de la mairie',npc:'clerk',look:'townhall',x:88,y:22,
+ intro:'Madame Tampon organise les informations du quartier. Son bureau croule sous les formulaires. Vous proposez un trajet partagé pour le lendemain.',
+ lines:['Votre demande est recevable. Votre formulaire est presque lisible. Nous progressons.','Je peux tamponner un plan. Pas garantir que tout Paris le suivra.','Un itinéraire partagé ? Voilà une idée qui mérite deux tampons.'],
+ task:'Expliquer votre proposition et obtenir un accord.',
+ complements:{'être':['à la mairie pour le quartier'],'avoir':['une proposition pour demain'],'vouloir':['organiser un trajet partagé'],'demander':['un plan pour les familles'],'mettre':['le formulaire sur la table'],'comprendre':['les besoins du quartier']},
+ choices:[{title:'Partager le plan avec tout le quartier',text:'Deux tampons ! Le plan rejoint le panneau des familles.',to:'school',item:'ribbon',ally:2,action:'stamp',label:'Ruban des parents • deux alliés'},{title:'Prendre les informations et rejoindre l’école',text:'Madame Tampon vous salue. « Revenez demain. Enfin… seulement si nécessaire. »',to:'school',coins:3,action:'give',label:'3 pièces • direction le portail'}]},
+ school:{name:'L’école, enfin !',place:'École des Petits-Possibles',npc:'teacher',look:'school',x:96,y:62,
+ intro:'Le portail est là. Madame Aurore accueille le groupe. Avant la sonnerie, un dernier échange : raconter, expliquer, et imaginer le trajet de demain.',
+ lines:['Vous voilà ! On m’a parlé d’un vélo, d’un jardin et d’un discours devant une boulangerie.','Je vous écoute. L’école commence aussi quand on apprend à trouver son chemin.','Un dernier effort. Ensuite, les cartables entrent et les parents respirent.'],
+ task:'Conclure le récit du trajet, sans aide si possible.',
+ complements:{'être':['devant le portail de l’école'],'avoir':['une histoire à raconter'],'venir':['avec les autres familles'],'aller':['dans la cour de l’école'],'finir':['le trajet avec le groupe'],'comprendre':['l’importance de l’entraide']},
+ choices:[{title:'Franchir le portail',text:'La cloche sonne. Vous avez traversé Paris. L’aventure est gagnée ; les verbes continuent à se construire.',to:'finish',action:'celebrate',label:'Une arrivée méritée'}]}
+};
+function sentence(v,t,p,variant=0,sceneId='home',config={}){
+ const F=root.French,scene=SCENES[sceneId]||SCENES.home;
+ const options=scene.complements?.[v]||GENERAL[v];
+ if(!options)throw new Error('Aucun contexte pour '+v);
+ const tail=options[variant%options.length];
+ const f=F.forms(v,t,p,config)[0], subj=F.subjectPrefix(p,f);
+ let before='',after=' '+tail+'.';
+ if(t==='ip')before='À présent, ';
+ else if(t==='ipc')before='Depuis le début de la grève, ';
+ else if(t==='ii')before='Ce matin-là, ';
+ else if(t==='ipq')before='Avant l’annonce de la grève, ';
+ else if(t==='ips')before='Ce jour-là, ';
+ else if(t==='ipa'){before='Dès '+((/^(il|elle)/.test(p.pronoun))?'qu’':'que ');after=' '+tail+', tout changea.';}
+ else if(t==='ifs')before='Demain, ';
+ else if(t==='ifa')before='D’ici demain, ';
+ else if(t==='cp')before='Dans une autre situation, ';
+ else if(t==='cpa'||t==='cp2')before='Sans cette grève, ';
+ else if(t==='sp')before='Il faut '+((/^(il|elle)/.test(p.pronoun))?'qu’':'que ');
+ else if(t==='spa')before='La directrice souhaite '+((/^(il|elle)/.test(p.pronoun))?'qu’':'que ');
+ else if(t==='si')before='La directrice souhaitait '+((/^(il|elle)/.test(p.pronoun))?'qu’':'que ');
+ else if(t==='spq')before='La directrice aurait souhaité '+((/^(il|elle)/.test(p.pronoun))?'qu’':'que ');
+ before+=subj;
+ return {before,after,full:before+f+after,form:f,tail,local:!!scene.complements?.[v]};
+}
+root.Story={SCENES,NPC,ITEMS,GENERAL,sentence};if(typeof module!=='undefined')module.exports=root.Story;
+})(globalThis);
+
+
+/* Pure, inspectable learning rules. No server and no language-model grading. */
+(function(root){
+'use strict';
+const F=root.French,Story=root.Story;
+const VERSION=1,DAY=86400000;
+const DEFAULTS={name:'Gretchen',gender:'f',plan:'guided',verbs:F.CORE.slice(),tenses:['ip'],people:F.PEOPLE.map(p=>p.id),target:3,gap:5,minSeconds:10,roundSize:5,strict:true,inputMode:'verb',speech:true,rate:0.94,voice:'',auto:true,translation:true,motion:true,sfx:true};
+function fresh(){return {version:VERSION,config:{...DEFAULTS,verbs:[...DEFAULTS.verbs],tenses:[...DEFAULTS.tenses],people:[...DEFAULTS.people]},course:0,day:1,scene:'home',sceneDone:0,visits:['home'],history:[],inventory:[],coins:12,allies:0,mood:'diplomatie',tick:0,stats:{},exposures:{},log:[],active:null,rng:260113,totalFirst:0,firstExact:0,totalSolved:0,trips:0,finished:false,lastChoice:'',courseNotice:'',created:Date.now()};}
+function selected(s){return s.config.plan==='guided'?{...F.COURSES[s.course],people:s.config.people}:{verbs:s.config.verbs,tenses:s.config.tenses,people:s.config.people,name:'Programme personnalisé'};}
+function key(v,t,p,cfg){const gender=F.TM[t].aux&&F.VERBS[v].aux==='être'?':'+F.person(p,cfg).gender:'';return v+'|'+(F.TM[t].alias||t)+'|'+p+gender;}
+function deck(s){const sel=selected(s),m=new Map();for(const v of sel.verbs)for(const t of sel.tenses)for(const p of sel.people){const k=key(v,t,p,s.config);if(!m.has(k)||t==='spq')m.set(k,{v,t,p,key:k});}return [...m.values()];}
+function initialStat(){return {seen:0,wrong:0,hints:0,streak:0,credits:0,lastTick:-10000,lastCreditTick:-10000,lastCreditAt:0,dueTick:0,dueAt:0,stableAt:0,retainedAt:0,lastShownTick:-10000,lastShownAt:0};}
+function stat(s,k){return s.stats[k]||(s.stats[k]=initialStat());}
+function peek(s,k){return s.stats[k]||initialStat();}
+function random(s){s.rng=(Math.imul(s.rng,1664525)+1013904223)>>>0;return s.rng/4294967296;}
+function effectiveGap(s){return Math.min(s.config.gap,Math.max(0,deck(s).length-1));}
+function exposureRecent(s,v,now,gap=null){const e=s.exposures[v];return !!e&&(s.tick-e.tick<(gap===null?effectiveGap(s):gap)||now-e.time<s.config.minSeconds*1000);}
+function eligibility(s,c,now=Date.now()){
+ const st=peek(s,c.key),gap=effectiveGap(s);
+ return {exposed:exposureRecent(s,c.v,now,gap)||(st.lastShownAt>0&&(s.tick-st.lastShownTick<gap||now-st.lastShownAt<s.config.minSeconds*1000)),spaced:st.credits===0||(s.tick-st.lastCreditTick>=gap&&now-st.lastCreditAt>=s.config.minSeconds*1000)};
+}
+function pick(s,now=Date.now()){
+ const d=deck(s);if(!d.length)throw Error('Sélectionnez au moins un verbe, un temps et une personne.');
+ const gap=effectiveGap(s),sc=Story.SCENES[s.scene]||Story.SCENES.home;
+ let candidates=d.filter(c=>s.tick-peek(s,c.key).lastTick>=Math.min(gap,3));if(!candidates.length)candidates=d;
+ // Every fourth selection reserves an unseen slot when one exists: finite coverage cannot starve.
+ const unseen=candidates.filter(c=>!peek(s,c.key).seen);
+ if(s.tick%4===0&&unseen.length)candidates=unseen;
+ const ranked=candidates.map(c=>{
+  const st=peek(s,c.key),due=s.tick>=st.dueTick&&now>=st.dueAt;
+  let n=!st.seen?400:due&&st.streak===0?800:due&&st.streak<s.config.target?600:due?450:st.streak<s.config.target?120:20;
+  if(sc.complements?.[c.v])n+=30;if(exposureRecent(s,c.v,now,gap))n-=200;
+  n+=Math.min(30,(s.tick-st.lastTick)/10)+random(s)*25;
+  return {c,n};
+ }).sort((a,b)=>b.n-a.n);
+ const c={...ranked[0].c};
+ const sel=selected(s);
+ if(c.t==='spq'&&sel.tenses.includes('cp2')&&random(s)<0.35)c.t='cp2';
+ return {...c,variant:peek(s,c.key).seen+s.day-1,scene:s.scene,attempts:0,helped:false,wrong:false,solved:false,result:null,created:now};
+}
+function question(s){if(!s.active)s.active=pick(s);return s.active;}
+function words(s,q=s.active){if(!q)throw Error('Aucune question.');return Story.sentence(q.v,q.t,F.person(q.p,s.config),q.variant,q.scene,s.config);}
+function accepted(s,q=s.active){const p=F.person(q.p,s.config),w=words(s,q),ff=F.forms(q.v,q.t,p,s.config);if(s.config.inputMode==='sentence')return ff.map(f=>w.before+f+w.after);return ff.flatMap(f=>[f,F.subjectPrefix(p,f)+f,w.before+f+w.after]);}
+function expose(s,v=s.active?.v,now=Date.now()){
+ if(!v||!F.VERBS[v])return;
+ s.exposures[v]={tick:s.tick,time:now};
+ if(s.active?.v===v&&!s.active.solved&&!s.active.helped){s.active.helped=true;const st=stat(s,s.active.key);st.hints++;st.streak=0;st.stableAt=0;st.retainedAt=0;}
+}
+function record(s,item){s.log.push({...item,time:item.time||Date.now()});if(s.log.length>600)s.log.splice(0,s.log.length-600);}
+function clearStrength(st){st.streak=0;st.stableAt=0;st.retainedAt=0;}
+function goal(s){return s.config.roundSize+(s.scene==='workshop'&&s.mood==='entraide'&&!s.inventory.includes('pump')?2:0);}
+function grade(s,answer,now=Date.now()){
+ const q=question(s);if(q.solved)return {duplicate:true};
+ if(!String(answer).trim())return {empty:true};
+ const st=stat(s,q.key),kind=F.compare(answer,accepted(s,q)),first=q.attempts===0;
+ q.attempts++;if(first){st.seen++;s.totalFirst++;if(kind==='exact'&&!q.helped&&!exposureRecent(s,q.v,now))s.firstExact++;}
+ const acceptedAccent=kind==='accent'&&!s.config.strict;
+ if(kind!=='exact'&&!acceptedAccent){
+  q.wrong=true;st.wrong++;clearStrength(st);st.lastShownTick=s.tick;st.lastShownAt=now;st.dueTick=s.tick+3;st.dueAt=0;
+  record(s,{key:q.key,v:q.v,t:q.t,p:q.p,answer:String(answer).slice(0,400),expected:words(s,q).form,kind,credit:false,time:now});
+  return {kind,correct:false,expected:words(s,q).form};
+ }
+ if(acceptedAccent){q.wrong=true;st.wrong++;clearStrength(st);}
+ const eligible=eligibility(s,q,now);
+ const clean=kind==='exact'&&first&&!q.helped&&!q.wrong&&!eligible.exposed;
+ const credit=clean&&eligible.spaced;
+ s.tick++;st.lastTick=s.tick;s.totalSolved++;s.sceneDone++;s.coins+=credit?3:1;
+ if(credit){
+  st.streak++;st.credits++;st.lastCreditTick=s.tick;st.lastCreditAt=now;
+  if(st.streak>=s.config.target&&!st.stableAt)st.stableAt=now;
+  if(st.stableAt&&now-st.stableAt>=DAY)st.retainedAt=now;
+  st.dueTick=s.tick+Math.max(effectiveGap(s),[3,8,18,35][Math.min(st.streak-1,3)]);
+  st.dueAt=st.streak>=s.config.target?now+DAY:0;
+ }else{st.dueTick=s.tick+Math.max(2,effectiveGap(s));st.dueAt=0;}
+ q.solved=true;q.result={kind,correct:true,clean,credit,exposed:eligible.exposed,spaced:eligible.spaced,stars:Math.min(st.streak,s.config.target),coins:credit?3:1,retained:!!st.retainedAt};
+ record(s,{key:q.key,v:q.v,t:q.t,p:q.p,answer:String(answer).slice(0,400),expected:words(s,q).form,kind:credit?'recall':acceptedAccent?'accent-accepted':'assisted-or-early',credit,time:now});
+ if(s.config.plan==='guided'&&s.course<F.COURSES.length-1&&deck(s).every(c=>peek(s,c.key).streak>=s.config.target)){
+  s.course++;s.courseNotice=F.COURSES[s.course].name;
+ }
+ return q.result;
+}
+function next(s){s.active=null;return s.sceneDone>=goal(s)?null:question(s);}
+function canChoose(s,ch){const cost=ch.freeIfOwned&&s.inventory.includes(ch.item)?0:(ch.cost||0);return {ok:(!ch.requires||s.inventory.includes(ch.requires))&&s.coins>=cost,cost,why:ch.requires&&!s.inventory.includes(ch.requires)?'Objet nécessaire : '+Story.ITEMS[ch.requires].name:s.coins<cost?'Il manque '+(cost-s.coins)+' pièces.':''};}
+function choose(s,index){
+ if(s.sceneDone<goal(s))throw Error('Terminez la conversation avant de choisir la suite.');
+ const scene=Story.SCENES[s.scene],ch=scene?.choices[index];if(!ch)throw Error('Choix inconnu.');
+ const check=canChoose(s,ch);if(!check.ok)throw Error(check.why);
+ s.coins-=check.cost;s.coins+=ch.coins||0;s.allies+=ch.ally||0;
+ if(ch.item&&!s.inventory.includes(ch.item))s.inventory.push(ch.item);
+ s.history.push({day:s.day,scene:s.scene,choice:ch.title,text:ch.text,to:ch.to});
+ if(s.history.length>300)s.history=s.history.slice(-300);
+ s.lastChoice=ch.text;s.mood=ch.mood||s.mood;s.active=null;s.sceneDone=0;
+ if(ch.to==='finish'){s.finished=true;s.trips++;}else{s.scene=ch.to;s.visits.push(ch.to);}
+ return ch;
+}
+function newDay(s){s.day++;s.scene='home';s.sceneDone=0;s.visits=['home'];s.finished=false;s.active=null;s.lastChoice='';s.inventory=s.inventory.filter(x=>['pump','wrench','umbrella'].includes(x));s.coins+=6;}
+function summary(s,now=Date.now()){
+ const d=deck(s);let started=0,acquired=0,retained=0,due=0;
+ for(const c of d){const st=peek(s,c.key);if(st.seen)started++;if(st.streak>=s.config.target)acquired++;if(st.retainedAt)retained++;if(st.seen&&now>=st.dueAt&&s.tick>=st.dueTick)due++;}
+ return {total:d.length,started,acquired,retained,due,percent:d.length?Math.round(100*acquired/d.length):0};
+}
+const clamp=(v,min,max,def)=>Number.isFinite(Number(v))?Math.max(min,Math.min(max,Number(v))):def;
+function cleanConfig(c){
+ if(!c||typeof c!=='object')throw Error('Réglages absents.');
+ const out={...DEFAULTS};
+ out.name=String(c.name||'Gretchen').trim().slice(0,40)||'Gretchen';out.gender=c.gender==='m'?'m':'f';out.plan=c.plan==='custom'?'custom':'guided';
+ for(const [field,allowed]of [['verbs',F.ALL],['tenses',F.TENSES.map(t=>t.id)],['people',F.PEOPLE.map(p=>p.id)]]){
+  if(!Array.isArray(c[field]))throw Error('Liste absente : '+field);
+  out[field]=[...new Set(c[field].filter(x=>allowed.includes(x)))];if(!out[field].length)throw Error('Gardez au moins un élément dans '+field+'.');
+ }
+ for(const k of ['strict','speech','auto','translation','motion','sfx'])out[k]=typeof c[k]==='boolean'?c[k]:DEFAULTS[k];
+ out.target=Math.round(clamp(c.target,2,8,3));out.gap=Math.round(clamp(c.gap,1,30,5));out.minSeconds=Math.round(clamp(c.minSeconds,0,300,10));out.roundSize=Math.round(clamp(c.roundSize,2,15,5));out.rate=clamp(c.rate,0.55,1.3,.94);out.voice=String(c.voice||'').slice(0,300);out.inputMode=c.inputMode==='sentence'?'sentence':'verb';return out;
+}
+function restore(raw){
+ if(!raw||typeof raw!=='object'||raw.version!==VERSION)throw Error('Sauvegarde non reconnue (version 1 attendue).');
+ const s=fresh();s.config=cleanConfig(raw.config);s.course=Math.round(clamp(raw.course,0,F.COURSES.length-1,0));
+ for(const k of ['day','coins','allies','tick','totalFirst','firstExact','totalSolved','trips','created'])s[k]=Math.round(clamp(raw[k],0,1e14,s[k]));s.day=Math.max(1,s.day);
+ s.rng=Math.round(clamp(raw.rng,0,4294967295,260113));s.scene=Story.SCENES[raw.scene]?raw.scene:'home';s.sceneDone=Math.round(clamp(raw.sceneDone,0,30,0));
+ s.inventory=Array.isArray(raw.inventory)?[...new Set(raw.inventory.filter(x=>Story.ITEMS[x]))]:[];
+ s.visits=Array.isArray(raw.visits)?raw.visits.filter(x=>Story.SCENES[x]).slice(-100):['home'];
+ s.finished=!!raw.finished;s.mood=['diplomatie','audace','collectif','bricolage','entraide','marche'].includes(raw.mood)?raw.mood:'diplomatie';s.lastChoice=String(raw.lastChoice||'').slice(0,800);
+ const allKeys=new Set();for(const v of F.ALL)for(const t of F.TENSES)for(const p of F.PEOPLE)for(const gender of ['f','m'])allKeys.add(key(v,t.id,p.id,{gender}));
+ if(raw.stats&&typeof raw.stats==='object')for(const [k,v]of Object.entries(raw.stats)){
+  if(!allKeys.has(k)||!v||typeof v!=='object')continue;
+  const st=initialStat();for(const n of Object.keys(st))st[n]=clamp(v[n],n.includes('Tick')?-10000:0,1e14,st[n]);s.stats[k]=st;
+ }
+ for(const v of F.ALL){const e=raw.exposures?.[v];if(e&&Number.isFinite(e.tick)&&Number.isFinite(e.time))s.exposures[v]={tick:e.tick,time:e.time};}
+ s.history=Array.isArray(raw.history)?raw.history.filter(h=>h&&Story.SCENES[h.scene]).slice(-300).map(h=>({day:clamp(h.day,1,1e6,1),scene:h.scene,choice:String(h.choice||'').slice(0,200),text:String(h.text||'').slice(0,800),to:String(h.to||'').slice(0,50)})):[];
+ s.log=Array.isArray(raw.log)?raw.log.filter(l=>l&&F.VERBS[l.v]&&F.TM[l.t]&&F.PEOPLE.some(p=>p.id===l.p)).slice(-600).map(l=>({key:String(l.key||'').slice(0,80),v:l.v,t:l.t,p:l.p,answer:String(l.answer||'').slice(0,400),expected:String(l.expected||'').slice(0,200),kind:String(l.kind||'').slice(0,50),credit:!!l.credit,time:clamp(l.time,0,1e14,0)})):[];
+ const q=raw.active;
+ if(q&&F.VERBS[q.v]&&F.TM[q.t]&&F.PEOPLE.some(p=>p.id===q.p)&&q.scene===s.scene&&deck(s).some(c=>c.key===key(q.v,q.t,q.p,s.config))){
+  s.active={v:q.v,t:q.t,p:q.p,key:key(q.v,q.t,q.p,s.config),scene:s.scene,variant:Math.round(clamp(q.variant,0,1e6,0)),attempts:Math.round(clamp(q.attempts,0,10000,0)),helped:!!q.helped,wrong:!!q.wrong,solved:!!q.solved,created:clamp(q.created,0,1e14,Date.now()),result:null};
+  if(q.solved)s.active.result={correct:true,credit:!!q.result?.credit,stars:Math.min(peek(s,s.active.key).streak,s.config.target),coins:clamp(q.result?.coins,0,3,0),retained:!!peek(s,s.active.key).retainedAt};
+ }
+ return s;
+}
+root.Learning={VERSION,DAY,DEFAULTS,fresh,selected,key,deck,stat,peek,pick,question,words,accepted,eligibility,expose,grade,next,goal,canChoose,choose,newDay,summary,cleanConfig,restore};
+if(typeof module!=='undefined')module.exports=root.Learning;
+})(globalThis);
+
+
+/* Original canvas illustrations: scalable, animated and completely self-contained.
+   Mouth movement follows utterance timing / word boundaries, not phoneme alignment. */
+(function(root){
+'use strict';
+class ParisStage{
+ constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.scene='home';this.npc=root.Story.NPC.concierge;this.motion=true;this.speech=null;this.reaction=null;this.entered=performance.now();this.last=0;this.hidden=false;this.frame=this.frame.bind(this);this.resize=new ResizeObserver(()=>this.fit());this.resize.observe(canvas);this.fit();requestAnimationFrame(this.frame);}
+ fit(){const r=this.canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);this.canvas.width=Math.round(r.width*dpr);this.canvas.height=Math.round(r.height*dpr);this.w=r.width;this.h=r.height;this.dpr=dpr;}
+ setScene(id){this.scene=id;this.npc=root.Story.NPC[root.Story.SCENES[id]?.npc]||root.Story.NPC.concierge;this.entered=performance.now();this.reaction=null;}
+ talk(actor,text,index=0){this.speech={actor,text,index,started:performance.now()};}
+ stop(){this.speech=null;}
+ word(index){if(this.speech)this.speech.index=index;}
+ react(type){this.reaction={type,at:performance.now()};}
+ frame(t){if(!document.hidden&&t-this.last>30){this.draw(t);this.last=t;}requestAnimationFrame(this.frame);}
+ draw(t){const c=this.ctx;if(!this.w||!this.h)return;this.time=this.motion?t/1000:0;const W=this.w/this.h*420;this.W=W;this.c=c;c.setTransform(this.dpr*this.h/420,0,0,this.dpr*this.h/420,0,0);c.clearRect(0,0,W,420);c.lineCap='round';c.lineJoin='round';
+  this.rect(0,0,W,420,'#efe8d3');
+  // Clouds and sun.
+  this.circle(W*.72,64,37,'#e9bd76');this.cloud(W*.17+(this.motion?Math.sin(t/25000)*12:0),49,1);this.cloud(W*.48,76,.65);this.cloud(W*.9,28,.85);
+  this.tower(W*.58,160,.65);
+  for(let i=-1;i<Math.ceil(W/190)+1;i++)this.building(i*193+12,88+(i%3)*18,183,228-(i%3)*18,i);
+  const scene=root.Story.SCENES[this.scene],look=scene?.look||'home';
+  if(look==='garden'||look==='bridge'){this.rect(0,150,W,180,'#ccd1b1');for(let i=0;i<6;i++)this.tree(38+i*W/5,260,1.05+(i%2)*.25);}
+  if(look==='bridge'){this.rect(0,285,W,90,'#9db9b3');for(let i=0;i<13;i++)this.line(i*W/12+Math.sin(t/2500)*5,310+(i%3)*12,i*W/12+35,310+(i%3)*12,'#dde1c8',2);this.rect(0,305,W,10,'#a6a78a');for(let i=0;i<W;i+=32)this.line(i,276,i,317,'#6e7c6a',3);this.line(0,277,W,277,'#6e7c6a',5);}
+  if(['home','parents','square'].includes(look)){this.tree(45,317,1);this.tree(W-50,317,1.1);}
+  if(look==='bakery')this.store(20,188,Math.min(300,W*.45),'BOULANGERIE','#b76c50');
+  if(look==='shop'||look==='workshop')this.store(25,175,Math.min(330,W*.48),look==='shop'?'CLÉ & COMPAGNIE':'ATELIER DU PASSAGE','#71896d');
+  if(look==='metro'){this.rect(W*.55,245,210,77,'#495951');for(let i=0;i<5;i++)this.line(W*.55,254+i*12,W*.55+210,254+i*12,'#a2ad98',2);this.line(W*.56,148,W*.56,305,'#406b58',6);this.line(W*.83,148,W*.83,305,'#406b58',6);this.round(W*.53,120,W*.34,39,14,'#456e5a');this.text('MÉTRO',W*.70,146,19,'#f7ead0','center');this.round(W*.60,183,143,37,3,'#faf1d9','#ac6650');this.text('EN GRÈVE',W*.60+71,207,15,'#a7533e','center');}
+  if(look==='square'){for(let i=0;i<6;i++){const x=45+i*(W-90)/5;this.smallPerson(x,310,i);this.line(x+15,225,x+15,289,'#74634c',3);c.save();c.translate(x+15,222);c.rotate(Math.sin(this.time*1.3+i)*.045);this.rect(-34,-18,68,40,i%2?'#f1dfb5':'#e3aa75','#70644e',1);this.text(['ON DISCUTE','SOLIDARITÉ','LE QUARTIER'][i%3],0,5,8,'#594c3b','center');c.restore();}}
+  if(look==='parents'){this.round(W*.6,215,115,90,5,'#789487');this.triangle(W*.57,217,W*.66,169,W*.76,217,'#556f63');this.text('LES PARENTS',W*.655,239,9,'#f6ebcf','center');this.stroller(W*.2,314);}
+  if(look==='bus')this.bus(W*.53-180,208,1,0);
+  if(look==='townhall'){this.round(W*.40,158,220,155,3,'#e5d5b5');this.triangle(W*.38,157,W*.51,106,W*.65,157,'#b6b79e');for(let i=0;i<4;i++)this.rect(W*.40+17+i*58,178,18,131,'#eee1c5','#b7b196',1);this.text('MAIRIE',W*.515,149,17,'#4a6456','center');this.flag(W*.53+125,130);}
+  if(look==='school'){this.round(W*.31,137,W*.52,170,3,'#e4cfab');this.triangle(W*.28,139,W*.57,76,W*.86,139,'#788776');this.text('ÉCOLE',W*.565,124,21,'#f8edd1','center');for(let i=0;i<5;i++)this.window(W*.34+i*W*.09,164,32,48);this.flag(W*.83,123);this.round(W*.52,251,65,74,20,'#687f69');}
+  // Pavement and road.
+  if(look!=='bridge')this.rect(0,313,W,107,'#c9c6ab');else this.rect(0,345,W,75,'#c9c6ab');
+  this.rect(0,348,W,72,'#b9bca6');this.line(0,347,W,347,'#ebe1c8',5);for(let i=0;i<W;i+=140)this.line(i,399,i+58,399,'#dedbc0',4);
+  this.lamp(W*.93,316);if(look==='barrage')this.barrier(W*.42,320,Math.min(320,W*.49),t);
+  if(look==='workshop')this.bike(W*.19,336,.85,0);
+  if(look==='shop'){for(let i=0;i<3;i++)this.round(45+i*49,283,43,30,3,['#ccab78','#d5bc89','#a38b66'][i],'#81785e');this.text('OUTILS',97,304,10,'#514d3f','center');}
+  if(look==='garden'){this.round(W*.78,251,52,67,24,'#7f9272');this.text('SORTIE',W*.78+26,278,9,'#efe6c7','center');for(let i=0;i<15;i++){const x=(i*81)%W;this.line(x,330,x+3,312,'#718e5c',2);this.circle(x+3,310,3,['#d19278','#dab35d','#b5a3ad'][i%3]);}}
+  const enter=this.motion?Math.min(1,(t-this.entered)/1100):1;
+  const gx=W*.34-((1-enter)*90),nx=W*.70;
+  this.actor(gx,342,1.03,{name:'Gretchen',color:'#c87450',skin:'#edba91',hair:'#6d4532',hat:'none'},'hero',1,t);
+  this.actor(nx,342,1.03,this.npc,'npc',-1,t);
+  this.pigeon(W*.13+Math.sin(this.time*.2)*15,363,t);this.pigeon(W*.85,369,t+1200);
+  if(this.reaction&&t-this.reaction.at<2300){const k=(t-this.reaction.at)/2300,type=this.reaction.type;
+   if(['give','stamp'].includes(type)){const x=gx+(nx-gx)*(type==='give'?1-k:k);this.round(x-13,230-Math.sin(k*Math.PI)*46,26,19,2,'#f6e6bb','#746d50',1);this.line(x-7,236-Math.sin(k*Math.PI)*46,x+7,236-Math.sin(k*Math.PI)*46,'#859270',2);}
+   if(type==='bike')this.bike(gx+k*W,354,.9,k*15);
+   if(type==='bus')this.bus(-270+k*(W+400),204,1.35,k*30);
+   if(['correct','celebrate','agree'].includes(type)){for(let i=0;i<18;i++){const x=gx+(nx-gx)/2+Math.sin(i*7.2)*k*160,y=210-k*110+Math.cos(i*4.8)*k*50;this.rect(x,y,5,9,['#ca8258','#759378','#d5ae58','#efe0b6'][i%4]);}}
+  }
+ }
+ rect(x,y,w,h,fill,stroke=null,l=1){const c=this.ctx;c.fillStyle=fill;c.fillRect(x,y,w,h);if(stroke){c.strokeStyle=stroke;c.lineWidth=l;c.strokeRect(x,y,w,h);}}
+ round(x,y,w,h,r,fill,stroke=null,l=1){const c=this.ctx;c.beginPath();c.roundRect(x,y,w,h,r);c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=l;c.stroke();}}
+ circle(x,y,r,fill,stroke=null,l=1){const c=this.ctx;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=l;c.stroke();}}
+ ellipse(x,y,rx,ry,fill){const c=this.ctx;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=fill;c.fill();}
+ line(x,y,x2,y2,color,l=1){const c=this.ctx;c.beginPath();c.moveTo(x,y);c.lineTo(x2,y2);c.strokeStyle=color;c.lineWidth=l;c.stroke();}
+ triangle(x,y,x2,y2,x3,y3,fill){const c=this.ctx;c.beginPath();c.moveTo(x,y);c.lineTo(x2,y2);c.lineTo(x3,y3);c.closePath();c.fillStyle=fill;c.fill();}
+ text(text,x,y,size,color,align='left'){const c=this.ctx;c.font=`600 ${size}px ui-sans-serif, system-ui, sans-serif`;c.textAlign=align;c.fillStyle=color;c.fillText(text,x,y);}
+ cloud(x,y,s){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);this.ellipse(0,0,45,9,'#faf3df');this.ellipse(-15,-5,19,10,'#faf3df');this.ellipse(11,-8,22,12,'#faf3df');c.restore();}
+ tower(x,y,s){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);const col='#c5c8ae';this.line(0,-126,-32,57,col,7);this.line(0,-126,32,57,col,7);this.line(-27,27,27,27,col,7);this.line(-17,-33,17,-33,col,5);this.line(-7,-91,7,-91,col,4);for(let i=-80;i<25;i+=20){const k=(i+125)*.18;this.line(-k,i,k,i+20,col,2);this.line(k,i,-k,i+20,col,2);}c.restore();}
+ building(x,y,w,h,i){const c=this.ctx;const cols=['#d8d5bc','#e1d5b5','#d4d1b8'];this.rect(x,y,w,h,cols[((i%3)+3)%3],'#b5b69e',1);this.rect(x-3,y-5,w+6,7,'#bfc2ac');this.triangle(x-5,y-4,x+22,y-35,x+w+5,y-4,'#8d9a8b');this.triangle(x+w+5,y-4,x+w-17,y-35,x+22,y-35,'#8d9a8b');this.rect(x+31,y-51,13,28,'#b8ac91');for(let row=0;row<3;row++)for(let col=0;col<4;col++)this.window(x+13+col*43,y+14+row*63,25,39);for(let j=0;j<3;j++){this.line(x,y+60+j*63,x+w,y+60+j*63,'#b9b89e',2);for(let k=0;k<14;k++)this.line(x+k*14,y+48+j*63,x+k*14,y+60+j*63,'#8b9480',1);}this.round(x+w/2-18,y+h-50,36,50,[18,18,0,0],'#88917a');}
+ window(x,y,w,h){this.rect(x-3,y-3,w+6,h+6,'#ebe2c8');this.rect(x,y,w,h,'#8a9b91');this.rect(x+3,y+3,w/2-4,h-6,'#b4c0b0');this.line(x+w/2,y,x+w/2,y+h,'#e1d7b9',2);this.line(x,y+h/2,x+w,y+h/2,'#e1d7b9',2);}
+ tree(x,y,s){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);this.rect(-4,-93,8,100,'#85876a');this.line(0,-43,-24,-77,'#85876a',4);this.ellipse(0,-104,39,58,'#9caa79');this.ellipse(-23,-91,24,41,'#94a372');this.ellipse(23,-115,26,34,'#a5b084');this.round(-27,-3,54,17,3,'#b2b392');c.restore();}
+ lamp(x,y){this.line(x,y,x,y-162,'#6a7b68',4);this.line(x-9,y,x+9,y,'#6a7b68',5);this.round(x-12,y-184,24,28,7,'#eae0b7','#6a7b68',2);this.line(x-14,y-184,x+14,y-184,'#6a7b68',4);this.circle(x,y-192,4,'#6a7b68');}
+ store(x,y,w,label,color){this.rect(x,y,w,128,color);this.rect(x+14,y+46,w-28,78,'#a9b6a3');this.rect(x+18,y+50,w-36,64,'#607d70');for(let i=0;i<w/25;i++)this.rect(x+i*25,y+24,25,28,i%2?'#efe1be':color);this.rect(x,y,w,24,color);this.text(label,x+w/2,y+17,Math.min(13,w/19),'#f9efd8','center');this.line(x+w*.5,y+51,x+w*.5,y+124,'#ddd8b7',4);}
+ smallPerson(x,y,i){this.line(x-5,y-26,x-8,y,'#626c60',5);this.line(x+5,y-26,x+8,y,'#626c60',5);this.round(x-12,y-64,24,41,8,['#8c9980','#b58c72','#b4a77b'][i%3]);this.circle(x,y-75,11,['#d3a17b','#b37e59','#e5b692'][i%3]);}
+ flag(x,y){this.line(x,y,x,y-49,'#7b7b64',3);for(let i=0;i<3;i++)this.rect(x+2+i*10,y-49,10,19,['#6d8796','#eee6d0','#be816e'][i]);}
+ barrier(x,y,w,t){let lift=0;if(this.reaction?.type==='barrier'&&this.motion)lift=-Math.min(1,(t-this.reaction.at)/1000)*.55;this.line(x,y,x,y-63,'#7d7964',5);this.line(x+w,y,x+w,y-63,'#7d7964',5);const c=this.ctx;c.save();c.translate(x,y-57);c.rotate(lift);this.round(-3,-17,w+6,29,3,'#ece0bf','#8d7f60');for(let i=5;i<w;i+=38){c.save();c.beginPath();c.rect(0,-16,w,27);c.clip();c.translate(i,0);c.rotate(-.4);this.rect(0,-27,18,58,'#bd7659');c.restore();}c.restore();}
+ bike(x,y,s,rot){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);for(const a of [-41,40]){this.circle(a,-24,24,'#ded9be','#586c5d',3);for(let i=0;i<6;i++){const r=i*Math.PI/3+rot;this.line(a,-24,a+Math.cos(r)*21,-24+Math.sin(r)*21,'#869580',1);}}this.line(-41,-24,-16,-58,'#aa7354',4);this.line(-16,-58,7,-25,'#aa7354',4);this.line(7,-25,-41,-24,'#aa7354',4);this.line(-16,-58,29,-58,'#aa7354',4);this.line(29,-58,7,-25,'#aa7354',4);this.line(29,-67,40,-24,'#586c5d',3);this.line(24,-68,40,-68,'#586c5d',3);this.line(-24,-62,-8,-62,'#586c5d',5);c.restore();}
+ bus(x,y,s,rot){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);this.round(0,0,300,105,15,'#5b8e81','#526d5e',2);this.rect(2,68,296,15,'#e9dfbf');for(let i=0;i<5;i++)this.round(14+i*51,20,41,40,3,'#c2d2bd');this.round(248,20,35,72,2,'#acbdac','#48695e',2);this.line(265,21,265,91,'#48695e',2);this.text('BUS SOLIDAIRE',122,13,9,'#eee3be','center');for(const a of [52,240]){this.circle(a,106,18,'#576657');this.circle(a,106,9,'#b9c4ac');this.line(a,106,a+Math.sin(rot)*8,106+Math.cos(rot)*8,'#657c69',2);}this.rect(7,90,9,7,'#e0bd6e');c.restore();}
+ stroller(x,y){this.circle(x-16,y,9,'#66705d');this.circle(x+22,y,9,'#66705d');this.round(x-27,y-46,50,37,12,'#b89786');this.line(x+23,y-44,x+39,y-70,'#7f806b',3);this.line(x-17,y-11,x+20,y,'#7f806b',3);}
+ pigeon(x,y,t){const c=this.ctx;c.save();c.translate(x,y);const nod=this.motion?Math.sin(t/200):0;this.ellipse(0,-7,11,7,'#85958b');this.ellipse(5,-15+nod,6,7,'#6b857c');this.triangle(10,-15+nod,15,-13+nod,10,-12+nod,'#b89662');this.circle(7,-17+nod,1,'#394d41');this.line(-3,-1,-5,4,'#8c7056',1.5);this.line(4,-1,7,4,'#8c7056',1.5);c.restore();}
+ actor(x,y,s,n,role,face,t){const c=this.ctx;c.save();c.translate(x,y);c.scale(s,s);const reaction=this.reaction&&t-this.reaction.at<2300?this.reaction.type:'';const talking=this.speech?.actor===role;let bob=this.motion?Math.sin(this.time*2+(role==='npc'?2:0))*1.2:0;if(['correct','celebrate','agree'].includes(reaction)&&this.motion)bob+=Math.sin((t-this.reaction.at)/85)*3;this.ellipse(0,0,39,7,'#a5af95');c.translate(0,bob);
+  this.line(-12,-45,-15,-4,'#435b50',14);this.line(12,-45,15,-4,'#435b50',14);this.round(-26,-8,24,10,5,'#3d4f44');this.round(5,-8,24,10,5,'#3d4f44');
+  if(role==='hero'){this.round(-39,-99,26,52,10,'#6f8266','#516850',2);this.line(-27,-105,16,-59,'#a19872',4);}
+  this.round(-28,-112,56,76,[20,20,10,10],n.color,'#6c6d52',1.5);
+  this.line(0,-95,0,-42,'#e2c28e',1);for(let j=0;j<3;j++)this.circle(4,-81+j*14,1.9,'#e6d4ab');
+  let gesture=talking&&this.motion?Math.sin(this.time*5)*.20:0;if(reaction==='argue'&&this.motion)gesture=Math.sin(this.time*8)*.45;if(reaction==='wrong')gesture=.35;
+  this.arm(-25,-96,-1,gesture,face,n);this.arm(25,-96,1,-gesture-.08,face,n);
+  this.rect(-9,-126,18,18,n.skin);if(role==='hero'){this.round(-28,-118,54,14,6,'#ead8a6');this.round(12,-112,13,37,3,'#ead8a6');}
+  this.ellipse(0,-152,31,35,n.hair);if(role==='hero'||n.hat==='none')this.round(-31,-163,63,54,18,n.hair);
+  this.ellipse(0,-149,26,31,n.skin);this.circle(-26,-146,5,n.skin);this.circle(26,-146,5,n.skin);
+  // Hair with a side-swept fringe.
+  this.ellipse(-10,-174,20,12,n.hair);this.ellipse(12,-174,19,9,n.hair);if(role==='hero'){this.ellipse(-24,-157,7,21,n.hair);this.line(18,-176,24,-161,n.hair,8);}
+  const blink=this.motion&&Math.sin(this.time*.78+role.length)>.997;
+  if(blink){this.line(-13,-152,-6,-152,'#424339',1.7);this.line(8,-152,15,-152,'#424339',1.7);}else{this.circle(-10+face,-152,2.2,'#424339');this.circle(11+face,-152,2.2,'#424339');}
+  this.line(-15,-161,-6,-162+(reaction==='wrong'?3:0),'#655440',1.5);this.line(7,-162,16,-160,'#655440',1.5);this.line(face*2,-149,face*6,-142,'#ba8c68',1.6);this.ellipse(-17,-141,5,2.5,'#d99378');this.ellipse(19,-141,5,2.5,'#d99378');
+  if(talking){const cur=this.speech.text.slice(this.speech.index,this.speech.index+10);const oval=/^[ouôû]/i.test(cur);const a=this.motion?(Math.sin(this.time*19)+1)/2:.6;this.ellipse(2,-132,oval?3.5:6,2+a*5,'#784b3d');if(!oval)this.rect(-2,-136,7,2,'#f7e5cb');}
+  else{c.beginPath();c.arc(2,-137,6,0.22,Math.PI-.22);c.strokeStyle='#805943';c.lineWidth=1.7;c.stroke();}
+  if(n.hat==='police'){this.round(-30,-182,61,17,5,'#314e60');this.rect(-29,-170,58,6,'#d1b57d');this.ellipse(9,-165,29,5,'#314e60');this.circle(0,-175,4,'#cbb276');}
+  if(n.hat==='cap'){this.round(-29,-187,58,20,[18,18,2,2],'#4c7062');this.ellipse(face*15,-167,24,4,'#4c7062');}
+  if(n.hat==='beret'){this.ellipse(-4,-179,33,12,'#60735c');this.line(-3,-194,-1,-186,'#60735c',3);}
+  if(n.hat==='chef'){this.round(-22,-208,44,41,8,'#f3ead5');for(let i=0;i<3;i++)this.circle(-17+i*17,-207,14,'#f3ead5');}
+  if(n.hat==='garden'){this.ellipse(0,-175,40,7,'#b8aa73');this.round(-23,-197,46,24,[9,9,0,0],'#cbb77a');this.rect(-22,-180,44,6,'#7c8761');}
+  if(role==='npc'&&this.scene==='townhall'){this.circle(-11,-151,9,'#edbd98','#68614e',1);this.circle(12,-151,9,'#edbd98','#68614e',1);this.circle(-10,-151,2,'#3d493e');this.circle(12,-151,2,'#3d493e');this.line(-2,-151,3,-151,'#68614e',1);}
+  c.restore();
+ }
+ arm(x,y,side,angle,face,n){const c=this.ctx;c.save();c.translate(x,y);c.rotate(angle*(side===face?2:1));this.line(0,0,side*9,37,n.color,14);this.circle(side*10,43,7,n.skin);c.restore();}
+}
+root.ParisStage=ParisStage;
+})(globalThis);
+
+
+/* Web Speech adapter. Cancels stale turns, times out failed engines, and never
+   uses the expected conjugation in a pre-answer speech request. */
+(function(root){
+'use strict';
+class SpeechDirector{
+ constructor(stage,caption,status,getConfig){this.stage=stage;this.caption=caption;this.status=status;this.getConfig=getConfig;this.seq=0;this.override=null;this.pending=null;this.current=null;this.voices=[];this.available='speechSynthesis'in window&&'SpeechSynthesisUtterance'in window;
+  this.refresh=()=>{this.voices=this.available?speechSynthesis.getVoices().filter(v=>/^fr(?:[-_]|$)/i.test(v.lang)):[];this.report();};
+  if(this.available)speechSynthesis.addEventListener('voiceschanged',this.refresh);this.refresh();
+ }
+ report(message){const cfg=this.getConfig();this.status.textContent=message||(!cfg.speech?'Voix désactivée':!this.available?'Lecture vocale indisponible':!this.voices.length?'Voix française à charger':'Voix française activée');}
+ cancel(){this.seq++;this.override=null;if(this.pending)this.pending(false);this.pending=null;if(this.available)speechSynthesis.cancel();this.current=null;this.stage.stop();}
+ voice(actor){const cfg=this.override||this.getConfig(),chosen=this.voices.find(v=>v.voiceURI===cfg.voice);if(chosen)return chosen;const voices=this.voices.slice().sort((a,b)=>Number(b.localService)-Number(a.localService)||Number(b.lang==='fr-FR')-Number(a.lang==='fr-FR'));return voices[actor==='npc'&&voices.length>1?1:0];}
+ display(text,actor,name,index=null,length=0){
+  this.caption.replaceChildren();const label=document.createElement('span');label.className='caption-name';label.textContent=name||({hero:this.getConfig().name,npc:'Conversation',narrator:'La chronique'}[actor]);this.caption.append(label);
+  const body=document.createElement('span');body.className='caption-words';
+  if(index===null)body.textContent=text;else{body.append(document.createTextNode(text.slice(0,index)));const mark=document.createElement('mark');mark.textContent=text.slice(index,index+length);body.append(mark,document.createTextNode(text.slice(index+length)));}
+  this.caption.append(body);
+ }
+ async utter(item,token){
+  if(token!==this.seq)return false;
+  const {text,actor='narrator',name}=item;this.display(text,actor,name);const cfg=this.override||this.getConfig();
+  if(!cfg.speech||!this.available){this.stage.stop();return true;}
+  this.refresh();
+  // Voice lists may load asynchronously. Never substitute an English voice.
+  if(!this.voices.length){await new Promise(r=>setTimeout(r,350));this.refresh();}
+  if(token!==this.seq)return false;
+  if(!this.voices.length){this.report('Aucune voix française • choisissez une voix dans Réglages');this.stage.stop();return true;}
+  return new Promise(resolve=>{
+   const u=new SpeechSynthesisUtterance(text);u.lang='fr-FR';u.voice=this.voice(actor);u.rate=cfg.rate;u.pitch=actor==='hero'?1.04:actor==='npc'?.96:1;u.volume=1;this.current=u;
+   let settled=false,started=false;
+   const finish=(ok)=>{if(settled)return;settled=true;clearTimeout(watchdog);clearTimeout(startWatch);if(this.pending===finish)this.pending=null;if(this.current===u){this.current=null;this.stage.stop();}resolve(ok);};
+   this.pending=finish;
+   const watchdog=setTimeout(()=>{if(token===this.seq){this.report('Lecture interrompue • toucher ↻ pour réessayer');speechSynthesis.cancel();}finish(true);},Math.max(14000,text.length/cfg.rate*120));
+   const startWatch=setTimeout(()=>{if(!started&&token===this.seq){this.report('Touchez ↻ pour autoriser la lecture vocale');speechSynthesis.cancel();finish(true);}},4000);
+   u.onstart=()=>{if(token!==this.seq){finish(false);return;}started=true;this.report();this.stage.talk(actor,text);};
+   u.onboundary=e=>{if(token!==this.seq)return;const index=Math.max(0,e.charIndex||0);const length=e.charLength||(text.slice(index).match(/^\S+/)?.[0].length||1);this.display(text,actor,name,index,length);this.stage.word(index);};
+   u.onend=()=>finish(token===this.seq);
+   u.onerror=e=>{if(token===this.seq&&!['interrupted','canceled'].includes(e.error))this.report('Voix indisponible • le texte reste jouable');finish(token===this.seq);};
+   try{speechSynthesis.speak(u);}catch(_){this.report('Lecture vocale indisponible');finish(true);}
+  });
+ }
+ async play(items,override=null){this.cancel();this.override=override;const token=this.seq;for(const item of items){if(token!==this.seq)return false;const ok=await this.utter(item,token);if(!ok||token!==this.seq)return false;}if(token===this.seq)this.override=null;return token===this.seq;}
+}
+root.SpeechDirector=SpeechDirector;
+})(globalThis);
+
+
+(function(){
+'use strict';
+const F=French,L=Learning,B=Story,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY='paris-en-greve.gretchen.v1';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S=L.fresh(),storageOK=true,loadWarning='',started=false,sceneDrawn='',modalKind='',flow=0,autoTimer=null,toastTimer=null,audio=null,progressAll=false;
+try{const raw=localStorage.getItem(KEY);if(raw)S=L.restore(JSON.parse(raw));}catch(e){loadWarning='La sauvegarde précédente ne peut pas être lue. Exportez régulièrement votre carnet. '+e.message;storageOK=false;}
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)S.config.motion=false;
+const stage=new ParisStage($('#stage'));
+const speech=new SpeechDirector(stage,$('#captions'),$('#speechStatus'),()=>S.config);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));if(storageOK)$('#saveStatus').textContent='Sauvegardé sur cet appareil · exporter pour changer d’appareil';}catch(e){storageOK=false;$('#saveWarning').hidden=false;$('#saveStatus').textContent='Sauvegarde locale indisponible : exportez le carnet.';}}
+function toast(text){$('#toast').textContent=text;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
+function cancelFlow(){flow++;clearTimeout(autoTimer);autoTimer=null;speech.cancel();}
+function tone(kind){if(!S.config.sfx)return;try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const notes=kind==='good'?[523,659,784]:kind==='arrive'?[392,523,659,784]:[440];for(let i=0;i<notes.length;i++){const osc=audio.createOscillator(),g=audio.createGain(),at=audio.currentTime+i*.09;osc.type='sine';osc.frequency.value=notes[i];g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.025,at+.015);g.gain.exponentialRampToValueAtTime(.001,at+.17);osc.connect(g);g.connect(audio.destination);osc.start(at);osc.stop(at+.18);}}catch(_){/* Visual feedback remains available. */}}
+function currentScene(){return B.SCENES[S.scene];}
+function line(){const sc=currentScene();if(S.active&&F.TM[S.active.t].literary)return 'Pour notre chronique du quartier, racontons cette scène dans la langue des livres.';return sc.lines[(S.sceneDone+S.day-1)%sc.lines.length];}
+function modeName(t){return F.TM[t].mode+' · '+F.TM[t].name;}
+function nameRole(){const n=B.NPC[currentScene().npc];return n;}
+function drawMap(){
+ const sc=B.SCENES,visited=new Set(S.visits),w=252,h=186,pt=id=>({x:sc[id].x*2.28+8,y:sc[id].y*1.62+8});
+ let svg='<svg viewBox="0 0 252 186" role="img" aria-label="Carte schématique des chemins de cette aventure, pas un plan de navigation réel"><path d="M173 0 Q133 62 192 85 Q226 124 164 186" fill="none" stroke="#d9e6db" stroke-width="16"/><path d="M173 0 Q133 62 192 85 Q226 124 164 186" fill="none" stroke="#acc7b6" stroke-width="1.2" stroke-dasharray="2 4"/>';
+ const done=new Set(S.history.filter(x=>x.day===S.day).map(x=>x.scene+'>'+x.to));
+ for(const [id,a]of Object.entries(sc))for(const ch of a.choices){if(!sc[ch.to])continue;const p=pt(id),q=pt(ch.to),active=done.has(id+'>'+ch.to);svg+=`<path d="M${p.x} ${p.y} L${q.x} ${q.y}" stroke="${active?'#668f69':'#c5d0b7'}" stroke-width="${active?2.5:1.5}" fill="none" ${active?'':'stroke-dasharray="3 4"'}/>`;}
+ for(const [id,a]of Object.entries(sc)){const p=pt(id),cur=S.scene===id;if(cur)svg+=`<circle cx="${p.x}" cy="${p.y}" r="10" fill="#e4c19c" opacity=".5"/>`;svg+=`<circle cx="${p.x}" cy="${p.y}" r="${cur?5:3.5}" fill="${cur?'#bc7850':visited.has(id)?'#678c65':'#f1f3e5'}" stroke="${cur?'#bc7850':'#9bad8d'}" stroke-width="1.4"/>`;}
+ const labels={home:['DÉPART',-7,16],square:['LA PLACE',-17,-10],shop:['OUTILS',-18,-10],garden:['JARDIN',-17,18],school:['ÉCOLE',-16,17]};
+ for(const [id,[name,dx,dy]]of Object.entries(labels)){const p=pt(id);svg+=`<text x="${p.x+dx}" y="${p.y+dy}" font-family="system-ui,sans-serif" font-size="7" fill="#7c8b6e" letter-spacing=".8">${name}</text>`;}
+ svg+='</svg>';$('#routeMap').innerHTML=svg;
+}
+function renderShell(){
+ const sc=currentScene(),n=nameRole(),sum=L.summary(S),sel=L.selected(S);
+ if(sceneDrawn!==S.scene){stage.setScene(S.scene);sceneDrawn=S.scene;}
+ stage.motion=S.config.motion;document.body.classList.toggle('no-motion',!S.config.motion);
+ $('#nameTag').textContent='pour '+S.config.name;$('#heroName').textContent=S.config.name;$('#npcName').textContent=n.name;
+ $('#welcomeName').textContent=S.config.name;$('#chapterKicker').textContent=S.finished?'Une arrivée. Et beaucoup d’autres aventures.':`L’aventure de ${S.config.name} · étape ${S.visits.length}`;
+ $('#chapterTitle').textContent=S.finished?'Vous avez traversé Paris.':sc.name;
+ $('#dayLabel').innerHTML=`Jour ${S.day}<br>Paris, en grève`;
+ $('#sceneLocation').textContent='⌁ '+sc.place;$('#sceneStamp').textContent=String(S.visits.length).padStart(2,'0')+' / '+(F.TM[S.active?.t]?.literary?'La chronique':sc.look==='home'?'Le départ':'En chemin');
+ $('#sceneBubble').textContent=S.finished?'Bienvenue à l’école !':S.active?.solved?'Voilà une phrase qui fait avancer !':line();
+ $('#stage').setAttribute('aria-label',S.config.name+' et '+n.name+' discutent : '+sc.place+'. Animation de conversation et de déplacements.');
+ $('#storyText').innerHTML=(S.lastChoice&&S.sceneDone===0?'<strong>'+esc(S.lastChoice)+'</strong> ':'')+esc(sc.intro);
+ $('#routeStage').textContent=S.finished?'L’école, enfin !':sc.name;$('#routeTask').textContent=sc.task;$('#routeFoot').textContent=`${S.visits.length} lieux visités · ${S.trips} trajet${S.trips>1?'s':''} terminé${S.trips>1?'s':''}`;
+ $('#coinCount').textContent=S.coins;$('#allyCount').textContent=S.allies;
+ $('#inventory').innerHTML=S.inventory.length?S.inventory.map(id=>`<span class="inventory-item" title="${esc(B.ITEMS[id].desc)}">${esc(B.ITEMS[id].icon)} ${esc(B.ITEMS[id].name)}</span>`).join(''):'<span class="inventory-empty">Un cartable et de bonnes intentions.</span>';
+ $('#masteryPercent').textContent=sum.percent+'%';$('#activeCount').textContent=sum.total+' formes actives';$('#masteryFill').style.width=sum.percent+'%';$('#masteryBar').setAttribute('aria-valuenow',sum.percent);
+ $('#masteryMeta').textContent=`${sum.acquired}/${sum.total} acquises · ${sum.retained} confirmées après 24 h`;
+ $('#currentCourse').textContent=sel.name;$('#coreDots').innerHTML=sel.verbs.slice(0,6).map(v=>`<span>${esc(v)}</span>`).join('')+(sel.verbs.length>6?`<span>+${sel.verbs.length-6}</span>`:'');
+ $('#voiceButton').classList.toggle('voice-on',S.config.speech);$('#voiceButton').setAttribute('aria-pressed',S.config.speech);$('#voiceLabel').textContent=S.config.speech?'Voix':'Muet';speech.report();
+ $('#welcomeProgram').textContent=S.totalSolved?`${S.totalSolved} réponses déjà écrites. Votre aventure et votre carnet vous attendent.`:S.config.plan==='guided'?'On commence par être, avoir, venir et aller.':`${sel.verbs.length} verbes · ${sel.tenses.length} rubriques · ${sel.people.length} pronoms : votre programme est prêt.`;
+ $('#startButton').textContent=S.totalSolved?'Reprendre l’aventure →':'Commencer l’aventure →';
+ if(S.courseNotice){$('#courseBanner').hidden=false;$('#courseBanner').innerHTML=`<span>✦ Nouvelle étape débloquée : <b>${esc(S.courseNotice)}</b></span><button class="ghost small" id="dismissCourse">×</button>`;}else $('#courseBanner').hidden=true;
+ if(!storageOK){$('#saveWarning').hidden=false;if(loadWarning)$('#saveWarning').textContent=loadWarning;}
+ drawMap();
+}
+function stars(q){const st=L.peek(S,q.key),count=Math.min(st.streak,S.config.target);return `<span class="stars" aria-label="${count} rappels sur ${S.config.target}">${'★'.repeat(count)}${'☆'.repeat(S.config.target-count)}<span class="memory-note"> ${count}/${S.config.target}</span></span>`;}
+function feedbackHTML(q){
+ const form=F.forms(q.v,q.t,q.p,S.config)[0],n=S.config.name;
+ if(q.solved){
+  const r=q.result||{},title=r.credit?(r.retained?'✦ Retrouvé après une vraie pause.':'✓ Trouvé de mémoire.'):q.result?.kind==='accent'?'Le sens est là. L’accent reste à revoir.':'✓ Le dialogue avance. Cette forme reviendra.';
+  let desc=r.credit?`+${r.coins} pièces · Une étoile de rappel. ${r.retained?'Cette forme a aussi été retrouvée au moins 24 heures après son acquisition.':'Elle reviendra avec un autre contexte, après plusieurs questions.'}`:q.helped||q.wrong?'Une correction ou une aide est un apprentissage, pas encore un rappel autonome. +1 pièce.':r.exposed?'La fiche a été consultée récemment : entraînement, sans étoile. +1 pièce.':'Réponse exacte, mais trop proche du dernier rappel pour ajouter une étoile. +1 pièce.';
+  return `<div class="feedback ${r.credit?'':'assisted'}" role="status"><strong>${esc(title)}</strong>${esc(desc)}</div><div class="next-row"><span>${S.config.auto?'La conversation continue automatiquement après la lecture.':'Prenez votre temps, puis continuez.'}</span><button class="primary" id="continueButton">${S.sceneDone>=L.goal(S)?'Choisir la suite':'Continuer'} →</button></div>`;
+ }
+ if(q.wrong){const title=q.lastErrorKind==='accent'?'Un accent change la forme écrite.':'Pas tout à fait. Regardons la bonne forme.';return `<div class="feedback bad" role="status"><strong>${title}</strong><div class="correction">${esc(form)}</div><div>${F.TM[q.t].aux?`Auxiliaire <b>${esc(F.VERBS[q.v].aux)}</b> + participe passé. `:''}${F.VERBS[q.v].aux==='être'&&F.TM[q.t].aux?'Le participe s’accorde avec le sujet. ':''}Réécrivez ${S.config.inputMode==='sentence'?'la phrase complète':'cette forme'} pour poursuivre. Cette copie ne rapporte pas d’étoile.</div>${S.config.inputMode==='sentence'?'<div class="correction-note">'+esc(L.words(S,q).full)+'</div>':''}</div>`;}
+ if(q.helped)return '<div class="feedback assisted" role="status">La fiche vous accompagne. Cette réponse fera avancer l’histoire ; elle reviendra plus tard sans aide.</div>';
+ return '';
+}
+function renderTask(){
+ if(S.finished){renderArrival();return;}
+ if(S.sceneDone>=L.goal(S)&&(!S.active||!S.active.solved)){renderChoices();return;}
+ const q=L.question(S),w=L.words(S,q),p=F.person(q.p,S.config),t=F.TM[q.t],st=L.peek(S,q.key),e=L.eligibility(S,q),n=nameRole();
+ const count=Math.min(S.sceneDone,L.goal(S));
+ $('#challenge').className='challenge';
+ $('#challenge').innerHTML=`<div class="challenge-head"><div class="speaker"><div class="speaker-avatar" aria-hidden="true">${t.literary?'✎':'“'}</div><div><div class="speaker-name">${t.literary?'La chronique du quartier':'À vous de répondre'}</div><div class="speaker-role">${t.literary?'Un passage écrit, pas une formule de conversation':esc(n.name)+' vous écoute'}</div></div></div><div class="turn-pips" aria-label="${count} échanges sur ${L.goal(S)}">${Array.from({length:L.goal(S)},(_,i)=>`<i class="${i<count?'filled':''}"></i>`).join('')}<span class="turn-count">${count}/${L.goal(S)}</span></div></div>
+ <div class="verb-tags"><span class="tag verb">${esc(q.v)}</span><span class="tag">${esc(t.mode+' · '+t.name)}</span><span class="tag">${esc(p.pronoun)}</span>${t.literary?'<span class="tag literary">Littéraire</span>':''}<span class="tag new">${!st.seen?'À découvrir':st.streak>=S.config.target?'À entretenir':'À retrouver'}</span></div>
+ <p class="prompt" id="questionPrompt">${esc(w.before)}${q.solved?`<span class="filled-answer">${esc(w.form)}</span>`:'<span class="blank" aria-label="forme à écrire">···</span>'}${esc(w.after)}</p>
+ <p class="context-hint"><b>${esc(p.pronoun)} :</b> ${esc(p.who)}${F.TM[q.t].aux&&F.VERBS[q.v].aux==='être'?` · accord ${p.gender==='f'?'féminin':'masculin'} ${p.plural?'pluriel':'singulier'}`:''}.</p>
+ ${S.config.translation?`<div class="meaning">${esc(F.VERBS[q.v].en)} · ${esc(t.en)}</div>`:''}
+ <form id="answerForm"><label class="sr-only" for="answerInput">${S.config.inputMode==='sentence'?'Écrivez toute la phrase':'Écrivez la forme conjuguée'} : ${esc(q.v)}, ${esc(t.mode+' '+t.name)}, ${esc(p.pronoun)}</label><div class="answer-row"><div class="answer-wrap"><textarea class="answer-input" id="answerInput" rows="${S.config.inputMode==='sentence'?2:1}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="send" lang="fr" placeholder="${S.config.inputMode==='sentence'?'Réécrivez toute la phrase…':F.TM[q.t].aux?'Écrivez l’auxiliaire et le participe…':'Écrivez le verbe conjugué…'}" ${q.solved?'disabled':''} aria-describedby="questionPrompt"></textarea></div><button class="primary" type="submit" ${q.solved?'disabled':''}>${q.wrong?'Corriger':'Répondre'} ↵</button></div></form>
+ ${q.solved?'':`<div class="accent-row" aria-label="Clavier des accents">${['é','è','ê','à','â','î','ô','ù','û','ç','ë','ï','’'].map(ch=>`<button type="button" data-accent="${esc(ch)}" aria-label="Insérer ${esc(ch)}">${esc(ch)}</button>`).join('')}<span class="keyboard-note">Entrée pour répondre</span></div>`}
+ <div class="challenge-bottom"><button class="help-btn" id="helpButton">▤ Besoin d’aide ? La conjugaison</button>${stars(q)}</div>${feedbackHTML(q)}
+ ${!q.solved&&!q.helped&&e.exposed?'<p class="context-hint">Fiche consultée récemment : entraînement, sans étoile immédiate.</p>':''}`;
+ if(q.solved)$('#answerInput').value=S.config.inputMode==='sentence'?w.full:w.form;
+ $('#answerForm').addEventListener('submit',submitAnswer);
+ $('#answerInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#answerForm').requestSubmit();}});
+ $('#answerInput').addEventListener('paste',()=>{if(S.active&&!S.active.solved){S.active.helped=true;save();toast('Texte collé : utile pour s’entraîner, sans étoile de mémoire.');}});
+ $('#answerInput').addEventListener('input',()=>{if(S.active)S.active.draft=$('#answerInput').value;});
+ if(q.draft&&!q.solved)$('#answerInput').value=q.draft;
+ $('#helpButton').onclick=()=>openReference(q.v);
+ if($('#continueButton'))$('#continueButton').onclick=continueTurn;
+ $$('.accent-row button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault());b.onclick=()=>{const a=$('#answerInput');a.focus({preventScroll:true});a.setRangeText(b.dataset.accent,a.selectionStart,a.selectionEnd,'end');a.dispatchEvent(new Event('input'));};});
+}
+function renderChoices(){
+ const sc=currentScene();$('#challenge').className='challenge';
+ $('#challenge').innerHTML=`<div class="eyebrow">Conversation accomplie</div><h2 class="choice-title">Et maintenant, quel chemin ?</h2><p class="context-hint">Vos mots ont ouvert des possibilités. Choisissez la suite de l’aventure.</p><div class="choices">${sc.choices.map((ch,i)=>{const ck=L.canChoose(S,ch);return `<button class="choice" data-choice="${i}" ${ck.ok?'':'disabled'}><span><b>${esc(ch.title)}</b><small>${esc(ch.label)}</small>${!ck.ok?'<small class="choice-warning">'+esc(ck.why)+'</small>':''}</span><span class="arrow">→</span></button>`;}).join('')}</div>`;
+ $$('#challenge [data-choice]').forEach(b=>b.onclick=()=>choosePath(Number(b.dataset.choice)));
+}
+function renderArrival(){const su=L.summary(S);$('#challenge').className='challenge arrival';$('#challenge').innerHTML=`<div class="eyebrow">Épisode ${S.day} · L’école est rejointe</div><h2 class="arrival-title">Une ville traversée.<br>Un français qui grandit.</h2><p>${esc(S.lastChoice)}</p><div class="arrival-grid"><div><strong>${S.visits.length}</strong><small>Lieux traversés aujourd’hui</small></div><div><strong>${su.acquired}/${su.total}</strong><small>Formes acquises du programme actif</small></div><div><strong>${su.retained}</strong><small>Confirmées après au moins 24 h</small></div></div><p><b>Arriver à l’école n’est pas une preuve de maîtrise.</b> Les corrections et les formes fragiles restent dans le carnet. Le prochain trajet les fera revenir ; les confirmations à froid demandent une vraie pause d’au moins 24 heures.</p><div class="welcome-actions"><button class="primary" id="nextDayButton">Un autre jour, un autre trajet →</button><button data-open="progress">Voir mes formes à retravailler</button></div><p class="reference-source">Vos outils, vos pièces et votre apprentissage sont conservés. Un nouveau trajet ne simule pas l’écoulement de 24 heures.</p>`;$('#nextDayButton').onclick=()=>{cancelFlow();L.newDay(S);save();render();narrate(true);};}
+function render(){renderTask();renderShell();
+ // Keep the visible caption tied to the current turn after restoring/changing
+ // settings. Rendering must never leave a previous question's caption behind.
+ if(!speech.current&&!$('#mainDialog').open){
+  if(S.finished)speech.display('Bienvenue à l’école ! Un nouveau trajet vous attend.','npc',nameRole().name);
+  else if(S.sceneDone>=L.goal(S)&&!S.active?.solved)speech.display('La conversation a ouvert plusieurs possibilités. Quel chemin choisissez-vous ?','narrator','Votre choix');
+  else if(S.active){const q=S.active,w=L.words(S,q);speech.display(q.solved||q.wrong?w.full:`${w.before}… à compléter …${w.after} Verbe ${q.v}. ${F.TM[q.t].mode}, ${F.TM[q.t].name}. Avec ${q.p}.`,q.solved?'hero':'narrator',q.solved?S.config.name:'À vous');}
+ }
+}
+async function narrate(withIntro=false){
+ if(!started)return;cancelFlow();const my=flow,n=nameRole(),sc=currentScene();
+ if(S.finished){await speech.play([{actor:'npc',name:n.name,text:'Bienvenue à l’école ! Vous avez traversé Paris. Les mots appris vous accompagneront dans la prochaine aventure.'}]);return;}
+ if(S.active?.solved){await speakSuccess(S.active);return;}
+ if(S.sceneDone>=L.goal(S)){await speech.play([{actor:'npc',name:n.name,text:'La conversation a ouvert plusieurs possibilités. Quel chemin choisissez-vous ?'},...sc.choices.map(ch=>({actor:'narrator',name:'Votre choix',text:ch.title+'. '+ch.label}))]);return;}
+ const q=L.question(S),w=L.words(S,q),p=F.person(q.p,S.config),items=[];
+ if(withIntro)items.push({actor:'narrator',name:'Le récit',text:(S.lastChoice?S.lastChoice+' ':'')+sc.intro});
+ items.push({actor:'npc',name:n.name,text:line()});
+ items.push({actor:'narrator',name:'À vous',text:q.wrong?`Réécrivez la forme correcte : ${w.form}.`:`${w.before}… à compléter …${w.after} Verbe ${q.v}. ${F.TM[q.t].mode}, ${F.TM[q.t].name}. Avec ${p.pronoun}.`});
+ await speech.play(items);if(my!==flow)return;
+}
+async function speakSuccess(q){
+ const my=++flow,n=nameRole(),w=L.words(S,q),response=q.result?.credit?['Bien dit. Voilà une phrase qui fait avancer !','Exactement ! Continuons.','Très bien. Votre français trouve son chemin.'][(S.tick+S.day)%3]:'Voilà. On corrige, on avance, et on retrouvera cette forme plus tard.';
+ const ok=await speech.play([{actor:'hero',name:S.config.name,text:w.full},{actor:'npc',name:n.name,text:response}]);
+ if(!ok||my!==flow||S.active!==q||!q.solved||$('#mainDialog').open)return;
+ if(S.config.auto)autoTimer=setTimeout(()=>{if(my===flow&&S.active===q&&!$('#mainDialog').open)continueTurn();},S.config.speech&&speech.voices.length?1300:2300);
+}
+function submitAnswer(e){e.preventDefault();if(!started)return;const a=$('#answerInput');if(!a||a.disabled)return;const value=a.value;const result=L.grade(S,value);if(result.empty){a.focus();return;}if(result.duplicate)return;cancelFlow();S.active.draft='';save();
+ if(result.correct){stage.react('correct');tone('good');render();speakSuccess(S.active);}
+ else{S.active.lastErrorKind=result.kind;stage.react('wrong');renderTask();$('#challenge').classList.remove('shake');void $('#challenge').offsetWidth;$('#challenge').classList.add('shake');$('#answerInput').focus({preventScroll:true});const w=L.words(S);speech.play([{actor:'npc',name:nameRole().name,text:result.kind==='accent'?'Attention à l’accent. Regardez la forme correcte.':'Presque. Regardons la bonne forme, puis réécrivons-la.'},{actor:'hero',name:S.config.name,text:w.full}]);}
+ renderShell();
+}
+function continueTurn(){if(!S.active?.solved)return;cancelFlow();L.next(S);save();render();if(S.sceneDone>=L.goal(S))narrate(false);else{if(window.innerWidth>700)$('#answerInput')?.focus({preventScroll:true});narrate(false);}}
+async function choosePath(index){
+ cancelFlow();const oldNPC=nameRole().name;let ch;try{ch=L.choose(S,index);}catch(e){toast(e.message);return;}
+ stage.react(ch.action||'walk');tone(ch.to==='finish'?'arrive':'good');save();const my=flow;
+ $('#challenge').innerHTML=`<div class="eyebrow">Votre choix</div><div class="story-outcome">${esc(ch.text)}</div><button class="primary" id="goScene">${ch.to==='finish'?'Franchir le portail':'Continuer le trajet'} →</button>`;
+ let moved=false;const finish=()=>{if(moved||my!==flow)return;moved=true;cancelFlow();render();narrate(false);};
+ $('#goScene').onclick=finish;
+ const ok=await speech.play([{actor:'npc',name:oldNPC,text:ch.text}]);
+ if(ok&&my===flow)autoTimer=setTimeout(finish,1800);
+}
+function openModal(kind,title,html){cancelFlow();modalKind=kind;$('#dialogTitle').textContent=title;$('#dialogContent').innerHTML=html;if(!$('#mainDialog').open)$('#mainDialog').showModal();$('#mainDialog').scrollTop=0;}
+function closeModal(){speech.cancel();$('#mainDialog').close();}
+$('#closeDialog').onclick=closeModal;
+$('#mainDialog').addEventListener('close',()=>{speech.cancel();modalKind='';render();if(!started){renderShell();if(!$('#welcomeDialog').open)$('#welcomeDialog').showModal();}else if(S.active&&!S.active.solved&&window.innerWidth>700)$('#answerInput')?.focus({preventScroll:true});});
+function openReference(v){L.expose(S,v);save();const q=S.active,cur=q?.v===v?q.t:null,p=q?F.person(q.p,S.config):F.person('je',S.config);const body=referenceHTML(v,cur,p);openModal('reference','La conjugaison, à portée de main',body);bindReference();}
+function referenceHTML(v,cur,p){
+ const verb=F.VERBS[v],q=S.active,w=q?.v===v?L.words(S,q):null;
+ return `<div class="dialog-body"><div class="reference-controls"><label class="sr-only" for="referenceVerb">Verbe de la fiche</label><select id="referenceVerb">${F.ALL.map(x=>`<option value="${esc(x)}" ${x===v?'selected':''}>${esc(x)}</option>`).join('')}</select><span class="tag">${esc(verb.en)}</span><span class="tag">Auxiliaire : ${verb.aux}</span></div><p class="ref-note">Cette fiche aide à apprendre. Sa consultation ne valide pas une réponse de mémoire. Cliquez sur une forme pour l’entendre.</p>${w?`<div class="ref-current"><span>Votre question · ${esc(modeName(q.t))} · ${esc(p.pronoun)}</span><strong>${esc(F.clause(v,q.t,p,S.config))}</strong></div>`:''}<p class="muted-note">${verb.aux==='être'?'Les participes sont accordés avec les personnes indiquées. « je » suit votre réglage féminin/masculin ; « tu » désigne Camille ; « nous » et « vous » sont des groupes mixtes.':v==='être'?'Attention : être se conjugue avec avoir aux temps composés. Le participe « été » ne s’accorde pas.':'Dans ces exercices, le complément d’objet ne précède jamais le verbe : le participe avec avoir reste ici au masculin singulier.'}${v==='sortir'?' « Sortir » signifie ici aller dehors, sans complément d’objet direct ; nous utilisons donc être.':''}</p><div class="ref-grid">${F.TENSES.map(t=>`<section class="ref-tense ${t.id===cur?'active':''}"><h3>${t.mode} · ${t.name}<span>${t.literary?'Registre littéraire · ':''}${esc(t.use)}</span></h3><table class="ref-table"><tbody>${F.PEOPLE.map(pp=>{const xp=F.person(pp.id,S.config),fm=F.forms(v,t.id,xp,S.config),cl=F.clause(v,t.id,xp,S.config),sub=t.mode==='Subjonctif'?(/^((il|elle))/.test(xp.pronoun)?'qu’':'que '):'';return `<tr class="${q?.p===pp.id&&t.id===cur?'highlight':''}"><td>${esc(pp.pronoun)}</td><td class="ref-form" data-say="${esc(sub+cl)}">${esc(fm.join(' / '))}</td><td class="listen-cell"><button data-say="${esc(sub+cl)}" aria-label="Écouter ${esc(sub+cl)}">♫</button></td></tr>`;}).join('')}</tbody></table></section>`).join('')}</div><p class="reference-source">Référence : Bescherelle, La conjugaison pour tous, tableau ${verb.table}, page ${verb.page} du PDF fourni. ${['venir','partir','sortir','parler','marcher','demander','acheter','appeler','comprendre'].includes(v)?'Formes obtenues à partir du modèle indiqué et des renvois du livre. ':''}La 2e forme du conditionnel passé est identique au plus-que-parfait du subjonctif : les deux rubriques partagent le même suivi de forme. Les temps surcomposés, l’impératif et les modes impersonnels ne font pas partie de ce programme.</p></div><div class="dialog-bottom"><small>Une aide aujourd’hui, un rappel autonome plus tard.</small><button class="primary" id="closeReference">Retour au dialogue →</button></div>`;
+}
+function bindReference(){
+ $('#referenceVerb').onchange=e=>{const v=e.target.value;L.expose(S,v);save();$('#dialogContent').innerHTML=referenceHTML(v,S.active?.v===v?S.active.t:null,S.active?F.person(S.active.p,S.config):F.person('je',S.config));bindReference();};
+ $('#closeReference').onclick=closeModal;
+ $$('#dialogContent [data-say]').forEach(b=>b.onclick=()=>{if(!S.config.speech){toast('Activez la voix dans Réglages pour entendre cette forme.');return;}speech.play([{actor:'hero',name:S.config.name,text:b.dataset.say}]);});
+}
+function settingsHTML(){const c=S.config,shown=c.plan==='guided'?{...c,...L.selected(S)}:c;
+ return `<form id="settingsForm"><div class="dialog-body"><div class="field-grid"><div class="field"><label for="cfgName">Prénom dans l’aventure</label><input type="text" id="cfgName" maxlength="40" value="${esc(c.name)}"></div><div class="field"><label for="cfgGender">Accord de « je »</label><select id="cfgGender"><option value="f" ${c.gender==='f'?'selected':''}>Féminin : je suis allée</option><option value="m" ${c.gender==='m'?'selected':''}>Masculin : je suis allé</option></select></div></div>
+ <h3>Le programme</h3><div class="field-grid"><div class="field"><label for="cfgPlan">Progression</label><select id="cfgPlan"><option value="guided" ${c.plan==='guided'?'selected':''}>Progressive, quatre verbes puis vingt autres</option><option value="custom" ${c.plan==='custom'?'selected':''}>Ma sélection de verbes et de temps</option></select></div><div class="field"><label for="cfgCourse">Étape du parcours progressif</label><select id="cfgCourse">${F.COURSES.map((x,i)=>`<option value="${i}" ${i===S.course?'selected':''}>${i+1}. ${esc(x.name)}</option>`).join('')}</select></div></div><p class="muted-note">Le parcours progressif ajoute les temps, puis les vingt autres verbes, après acquisition des formes actives. Vous pouvez changer d’étape ici sans effacer le carnet. Cocher un verbe ou un temps passe en sélection personnalisée.</p>
+ <div class="preset-row"><button type="button" data-preset="start">4 verbes · présent</button><button type="button" data-preset="core-all">4 verbes · tous les temps</button><button type="button" data-preset="daily">24 verbes · quotidien</button><button type="button" data-preset="all">24 verbes · tout</button></div>
+ <h4>Les verbes</h4><div class="chip-grid">${F.ALL.map(v=>`<label class="chip ${F.CORE.includes(v)?'core':''}"><input type="checkbox" name="verbs" value="${esc(v)}" ${shown.verbs.includes(v)?'checked':''}>${esc(v)}</label>`).join('')}</div>
+ <h4>Les temps</h4><div class="tense-grid">${['Indicatif','Conditionnel','Subjonctif'].map(mode=>`<section class="tense-group"><h4>${mode}</h4>${F.TENSES.filter(t=>t.mode===mode).map(t=>`<label class="check"><input type="checkbox" name="tenses" value="${t.id}" ${shown.tenses.includes(t.id)?'checked':''}><span>${t.name}${t.literary?'<small>Littéraire</small>':''}</span></label>`).join('')}</section>`).join('')}</div><p class="reference-source">15 rubriques, 14 séries de formes distinctes : conditionnel passé 2e forme et subjonctif plus-que-parfait partagent les mêmes formes, sans doubler leur maîtrise.</p>
+ <h4>Les personnes</h4><div class="chip-grid">${F.PEOPLE.map(p=>`<label class="chip"><input type="checkbox" name="people" value="${p.id}" ${c.people.includes(p.id)?'checked':''}>${p.pronoun}</label>`).join('')}</div><p class="setting-summary" id="selectionSummary"></p>
+ <h3>Écrire jusqu’à savoir</h3><div class="field-grid"><div class="field"><label for="cfgInputMode">Ce qu’il faut écrire</label><select id="cfgInputMode"><option value="verb" ${c.inputMode==='verb'?'selected':''}>Le verbe, auxiliaire inclus si nécessaire</option><option value="sentence" ${c.inputMode==='sentence'?'selected':''}>Toute la phrase</option></select></div><div class="field"><label for="cfgTarget">Rappels sans aide pour acquérir une forme</label><select id="cfgTarget">${[2,3,4,5,6,8].map(v=>`<option ${v===c.target?'selected':''}>${v}</option>`).join('')}</select></div><div class="field"><label for="cfgGap">Questions entre deux étoiles d’une forme</label><input id="cfgGap" type="number" min="1" max="30" value="${c.gap}"><small>Réduit automatiquement pour une toute petite sélection.</small></div><div class="field"><label for="cfgSeconds">Délai minimum entre deux étoiles (secondes)</label><input id="cfgSeconds" type="number" min="0" max="300" value="${c.minSeconds}"></div><div class="field"><label for="cfgRound">Réponses par rencontre</label><input id="cfgRound" type="number" min="2" max="15" value="${c.roundSize}"></div><div class="field"><label for="cfgRate">Vitesse de parole : <span id="rateValue">${c.rate.toFixed(2)}</span>×</label><input id="cfgRate" type="range" min="0.55" max="1.3" step="0.05" value="${c.rate}"></div></div>
+ <label class="check"><input type="checkbox" id="cfgStrict" ${c.strict?'checked':''}><span>Exiger les accents pour avancer<small>Sans cette option, un accent manquant peut faire avancer l’histoire, mais ne donne jamais une étoile.</small></span></label><label class="check"><input type="checkbox" id="cfgAuto" ${c.auto?'checked':''}><span>Enchaîner automatiquement après une bonne réponse<small>Les erreurs attendent toujours une correction écrite. Les choix d’itinéraire restent manuels.</small></span></label><label class="check"><input type="checkbox" id="cfgTranslation" ${c.translation?'checked':''}><span>Afficher le sens du verbe et un repère temporel en anglais</span></label>
+ <h3>Des voix et des gestes</h3><label class="check"><input type="checkbox" id="cfgSpeech" ${c.speech?'checked':''}><span>Lire les récits, conversations, consignes et réponses en français</span></label><div class="field"><label for="cfgVoice">Voix française de cet appareil</label><select id="cfgVoice">${voiceOptions(c.voice)}</select><small id="voiceHelp">${speech.voices.length?speech.voices.length+' voix française(s) disponible(s). Les voix locales sont préférées.':'Aucune voix française chargée. Ajoutez une voix française dans les réglages de votre appareil, puis rouvrez ce panneau.'}</small></div><div class="preset-row" style="margin-top:10px"><button type="button" id="testVoice">♫ Tester la voix</button><button type="button" id="refreshVoices">↻ Recharger les voix</button></div><label class="check"><input type="checkbox" id="cfgMotion" ${c.motion?'checked':''}><span>Animer les personnages, les déplacements et les gestes<small>Les bouches suivent le temps de parole et les mots, sans prétendre reproduire chaque phonème.</small></span></label><label class="check"><input type="checkbox" id="cfgSfx" ${c.sfx?'checked':''}><span>Jouer de petits sons de réussite</span></label>
+ <h3>Le carnet vous appartient</h3><p>Le jeu garde les réponses, les aides et les progrès sur cet appareil. Exportez un fichier pour continuer ailleurs. Aucun compte ni clé d’API n’est nécessaire.</p><div class="preset-row"><button type="button" id="exportState">Exporter le carnet (.json)</button><button type="button" id="importState">Importer un carnet</button><button type="button" id="exportCSV">Exporter le suivi (.csv)</button><button type="button" id="resetStory">Recommencer seulement l’histoire</button><button type="button" id="resetAll">Effacer toute la progression</button></div><p class="reference-source">L’application n’envoie ni vos réponses ni votre carnet à un serveur. La synthèse vocale est fournie par le navigateur et l’appareil ; certaines voix utilisent un service distant. Le jeu reste utilisable sans voix et sans réseau, avec une voix locale installée pour la parole hors ligne.</p><div class="settings-error" id="settingsError" role="alert"></div></div><div class="dialog-bottom"><small>Les réglages n’effacent pas les formes déjà travaillées.</small><button class="primary" type="submit">Enregistrer les réglages →</button></div></form>`;
+}
+function voiceOptions(selected){return '<option value="">Automatique · français, voix locales préférées</option>'+speech.voices.map(v=>`<option value="${esc(v.voiceURI)}" ${v.voiceURI===selected?'selected':''}>${esc(v.name)} · ${esc(v.lang)}${v.localService?' · locale':' · service vocal'}</option>`).join('');}
+function openSettings(){speech.refresh();openModal('settings','Réglez votre épopée',settingsHTML());bindSettings();}
+function checked(name){return $$(`#settingsForm input[name="${name}"]:checked`).map(x=>x.value);}
+function updateSelection(){const guided=$('#cfgPlan').value==='guided';const course=F.COURSES[Number($('#cfgCourse').value)],v=guided?course.verbs:checked('verbs'),t=guided?course.tenses:checked('tenses'),p=checked('people');const nt=new Set(t.map(x=>F.TM[x].alias||x)).size;$('#selectionSummary').textContent=`Programme actif : ${v.length} verbes × ${nt} séries distinctes × ${p.length} pronoms = ${v.length*nt*p.length} formes suivies. ${guided?course.description:''}`;}
+function bindSettings(){
+ $('#settingsForm').onsubmit=e=>{e.preventDefault();try{
+ const cfg=L.cleanConfig({...S.config,name:$('#cfgName').value,gender:$('#cfgGender').value,plan:$('#cfgPlan').value,verbs:checked('verbs'),tenses:checked('tenses'),people:checked('people'),target:Number($('#cfgTarget').value),gap:Number($('#cfgGap').value),minSeconds:Number($('#cfgSeconds').value),roundSize:Number($('#cfgRound').value),inputMode:$('#cfgInputMode').value,rate:Number($('#cfgRate').value),voice:$('#cfgVoice').value,strict:$('#cfgStrict').checked,auto:$('#cfgAuto').checked,translation:$('#cfgTranslation').checked,speech:$('#cfgSpeech').checked,motion:$('#cfgMotion').checked,sfx:$('#cfgSfx').checked});
+ S.config=cfg;S.course=Number($('#cfgCourse').value);S.active=null;save();closeModal();toast('Programme enregistré. Les acquis restent dans le carnet.');
+ }catch(err){$('#settingsError').textContent=err.message;$('#settingsError').scrollIntoView({block:'nearest'});}};
+ $$('#settingsForm input[name="verbs"],#settingsForm input[name="tenses"]').forEach(x=>x.onchange=()=>{$('#cfgPlan').value='custom';updateSelection();});
+ $$('#settingsForm input[name="people"]').forEach(x=>x.onchange=updateSelection);const syncGuided=()=>{if($('#cfgPlan').value==='guided'){const c=F.COURSES[Number($('#cfgCourse').value)];$$('#settingsForm input[name="verbs"]').forEach(x=>x.checked=c.verbs.includes(x.value));$$('#settingsForm input[name="tenses"]').forEach(x=>x.checked=c.tenses.includes(x.value));}updateSelection();};$('#cfgPlan').onchange=syncGuided;$('#cfgCourse').onchange=syncGuided;
+ $$('#settingsForm [data-preset]').forEach(b=>b.onclick=()=>{const preset=b.dataset.preset,v=preset==='start'||preset==='core-all'?F.CORE:F.ALL,t=preset==='start'?['ip']:preset==='daily'?F.EVERYDAY:F.TENSES.map(t=>t.id);$('#cfgPlan').value='custom';$$('#settingsForm input[name="verbs"]').forEach(x=>x.checked=v.includes(x.value));$$('#settingsForm input[name="tenses"]').forEach(x=>x.checked=t.includes(x.value));updateSelection();});
+ $('#cfgRate').oninput=()=>$('#rateValue').textContent=Number($('#cfgRate').value).toFixed(2);
+ $('#refreshVoices').onclick=()=>{speech.refresh();$('#cfgVoice').innerHTML=voiceOptions($('#cfgVoice').value);$('#voiceHelp').textContent=speech.voices.length?speech.voices.length+' voix française(s) disponible(s).':'Aucune voix française chargée sur cet appareil.';};
+ $('#testVoice').onclick=async()=>{await speech.play([{actor:'hero',name:S.config.name,text:'Bonjour ! Le métro est fermé, mais notre aventure peut commencer.'}],{...S.config,speech:true,rate:Number($('#cfgRate').value),voice:$('#cfgVoice').value});speech.report();};
+ $('#exportState').onclick=exportState;$('#importState').onclick=()=>$('#importFile').click();$('#exportCSV').onclick=exportCSV;
+ $('#resetStory').onclick=()=>{if(!confirm('Recommencer le trajet en gardant toutes les statistiques de conjugaison ?'))return;S.scene='home';S.sceneDone=0;S.visits=['home'];S.active=null;S.finished=false;S.lastChoice='';S.inventory=S.inventory.filter(x=>['pump','wrench','umbrella'].includes(x));save();closeModal();};
+ $('#resetAll').onclick=()=>{if(!confirm('Effacer toute la progression, l’histoire et le carnet sur cet appareil ? Exportez d’abord pour conserver une copie.'))return;cancelFlow();S=L.fresh();save();sceneDrawn='';closeModal();toast('Un nouveau carnet est ouvert.');};
+ updateSelection();
+}
+function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function exportState(){save();download('paris-en-greve-carnet-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(S,null,2),'application/json');toast('Le carnet contient le programme, l’histoire et les progrès.');}
+function exportCSV(){const quote=x=>'"'+String(x).replace(/"/g,'""')+'"',rows=[['Verbe','Mode','Temps','Pronom','Rappels consécutifs','Essais','Erreurs','Aides','Acquis','Confirmé après 24h']];for(const c of L.deck(S)){const st=L.peek(S,c.key);rows.push([c.v,F.TM[c.t].mode,F.TM[c.t].name,c.p,st.streak,st.seen,st.wrong,st.hints,st.streak>=S.config.target?'oui':'non',st.retainedAt?'oui':'non']);}download('paris-en-greve-suivi.csv','\uFEFF'+rows.map(r=>r.map(quote).join(',')).join('\r\n'),'text/csv;charset=utf-8');}
+$('#importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>3000000)throw Error('Fichier trop volumineux (3 Mo maximum).');const candidate=L.restore(JSON.parse(await file.text()));if(!confirm('Remplacer le carnet de cet appareil par celui de '+candidate.config.name+' ?'))return;cancelFlow();S=candidate;sceneDrawn='';save();if($('#mainDialog').open)closeModal();render();toast('Carnet importé. Les confirmations à froid gardent leurs vraies dates.');}catch(err){toast('Import refusé : '+err.message);}finally{e.target.value='';}};
+function openProgress(){const sel=progressAll?{verbs:F.ALL,tenses:F.TENSES.map(t=>t.id),people:S.config.people}:L.selected(S),su=L.summary(S),target=S.config.target;
+ const h=`<div class="dialog-body"><p>Chaque case suit un <b>verbe × temps × pronom</b>. Une forme est <b>acquise</b> après ${target} rappels écrits sans aide, espacés d’au moins ${S.config.gap} autres questions (ou moins dans une petite sélection) et ${S.config.minSeconds} secondes. Une correction ou une aide remet sa série à zéro. Une consultation récente bloque les étoiles immédiates.</p><div class="summary-grid"><div><strong>${su.started}</strong><small>Formes rencontrées / ${su.total}</small></div><div><strong>${su.acquired}</strong><small>Acquises dans le programme actif</small></div><div><strong>${su.retained}</strong><small>Confirmées après ≥ 24 h</small></div><div><strong>${S.totalFirst?Math.round(S.firstExact/S.totalFirst*100):0}%</strong><small>Premiers essais exacts sans aide</small></div></div><p class="muted-note">Le compteur « confirmé » demande une nouvelle réponse autonome <b>au moins 24 heures après l’acquisition</b>. Rejouer un jour de l’histoire ne fait pas avancer cette horloge. Les seuils sont des règles du jeu, pas une garantie de mémoire permanente.</p><label class="check"><input type="checkbox" id="progressAll" ${progressAll?'checked':''}><span>Montrer les 24 verbes et toutes les rubriques, y compris celles non encore activées</span></label><div class="progress-legend"><span><i style="background:#eee8d5"></i>Non vu</span><span><i style="background:#e3c88b"></i>En cours</span><span><i style="background:#6e9570"></i>Acquis</span><span><i style="background:#365f52"></i>Confirmé à froid</span></div><div class="heat-wrap"><table class="heatmap"><thead><tr><th>Verbe</th>${sel.tenses.map(t=>`<th title="${esc(modeName(t))}">${F.TM[t].short}</th>`).join('')}</tr></thead><tbody>${sel.verbs.map(v=>`<tr><td>${esc(v)}</td>${sel.tenses.map(t=>{const sts=sel.people.map(p=>L.peek(S,L.key(v,t,p,S.config))),a=sts.filter(x=>x.streak>=target).length,r=sts.filter(x=>x.retainedAt).length,started=sts.some(x=>x.seen),partial=sts.some(x=>x.streak>0),level=r===sts.length?4:a===sts.length?3:partial?2:started?1:0;return `<td><span class="heat-cell level-${level}" title="${esc(v+' · '+modeName(t))} : ${a} acquis, ${r} confirmés après 24 h">${a}/${sts.length}</span></td>`;}).join('')}</tr>`).join('')}</tbody></table></div><p class="reference-source">Le numérateur compte les pronoms acquis. La seconde forme du conditionnel passé et le plus-que-parfait du subjonctif utilisent la même mémoire de conjugaison, sans double comptage. Les accords de « je » avec être restent distincts lorsque vous changez son genre.</p><h3>Les dernières formes à réparer</h3>${weakList()}<h3>Vos dernières réponses</h3>${recentList()}<div class="preset-row" style="margin-top:18px"><button id="progressExport">Exporter le carnet (.json)</button><button id="progressCSV">Exporter le suivi (.csv)</button></div></div><div class="dialog-bottom"><small>Le moteur privilégie les erreurs et garde une place pour les formes nouvelles.</small><button class="primary" id="returnProgress">Reprendre l’aventure →</button></div>`;
+ openModal('progress','Le carnet de maîtrise',h);$('#progressAll').onchange=e=>{progressAll=e.target.checked;openProgress();};$('#returnProgress').onclick=closeModal;$('#progressExport').onclick=exportState;$('#progressCSV').onclick=exportCSV;
+}
+function weakList(){const d=L.deck(S).filter(c=>{const st=L.peek(S,c.key);return(st.wrong||st.hints)&&st.streak<S.config.target;}).sort((a,b)=>L.peek(S,b.key).wrong-L.peek(S,a.key).wrong).slice(0,10);return d.length?'<div class="chip-grid">'+d.map(c=>`<div class="chip" style="display:block"><b>${esc(c.v)}</b><br><small>${esc(F.TM[c.t].short)} · ${c.p}<br>${Math.min(L.peek(S,c.key).streak,S.config.target)}/${S.config.target} rappels</small></div>`).join('')+'</div>':'<p>Pas encore de forme signalée à réparer dans le programme actif. Les formes non vues ne sont pas pour autant acquises.</p>';}
+function recentList(){const logs=S.log.slice(-10).reverse();return logs.length?'<table class="recent-table"><thead><tr><th>Forme travaillée</th><th>Résultat</th><th>Mémoire</th></tr></thead><tbody>'+logs.map(l=>`<tr><td>${esc(l.v)} · ${esc(F.TM[l.t].short)} · ${esc(l.p)}</td><td>${l.kind==='recall'?'Sans aide':l.kind==='wrong'?'À corriger':l.kind==='accent'?'Accent à corriger':l.kind==='accent-accepted'?'Accent toléré':'Aidée ou rapprochée'}</td><td>${l.credit?'★ Une étoile':'—'}</td></tr>`).join('')+'</tbody></table>':'<p>Les premières lignes du carnet vous attendent.</p>';}
+function openShop(){const here=['shop','workshop'].includes(S.scene);openModal('shop','La boutique du quartier',`<div class="dialog-body"><p>${here?'Monsieur Clé vous sert au comptoir.':'Le petit catalogue du quartier vous accompagne. Les achats utilisent uniquement les pièces fictives gagnées dans le jeu.'} Vous avez <b>${S.coins} pièces</b>.</p><div class="shop-grid">${Object.entries(B.ITEMS).filter(([,x])=>x.price).map(([id,x])=>{const own=S.inventory.includes(id);return `<article class="shop-item"><span class="object" aria-hidden="true">${x.icon}</span><h3>${esc(x.name)}</h3><p>${esc(x.desc)}</p><button class="${own?'':'primary'}" data-buy="${id}" ${own||S.coins<x.price?'disabled':''}>${own?'Déjà dans le sac':x.price+' pièces · Acheter'}</button></article>`;}).join('')}</div><p class="reference-source">Aucun achat réel. Le ticket est réutilisable pendant ce trajet. Le plan, le passage et le ruban se gagnent dans l’histoire ; la pompe, la clé et le parapluie restent dans le sac au trajet suivant.</p></div><div class="dialog-bottom"><small>Il existe toujours un chemin sans achat.</small><button class="primary" id="closeShop">Retour au trajet →</button></div>`);
+ $$('#dialogContent [data-buy]').forEach(b=>b.onclick=async()=>{const id=b.dataset.buy,x=B.ITEMS[id];if(!x||S.inventory.includes(id)||S.coins<x.price)return;S.coins-=x.price;S.inventory.push(id);save();stage.react('give');tone('good');openShop();speech.play([{actor:'npc',name:'Monsieur Clé',text:'Voilà votre achat : '+x.name+'. Bon trajet !'}]);});$('#closeShop').onclick=closeModal;}
+function openJournal(){openModal('journal','Le carnet de votre épopée',`<div class="dialog-body"><p>${S.trips} trajet${S.trips>1?'s':''} terminé${S.trips>1?'s':''} · ${S.totalSolved} réponses écrites · ${S.allies} alliés rencontrés.</p>${S.history.length?S.history.slice(-35).reverse().map(h=>`<article class="journal-item"><small>Jour ${h.day} · ${esc(B.SCENES[h.scene]?.place||h.scene)}</small><h3>${esc(h.choice)}</h3><p>${esc(h.text)}</p></article>`).join(''):'<div class="journal-item"><h3>Tout commence dans une cour parisienne.</h3><p>Le premier itinéraire reste à inventer. Votre carnet gardera vos choix, pas seulement vos points.</p></div>'}</div><div class="dialog-bottom"><small>Les choix changent le chemin et les objets trouvés.</small><button class="primary" id="closeJournal">Reprendre le trajet →</button></div>`);$('#closeJournal').onclick=closeModal;}
+function openAbout(){openModal('about','Le jeu, les mots et la mémoire',`<div class="dialog-body"><div class="eyebrow">Paris en grève · Version 1.0</div><h3>Une aventure. Deux réussites différentes.</h3><p>Vous pouvez réussir le trajet en vous faisant aider. Pour acquérir une forme, il faut la retrouver par écrit, exactement et sans aide, à plusieurs reprises. Le carnet distingue les formes non vues, les formes en cours, les formes acquises et celles retrouvées après une vraie pause d’au moins 24 heures.</p><p>Une erreur ou la consultation de l’aide pour la question active remet sa série de rappels à zéro. Consulter une fiche rend temporairement toutes les formes de ce verbe « récemment aidées ». Recopier une correction, coller une réponse, tolérer un accent ou répéter trop vite ne donne pas d’étoile. Les anciennes étoiles de formes distinctes ne sont pas effacées par la simple consultation de la fiche.</p><h3>La référence fournie</h3><p><b>Bescherelle, La conjugaison pour tous</b>, édition sous la responsabilité scientifique de Michel Arrivé, PDF fourni par l’utilisateur. Les formes et les modèles de conjugaison sont construits d’après ce document. Les tableaux d’aide affichent le numéro de tableau et la page PDF de leur modèle.</p><p>Les quatre verbes de départ sont <b>être, avoir, venir, aller</b>. Le programme comprend huit temps de l’indicatif, le conditionnel présent et ses deux formes du passé, et les quatre temps du subjonctif. Le livre traite le conditionnel passé 2e forme comme ayant les mêmes formes que le subjonctif plus-que-parfait (mode d’emploi, page PDF 9) ; nous conservons deux rubriques mais une seule mémoire de forme.</p><p>Les temps littéraires sont clairement signalés et placés dans la « chronique » écrite de l’aventure. Le jeu ne présente pas l’imparfait du subjonctif comme une formule ordinaire de conversation. Les formes surcomposées, l’impératif, l’infinitif, le participe et le gérondif restent hors du programme demandé.</p><h3>Des accords explicites</h3><p>Le participe avec être s’accorde avec le sujet. Les pronoms désignent des personnes précisées sous la phrase pour éviter de deviner le genre ou le nombre. « Sortir » est utilisé ici sans objet direct, au sens d’aller dehors. Les phrases n’introduisent pas de complément d’objet direct antéposé avec avoir. Le participe <i>été</i> reste invariable. Les variantes de <i>payer</i> présentes dans le livre sont acceptées.</p><h3>Un jeu local, une voix d’appareil</h3><p>Le jeu, les décors, les animations, les règles et les conjugaisons sont inclus dans ce fichier. Aucun appel à un modèle ou à un serveur de correction. L’application ne transmet pas les réponses. La synthèse vocale utilise les voix françaises proposées par le navigateur ; certaines sont locales, d’autres utilisent le service vocal de l’appareil. La voix peut nécessiter un réseau ou une installation supplémentaire.</p><p>Les animations suivent le début et la fin de la parole et, lorsque le moteur le permet, les limites des mots. Il ne s’agit pas d’un alignement phonétique exact. Sans voix disponible, le texte, la correction et toute l’aventure restent jouables.</p><h3>Une fiction, pas les actualités</h3><p>Les personnages, l’école, les rues, les prix et les règles des transports de l’aventure sont fictifs. La carte est schématique. L’avatar est une héroïne dessinée pour le jeu, pas un portrait photographique. Les scènes, dialogues et règles pédagogiques sont des créations originales ; aucune efficacité à long terme n’a été mesurée sur Gretchen.</p><p class="reference-source">Sources de conception technique : Web Speech API, SpeechSynthesis / SpeechSynthesisUtterance ; spécification Web Speech Community Group. Cette attribution est distincte de la référence grammaticale ci-dessus.</p></div><div class="dialog-bottom"><small>Un fichier autonome, un carnet exportable.</small><button class="primary" id="closeAbout">Retour à l’aventure →</button></div>`);$('#closeAbout').onclick=closeModal;}
+function routeOpen(kind){({settings:openSettings,progress:openProgress,shop:openShop,journal:openJournal,about:openAbout})[kind]?.();}
+document.addEventListener('click',e=>{const button=e.target.closest('[data-open]');if(button)routeOpen(button.dataset.open);if(e.target.closest('#dismissCourse')){S.courseNotice='';save();renderShell();}});
+$('#replayButton').onclick=()=>narrate(false);$('#stopSpeechButton').onclick=()=>{speech.cancel();clearTimeout(autoTimer);autoTimer=null;flow++;};
+$('#voiceButton').onclick=()=>{cancelFlow();S.config.speech=!S.config.speech;save();renderShell();if(S.config.speech&&started)narrate(false);};
+$('#welcomeSettings').onclick=()=>{$('#welcomeDialog').close();openSettings();};
+$('#startButton').onclick=()=>{started=true;$('#welcomeDialog').close();tone('start');render();save();narrate(true);};
+$('#welcomeDialog').addEventListener('cancel',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{if(e.altKey&&e.key.toLowerCase()==='h'&&started&&!$('#mainDialog').open){e.preventDefault();openReference(L.question(S).v);}if(!e.defaultPrevented&&!e.isComposing&&!e.repeat&&e.key==='Enter'&&S.active?.solved&&!$('#mainDialog').open&&started&&!['BUTTON','INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)){e.preventDefault();continueTurn();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelFlow();save();}});
+window.addEventListener('pagehide',()=>{save();speech.cancel();});
+render();if(!$('#welcomeDialog').open)$('#welcomeDialog').showModal();
+// Small diagnostic surface for reproducible, deterministic tests of this standalone build.
+window.ParisGame={state:()=>S,replaceState:s=>{cancelFlow();S=L.restore(s);sceneDrawn='';save();render();},render,stage,speech,conjugation:F,learning:L,story:B,openSettings,openReference,exportState,version:'1.0.0'};
+})();
+</script></body></html>
